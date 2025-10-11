@@ -10,7 +10,7 @@ function Perfil() {
   const [loadingFavorites, setLoadingFavorites] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
 
-  // Estados para o formulário de edição
+
   const [editName, setEditName] = useState(user?.name || '');
   const [editPassword, setEditPassword] = useState('');
 
