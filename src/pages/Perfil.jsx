@@ -4,6 +4,8 @@ import api from '../services/api';
 import Swal from 'sweetalert2';
 import './perfil.css';
 
+
+
 function Perfil() {
   const { user, token, logout } = useAuth();
   const [favorites, setFavorites] = useState([]);
