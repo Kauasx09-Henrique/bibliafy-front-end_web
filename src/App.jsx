@@ -6,9 +6,11 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Splash dura 13,5 segundos para combinar com o fade do vídeo
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 4000);
+    }, 13500); // 13,5 segundos
+
     return () => clearTimeout(timer);
   }, []);
 
@@ -18,7 +20,6 @@ function App() {
 
   return (
     <main>
-
       <Outlet />
     </main>
   );

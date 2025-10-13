@@ -24,7 +24,10 @@ function Header() {
         </Link>
 
         <nav className="header-nav">
-          <span className="user-greeting">Olá, {user?.name.split(' ')[0]}</span>
+          <span className="user-greeting">
+            Olá, {user?.name ? user.name.split(' ')[0] : 'Usuário'}
+          </span>
+
           <Link to="/anotacoes" className="nav-icon-button" title="Minhas Anotações">
             <NotesIcon />
           </Link>

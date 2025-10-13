@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../services/api';
-import './Auth.css'; // Caminho atualizado
+import Swal from 'sweetalert2';
+import './Auth.css';
 
 function Registro() {
   const [name, setName] = useState('');
@@ -16,11 +17,24 @@ function Registro() {
     
     try {
       await api.post('/api/users/register', { name, email, password });
-      alert('Cadastro realizado com sucesso! Você será redirecionado para o login.');
-      navigate('/login');
+      Swal.fire({
+        icon: 'success',
+        title: 'Cadastro realizado!',
+        text: 'Você será redirecionado para o login.',
+        timer: 2500,
+        showConfirmButton: false
+      });
+      setTimeout(() => {
+        navigate('/login');
+      }, 2500);
     } catch (err) {
       const errorMessage = err.response?.data?.message || 'Erro ao realizar o cadastro. Tente novamente.';
       setError(errorMessage);
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: errorMessage
+      });
     }
   }
 

@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import './SplashScreen.css';
-import logoImage from '../../public/logo.jpg';
+import logoImage from '../../public/Logo_Bibliafy.jpg';
+import { useNavigate } from 'react-router-dom';
 
 function SplashScreen() {
-  // Partículas para efeito sobre o vídeo
+  const [fadeOut, setFadeOut] = useState(false);
+  const navigate = useNavigate();
+  const videoRef = useRef(null);
+
   const particles = Array.from({ length: 15 }, (_, i) => ({
     id: i,
     left: Math.random() * 100,
@@ -11,57 +15,69 @@ function SplashScreen() {
     duration: 6 + Math.random() * 6
   }));
 
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.volume = 0.8; // começa em 80% do volume
+    }
+
+    const duration = 13000;
+    const steps = 100;
+    const intervalTime = duration / steps;
+    let currentStep = 0;
+
+    const fadeVolume = setInterval(() => {
+      currentStep++;
+      if (videoRef.current) {
+        videoRef.current.volume = Math.max(0, 0.8 * (1 - currentStep / steps));
+      }
+      if (currentStep >= steps) clearInterval(fadeVolume);
+    }, intervalTime);
+
+    const timer = setTimeout(() => setFadeOut(true), duration);
+    const redirectTimer = setTimeout(() => navigate('/home'), duration + 500);
+
+    return () => {
+      clearInterval(fadeVolume);
+      clearTimeout(timer);
+      clearTimeout(redirectTimer);
+    };
+  }, [navigate]);
+
   return (
-    <div className="splash-screen">
-      {/* Vídeo de fundo */}
+    <div className={`splash-screen ${fadeOut ? 'fade-out' : ''}`}>
       <div className="video-background">
-        <video 
-          autoPlay 
-          muted 
-          loop 
-          playsInline
-          poster="/path/to/poster.jpg" // Fallback image
-        >
-      <source src="../../public/video.mp4" type="video/mp4" />
-          {/* Fallback caso o vídeo não carregue */}
+        <video ref={videoRef} autoPlay loop playsInline poster="/poster.jpg">
+          <source src="/Intro.mp4" type="video/mp4" />
         </video>
       </div>
-      
-      {/* Overlay para melhor contraste */}
+
       <div className="overlay"></div>
-      
-      {/* Partículas flutuantes */}
+
       <div className="particles">
-        {particles.map(particle => (
+        {particles.map(p => (
           <div
-            key={particle.id}
+            key={p.id}
             className="particle"
             style={{
-              left: `${particle.left}%`,
-              animationDelay: `${particle.delay}s`,
-              animationDuration: `${particle.duration}s`
+              left: `${p.left}%`,
+              animationDelay: `${p.delay}s`,
+              animationDuration: `${p.duration}s`
             }}
           />
         ))}
       </div>
 
-      {/* Conteúdo principal */}
       <div className="splash-container">
         <div className="logo-wrapper">
           <div className="logo-glow"></div>
-          <img 
-            src={logoImage} 
-            alt="Bibliafy" 
-            className="splash-logo" 
-          />
+          <img src={logoImage} alt="Bibliafy" className="splash-logo" />
         </div>
-        
+
         <h1 className="splash-title">Bibliafy</h1>
-        
         <p className="splash-subtitle">
-          Conectando você com a <br/>Palavra de Deus
+          Conectando você com a <br />Palavra de Deus
         </p>
-        
+
         <div className="loading-container">
           <div className="loading-text">Carregando...</div>
           <div className="loading-bar">

@@ -1,47 +1,43 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../services/api';
-import Swal from 'sweetalert2'; // 1. Importe o SweetAlert2
+import Swal from 'sweetalert2';
 import '../pages/Auth.css';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false); // 2. Estado de carregamento
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   async function handleSubmit(event) {
     event.preventDefault();
-    setIsLoading(true); // Ativa o carregamento
+    setIsLoading(true);
 
     try {
       const response = await api.post('/api/users/login', { email, password });
-      
       localStorage.setItem('token', response.data.token);
 
-      // 3. Mostra alerta de sucesso
-      Swal.fire({
+      // Alerta de sucesso aguardando fechar
+      await Swal.fire({
         icon: 'success',
         title: 'Login bem-sucedido!',
         text: 'Redirecionando...',
-        timer: 2000, // Fecha automaticamente após 2 segundos
+        timer: 2000,
         showConfirmButton: false,
-        customClass: { // Aplica o tema escuro
+        timerProgressBar: true,
+        customClass: {
           popup: 'swal2-popup',
           title: 'swal2-title',
           htmlContainer: 'swal2-html-container',
         }
       });
 
-      // Aguarda o timer do alerta para navegar
-      setTimeout(() => {
-        navigate('/home');
-      }, 2000);
+      navigate('/home'); // Navega somente depois do alerta
 
     } catch (err) {
       const errorMessage = err.response?.data?.message || 'Erro ao fazer login. Verifique suas credenciais.';
-      // 4. Mostra alerta de erro
-      Swal.fire({
+      await Swal.fire({
         icon: 'error',
         title: 'Oops...',
         text: errorMessage,
@@ -52,7 +48,7 @@ function Login() {
         }
       });
     } finally {
-      setIsLoading(false); // Desativa o carregamento no final
+      setIsLoading(false);
     }
   }
 
@@ -62,19 +58,18 @@ function Login() {
         <h2>Bibliafy</h2>
         <p>Acesse sua conta para continuar</p>
 
-        <input 
-          type="email" 
+        <input
+          type="email"
           placeholder="E-mail"
           value={email}
-          onChange={e => setEmail(e.target.value)} 
+          onChange={e => setEmail(e.target.value)}
         />
-        <input 
-          type="password" 
+        <input
+          type="password"
           placeholder="Senha"
           value={password}
-          onChange={e => setPassword(e.target.value)} 
+          onChange={e => setPassword(e.target.value)}
         />
-        {/* 5. Lógica para desabilitar o botão e mudar o texto */}
         <button type="submit" disabled={isLoading}>
           {isLoading ? 'Entrando...' : 'Entrar'}
         </button>

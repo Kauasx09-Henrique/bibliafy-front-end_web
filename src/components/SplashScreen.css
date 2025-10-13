@@ -286,3 +286,9 @@
     height: 100%;
   }
 }
+/* Fade-out da splash screen */
+.fade-out {
+  opacity: 0;
+  transition: opacity 0.5s ease-out;
+  pointer-events: none; /* evita interações durante o fade */
+}
