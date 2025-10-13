@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import './SplashScreen.css';
-import logoImage from '/Logo_Bibliafy.jpg';
+import './SplashScreen.css'; // Precisaremos criar este arquivo de estilo
 import { useNavigate } from 'react-router-dom';
 
 function SplashScreen() {
@@ -8,6 +7,7 @@ function SplashScreen() {
   const navigate = useNavigate();
   const videoRef = useRef(null);
 
+  // Lógica para as partículas flutuantes
   const particles = Array.from({ length: 15 }, (_, i) => ({
     id: i,
     left: Math.random() * 100,
@@ -15,33 +15,21 @@ function SplashScreen() {
     duration: 6 + Math.random() * 6
   }));
 
+  // 1. Lógica do useEffect simplificada para garantir o autoplay
   useEffect(() => {
     const video = videoRef.current;
-    if (!video) return;
+    if (video) {
+      // Apenas garante que o vídeo tente tocar, caso o autoplay falhe por algum motivo
+      video.play().catch(() => console.error('O navegador bloqueou a reprodução automática.'));
+    }
 
-    video.play().catch(() => console.log('Autoplay bloqueado'));
-
-    setTimeout(() => {
-      const video = videoRef.current;
-      if (!video) return;
-      video.muted = false;
-      const initialVolume = 0.8;
-      const duration = 13000;
-      const steps = 100;
-      let currentStep = 0;
-      const intervalTime = duration / steps;
-
-      const fadeVolume = setInterval(() => {
-        currentStep++;
-        if (video) video.volume = Math.max(0, initialVolume * (1 - currentStep / steps));
-        if (currentStep >= steps) clearInterval(fadeVolume);
-      }, intervalTime);
-    }, 100);
-
-
+    // Timer para iniciar a animação de desaparecimento (fade-out)
     const fadeOutTimer = setTimeout(() => setFadeOut(true), 13000);
+
+    // Timer para redirecionar o usuário para a home page 500ms após o fade-out
     const redirectTimer = setTimeout(() => navigate('/home'), 13500);
 
+    // Função de limpeza para evitar erros se o componente for desmontado
     return () => {
       clearTimeout(fadeOutTimer);
       clearTimeout(redirectTimer);
@@ -55,13 +43,13 @@ function SplashScreen() {
           ref={videoRef}
           autoPlay
           loop
-          muted
+          muted // 2. O atributo "muted" é essencial para o autoplay funcionar sempre!
           playsInline
           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
         >
+          {/* O vídeo deve estar em: public/videos/Intro.mp4 */}
           <source src="/videos/Intro.mp4" type="video/mp4" />
         </video>
-
       </div>
 
       <div className="overlay"></div>
@@ -83,7 +71,8 @@ function SplashScreen() {
       <div className="splash-container">
         <div className="logo-wrapper">
           <div className="logo-glow"></div>
-          <img src={logoImage} alt="Bibliafy" className="splash-logo" />
+          {/* 3. Caminho da imagem corrigido para buscar direto da pasta public */}
+          <img src="/Logo_Bibliafy.jpg" alt="Bibliafy" className="splash-logo" />
         </div>
 
         <h1 className="splash-title">Bibliafy</h1>
