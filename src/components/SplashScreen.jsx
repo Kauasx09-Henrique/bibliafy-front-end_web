@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import './SplashScreen.css';
-import logoImage from '../../public/Logo_Bibliafy.jpg';
+import logoImage from '/Logo_Bibliafy.jpg'; // caminho absoluto do public
 import { useNavigate } from 'react-router-dom';
-import videoSource from '../../public/Intro.mp4';
 
 function SplashScreen() {
   const [fadeOut, setFadeOut] = useState(false);
@@ -17,19 +16,26 @@ function SplashScreen() {
   }));
 
   useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.volume = 0.8; // começa em 80% do volume
+    const video = videoRef.current;
+
+    if (video) {
+      video.volume = 0.8; // começa em 80%
+      video.play().catch(() => {
+        // fallback caso autoplay seja bloqueado
+        console.log('Autoplay bloqueado, tente clicar na tela');
+      });
     }
 
-    const duration = 13000;
+    // Fade do volume ao longo de 13s
+    const duration = 13000; // 13 segundos
     const steps = 100;
     const intervalTime = duration / steps;
     let currentStep = 0;
 
     const fadeVolume = setInterval(() => {
       currentStep++;
-      if (videoRef.current) {
-        videoRef.current.volume = Math.max(0, 0.8 * (1 - currentStep / steps));
+      if (video) {
+        video.volume = Math.max(0, 0.8 * (1 - currentStep / steps));
       }
       if (currentStep >= steps) clearInterval(fadeVolume);
     }, intervalTime);
@@ -52,12 +58,10 @@ function SplashScreen() {
           autoPlay
           loop
           playsInline
-          muted
           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
         >
           <source src="/Intro.mp4" type="video/mp4" />
         </video>
-
       </div>
 
       <div className="overlay"></div>
