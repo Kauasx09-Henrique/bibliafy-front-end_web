@@ -1,16 +1,14 @@
 import React, { useEffect, useState, useRef } from 'react';
-import './SplashScreen.css'; // Lembre-se de criar e estilizar este arquivo
+import './SplashScreen.css';
 import { useNavigate } from 'react-router-dom';
 
 function SplashScreen() {
   const [fadeOut, setFadeOut] = useState(false);
   const navigate = useNavigate();
   const videoRef = useRef(null);
-
-  // 1. NOVO ESTADO: controla a visibilidade do botão "Entrar"
   const [userInteracted, setUserInteracted] = useState(false);
 
-  // Lógica para as partículas flutuantes (sem alterações)
+  // Lógica para as partículas flutuantes
   const particles = Array.from({ length: 15 }, (_, i) => ({
     id: i,
     left: Math.random() * 100,
@@ -26,26 +24,30 @@ function SplashScreen() {
     }
   }, []); // O array vazio [] faz com que isso rode apenas uma vez
 
-  // 2. FUNÇÃO CHAMADA PELO CLIQUE NO BOTÃO
-  const handleStart = () => {
-    setUserInteracted(true); // Faz o botão desaparecer
-
-    const video = videoRef.current;
-    if (video) {
-      // É aqui que a mágica acontece!
-      video.muted = false;    // LIGA O SOM
-      video.volume = 0.8;     // Define o volume inicial
-      video.play();           // Garante que está tocando
-
-      // Inicia a contagem regressiva para o fim da splash screen
+  // ✅ CORREÇÃO: Este useEffect agora gerencia os timers APÓS a interação do usuário
+  useEffect(() => {
+    // Só inicia os timers se o usuário já tiver clicado no botão "Entrar"
+    if (userInteracted) {
       const fadeOutTimer = setTimeout(() => setFadeOut(true), 13000);
       const redirectTimer = setTimeout(() => navigate('/home'), 13500);
 
-      // Função de limpeza para os timers (boa prática)
+      // Função de limpeza para os timers. Essencial!
       return () => {
         clearTimeout(fadeOutTimer);
         clearTimeout(redirectTimer);
       };
+    }
+  }, [userInteracted, navigate]); // Roda sempre que 'userInteracted' mudar
+
+  // Função chamada pelo clique no botão "Entrar"
+  const handleStart = () => {
+    setUserInteracted(true); // Faz o botão desaparecer e ativa o useEffect acima
+
+    const video = videoRef.current;
+    if (video) {
+      video.muted = false;
+      video.volume = 0.8;
+      video.play();
     }
   };
 
@@ -54,9 +56,9 @@ function SplashScreen() {
       <div className="video-background">
         <video
           ref={videoRef}
-          autoPlay // Tenta tocar automaticamente
+          autoPlay
           loop
-          muted    // Começa mudo para o autoplay funcionar
+          muted
           playsInline
           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
         >
@@ -92,13 +94,11 @@ function SplashScreen() {
         <div className="loading-container">
           <div className="loading-text">Toque em entrar para iniciar</div>
           <div className="loading-bar">
-            {/* A barra de progresso só avança após a interação */}
             {userInteracted && <div className="loading-progress"></div>}
           </div>
         </div>
       </div>
 
-      {/* 3. BOTÃO DE INTERAÇÃO QUE SÓ APARECE NO INÍCIO */}
       {!userInteracted && (
         <div className="interaction-overlay">
           <button onClick={handleStart} className="enter-button">

@@ -1,3 +1,4 @@
+/* Seu CSS existente ... */
 .splash-screen {
   display: flex;
   flex-direction: column;
@@ -8,8 +9,6 @@
   position: relative;
   overflow: hidden;
 }
-
-/* Container do vídeo de fundo */
 .video-background {
   position: absolute;
   top: 0;
@@ -18,14 +17,11 @@
   height: 100%;
   z-index: 1;
 }
-
 .video-background video {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
-
-/* Overlay escuro para melhor contraste */
 .overlay {
   position: absolute;
   top: 0;
@@ -35,7 +31,6 @@
   background: rgba(0, 0, 0, 0.4);
   z-index: 2;
 }
-
 .splash-container {
   display: flex;
   flex-direction: column;
@@ -45,27 +40,22 @@
   position: relative;
   z-index: 3;
 }
-
 .logo-wrapper {
   position: relative;
   margin-bottom: 30px;
 }
-
 .splash-logo {
   width: 100px;
   height: 100px;
   border-radius: 25px;
   object-fit: cover;
   border: 3px solid rgba(255, 255, 255, 0.9);
-  box-shadow: 
-    0 15px 35px rgba(0, 0, 0, 0.4),
-    0 0 0 1px rgba(255, 255, 255, 0.3);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.3);
   animation: logoPulse 3s ease-in-out infinite;
   position: relative;
   z-index: 2;
   backdrop-filter: blur(10px);
 }
-
 .logo-glow {
   position: absolute;
   top: 50%;
@@ -78,7 +68,6 @@
   animation: glowPulse 2s ease-in-out infinite alternate;
   z-index: 1;
 }
-
 .splash-title {
   font-size: 2.5rem;
   font-weight: 800;
@@ -89,7 +78,6 @@
   animation: slideDown 0.8s ease-out;
   letter-spacing: -0.5px;
 }
-
 .splash-subtitle {
   font-size: 1.1rem;
   color: rgba(255, 255, 255, 0.95);
@@ -100,13 +88,11 @@
   font-weight: 400;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 }
-
 .loading-container {
   width: 100%;
   max-width: 200px;
   animation: fadeIn 0.8s ease-out 0.4s both;
 }
-
 .loading-text {
   color: rgba(255, 255, 255, 0.9);
   font-size: 0.9rem;
@@ -115,7 +101,6 @@
   font-weight: 500;
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
 }
-
 .loading-bar {
   width: 100%;
   height: 6px;
@@ -125,98 +110,23 @@
   position: relative;
   backdrop-filter: blur(5px);
 }
-
 .loading-progress {
+  width: 100%;
   height: 100%;
   background: linear-gradient(90deg, #ffd700, #ffed4e, #ffd700);
   border-radius: 3px;
-  animation: loading 2.5s ease-in-out;
-  position: relative;
+  animation: loading 13s linear forwards; /* Duração corresponde ao timer */
   box-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
 }
 
-.loading-progress::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 20px;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
-  animation: shine 1.5s ease-in-out infinite;
-}
+/* ... Suas animações ... */
+@keyframes logoPulse { 0%, 100% { transform: scale(1) rotate(0deg); } 50% { transform: scale(1.05) rotate(2deg); } }
+@keyframes glowPulse { 0% { opacity: 0.4; transform: translate(-50%, -50%) scale(1); } 100% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.1); } }
+@keyframes slideDown { 0% { opacity: 0; transform: translateY(-30px); } 100% { opacity: 1; transform: translateY(0); } }
+@keyframes slideUp { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { 0% { opacity: 0; } 100% { opacity: 1; } }
+@keyframes loading { from { width: 0%; } to { width: 100%; } }
 
-/* Animações */
-@keyframes logoPulse {
-  0%, 100% {
-    transform: scale(1) rotate(0deg);
-  }
-  50% {
-    transform: scale(1.05) rotate(2deg);
-  }
-}
-
-@keyframes glowPulse {
-  0% {
-    opacity: 0.4;
-    transform: translate(-50%, -50%) scale(1);
-  }
-  100% {
-    opacity: 0.8;
-    transform: translate(-50%, -50%) scale(1.1);
-  }
-}
-
-@keyframes slideDown {
-  0% {
-    opacity: 0;
-    transform: translateY(-30px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideUp {
-  0% {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-
-@keyframes loading {
-  0% {
-    width: 0%;
-  }
-  100% {
-    width: 100%;
-  }
-}
-
-@keyframes shine {
-  0%, 100% {
-    transform: translateX(-100%);
-  }
-  50% {
-    transform: translateX(100%);
-  }
-}
-
-/* Efeitos de partículas sobre o vídeo */
 .particles {
   position: absolute;
   top: 0;
@@ -226,69 +136,56 @@
   pointer-events: none;
   z-index: 2;
 }
-
 .particle {
   position: absolute;
+  bottom: 0;
   width: 3px;
   height: 3px;
   background: rgba(255, 255, 255, 0.7);
   border-radius: 50%;
-  animation: particleFloat 8s infinite ease-in-out;
+  animation-name: particleFloat;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
 }
 
-@keyframes particleFloat {
-  0%, 100% {
-    transform: translateY(0) translateX(0);
-    opacity: 0;
-  }
-  10% {
-    opacity: 1;
-  }
-  90% {
-    opacity: 0.3;
-  }
-  100% {
-    transform: translateY(-150px) translateX(80px);
-  }
-}
+@keyframes particleFloat { from { transform: translateY(0); opacity: 1; } to { transform: translateY(-100vh); opacity: 0; } }
 
-/* Responsivo */
-@media (max-width: 480px) {
-  .splash-logo {
-    width: 85px;
-    height: 85px;
-  }
-  
-  .logo-glow {
-    width: 100px;
-    height: 100px;
-  }
-  
-  .splash-title {
-    font-size: 2.2rem;
-  }
-  
-  .splash-subtitle {
-    font-size: 1rem;
-    margin-bottom: 40px;
-  }
-}
-
-/* Melhorias para performance com vídeo */
-.splash-container > * {
-  will-change: transform, opacity;
-}
-
-/* Suporte para diferentes aspect ratios */
-@media (max-aspect-ratio: 16/9) {
-  .video-background video {
-    width: auto;
-    height: 100%;
-  }
-}
-/* Fade-out da splash screen */
-.fade-out {
+/* Efeito de fade-out da tela */
+.splash-screen.fade-out {
   opacity: 0;
   transition: opacity 0.5s ease-out;
-  pointer-events: none; /* evita interações durante o fade */
+  pointer-events: none;
+}
+
+/* ✅ ADIÇÃO: ESTILOS QUE FALTAVAM PARA O BOTÃO */
+.interaction-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  animation: fadeIn 1s; /* Reutiliza a animação de fade */
+}
+
+.enter-button {
+  padding: 15px 40px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #fff;
+  background-color: transparent;
+  border: 2px solid #fff;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.enter-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: scale(1.05);
 }
