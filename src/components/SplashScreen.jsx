@@ -46,9 +46,17 @@ function SplashScreen() {
   return (
     <div className={`splash-screen ${fadeOut ? 'fade-out' : ''}`}>
       <div className="video-background">
-        <video ref={videoRef} autoPlay loop playsInline poster="/logo.jpg">
+        <video
+          ref={videoRef}
+          autoPlay
+          loop
+          playsInline
+          poster="/Logo_Bibliafy.jpg"
+          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+        >
           <source src="/Intro.mp4" type="video/mp4" />
         </video>
+
       </div>
 
       <div className="overlay"></div>
