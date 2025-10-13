@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import './SplashScreen.css';
 import logoImage from '../../public/Logo_Bibliafy.jpg';
 import { useNavigate } from 'react-router-dom';
+import videoSource from '../../public/Intro.mp4';
 
 function SplashScreen() {
   const [fadeOut, setFadeOut] = useState(false);
@@ -54,7 +55,7 @@ function SplashScreen() {
           poster="/Logo_Bibliafy.jpg"
           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
         >
-          <source src="Biblia-front\bibliafy-front-end_web\public\Intro.mp4" type="video/mp4" />
+          <source src={videoSource} type="video/mp4" />
         </video>
 
       </div>
