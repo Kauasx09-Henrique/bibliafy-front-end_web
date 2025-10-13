@@ -6,9 +6,8 @@ function SplashScreen() {
   const [fadeOut, setFadeOut] = useState(false);
   const navigate = useNavigate();
   const videoRef = useRef(null);
-  const [userInteracted, setUserInteracted] = useState(false);
 
-  // Lógica para as partículas flutuantes
+  // Lógica para as partículas flutuantes (sem alterações)
   const particles = Array.from({ length: 15 }, (_, i) => ({
     id: i,
     left: Math.random() * 100,
@@ -16,40 +15,24 @@ function SplashScreen() {
     duration: 6 + Math.random() * 6
   }));
 
-  // Este useEffect garante que o vídeo comece a tocar mudo assim que a página carregar
+  // useEffect simplificado: apenas controla os timers de animação e redirecionamento
   useEffect(() => {
     const video = videoRef.current;
     if (video) {
-      video.play().catch(() => console.error('Autoplay mudo foi bloqueado pelo navegador.'));
+      // Garante que o vídeo tente tocar, caso o autoplay falhe por algum motivo
+      video.play().catch(() => console.error('O navegador bloqueou a reprodução automática.'));
     }
-  }, []); // O array vazio [] faz com que isso rode apenas uma vez
 
-  // ✅ CORREÇÃO: Este useEffect agora gerencia os timers APÓS a interação do usuário
-  useEffect(() => {
-    // Só inicia os timers se o usuário já tiver clicado no botão "Entrar"
-    if (userInteracted) {
-      const fadeOutTimer = setTimeout(() => setFadeOut(true), 13000);
-      const redirectTimer = setTimeout(() => navigate('/home'), 13500);
+    // Inicia a contagem para o fade-out e redirecionamento
+    const fadeOutTimer = setTimeout(() => setFadeOut(true), 13000);
+    const redirectTimer = setTimeout(() => navigate('/home'), 13500);
 
-      // Função de limpeza para os timers. Essencial!
-      return () => {
-        clearTimeout(fadeOutTimer);
-        clearTimeout(redirectTimer);
-      };
-    }
-  }, [userInteracted, navigate]); // Roda sempre que 'userInteracted' mudar
-
-  // Função chamada pelo clique no botão "Entrar"
-  const handleStart = () => {
-    setUserInteracted(true); // Faz o botão desaparecer e ativa o useEffect acima
-
-    const video = videoRef.current;
-    if (video) {
-      video.muted = false;
-      video.volume = 0.8;
-      video.play();
-    }
-  };
+    // Função de limpeza para evitar erros
+    return () => {
+      clearTimeout(fadeOutTimer);
+      clearTimeout(redirectTimer);
+    };
+  }, [navigate]);
 
   return (
     <div className={`splash-screen ${fadeOut ? 'fade-out' : ''}`}>
@@ -58,7 +41,7 @@ function SplashScreen() {
           ref={videoRef}
           autoPlay
           loop
-          muted
+          muted // O atributo "muted" garante o autoplay
           playsInline
           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
         >
@@ -92,20 +75,13 @@ function SplashScreen() {
           Conectando você com a <br />Palavra de Deus
         </p>
         <div className="loading-container">
-          <div className="loading-text">Toque em entrar para iniciar</div>
+          <div className="loading-text">Carregando...</div>
           <div className="loading-bar">
-            {userInteracted && <div className="loading-progress"></div>}
+            {/* A barra de progresso agora anima desde o início */}
+            <div className="loading-progress"></div>
           </div>
         </div>
       </div>
-
-      {!userInteracted && (
-        <div className="interaction-overlay">
-          <button onClick={handleStart} className="enter-button">
-            Entrar
-          </button>
-        </div>
-      )}
     </div>
   );
 }
