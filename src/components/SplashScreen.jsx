@@ -54,7 +54,7 @@ function SplashScreen() {
           poster="/Logo_Bibliafy.jpg"
           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
         >
-          <source src="/Intro.mp4" type="video/mp4" />
+          <source src="Biblia-front\bibliafy-front-end_web\public\Intro.mp4" type="video/mp4" />
         </video>
 
       </div>
