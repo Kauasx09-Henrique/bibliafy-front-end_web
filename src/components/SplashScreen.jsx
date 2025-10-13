@@ -46,7 +46,7 @@ function SplashScreen() {
   return (
     <div className={`splash-screen ${fadeOut ? 'fade-out' : ''}`}>
       <div className="video-background">
-        <video ref={videoRef} autoPlay loop playsInline poster="/poster.jpg">
+        <video ref={videoRef} autoPlay loop playsInline poster="/logo.jpg">
           <source src="/Intro.mp4" type="video/mp4" />
         </video>
       </div>
