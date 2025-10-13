@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import './SplashScreen.css';
-import logoImage from '/Logo_Bibliafy.jpg'; // arquivo dentro de public/
+import logoImage from '/Logo_Bibliafy.jpg';
 import { useNavigate } from 'react-router-dom';
 
 function SplashScreen() {
@@ -8,7 +8,6 @@ function SplashScreen() {
   const navigate = useNavigate();
   const videoRef = useRef(null);
 
-  // Criação das partículas
   const particles = Array.from({ length: 15 }, (_, i) => ({
     id: i,
     left: Math.random() * 100,
@@ -20,21 +19,17 @@ function SplashScreen() {
     const video = videoRef.current;
     if (!video) return;
 
-    // Começa autoplay, pode falhar se navegador bloquear
-    video.volume = 0; // volume inicial 0 para autoplay seguro
-    video.muted = true; // necessário para autoplay com som bloqueado
     video.play().catch(() => console.log('Autoplay bloqueado'));
 
-    // Delay curto para garantir que o autoplay iniciou
+    // Delay curto para garantir autoplay
     setTimeout(() => {
-      video.muted = true; // habilita áudio
+      video.muted = false; // libera áudio
       const initialVolume = 0.8;
-      const duration = 13000; // 13 segundos
+      const duration = 13000;
       const steps = 100;
-      const intervalTime = duration / steps;
       let currentStep = 0;
+      const intervalTime = duration / steps;
 
-      // Fade do volume (diminuindo aos poucos)
       const fadeVolume = setInterval(() => {
         currentStep++;
         if (video) {
@@ -44,14 +39,11 @@ function SplashScreen() {
       }, intervalTime);
     }, 100);
 
-    // Fade da tela
-    const timer = setTimeout(() => setFadeOut(true), 13000);
-
-    // Redireciona para /home após o splash
+    const fadeOutTimer = setTimeout(() => setFadeOut(true), 13000);
     const redirectTimer = setTimeout(() => navigate('/home'), 13500);
 
     return () => {
-      clearTimeout(timer);
+      clearTimeout(fadeOutTimer);
       clearTimeout(redirectTimer);
     };
   }, [navigate]);
@@ -63,7 +55,7 @@ function SplashScreen() {
           ref={videoRef}
           autoPlay
           loop
-          muted
+          muted // necessário para autoplay
           playsInline
           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
         >
