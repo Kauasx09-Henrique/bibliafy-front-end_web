@@ -4,6 +4,7 @@ import api from '../services/api';
 import Swal from 'sweetalert2';
 import './Auth.css';
 
+
 function Registro() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
