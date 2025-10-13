@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import './SplashScreen.css';
-import logoImage from '/Logo_Bibliafy.jpg'; // caminho absoluto do public
+import logoImage from '/Logo_Bibliafy.jpg'; // arquivo dentro de public/
 import { useNavigate } from 'react-router-dom';
 
 function SplashScreen() {
@@ -8,6 +8,7 @@ function SplashScreen() {
   const navigate = useNavigate();
   const videoRef = useRef(null);
 
+  // Criação das partículas
   const particles = Array.from({ length: 15 }, (_, i) => ({
     id: i,
     left: Math.random() * 100,
@@ -17,34 +18,39 @@ function SplashScreen() {
 
   useEffect(() => {
     const video = videoRef.current;
+    if (!video) return;
 
-    if (video) {
-      video.volume = 0.8; // começa em 80%
-      video.play().catch(() => {
-        // fallback caso autoplay seja bloqueado
-        console.log('Autoplay bloqueado, tente clicar na tela');
-      });
-    }
+    // Começa autoplay, pode falhar se navegador bloquear
+    video.volume = 0; // volume inicial 0 para autoplay seguro
+    video.muted = true; // necessário para autoplay com som bloqueado
+    video.play().catch(() => console.log('Autoplay bloqueado'));
 
-    // Fade do volume ao longo de 13s
-    const duration = 13000; // 13 segundos
-    const steps = 100;
-    const intervalTime = duration / steps;
-    let currentStep = 0;
+    // Delay curto para garantir que o autoplay iniciou
+    setTimeout(() => {
+      video.muted = false; // habilita áudio
+      const initialVolume = 0.8;
+      const duration = 13000; // 13 segundos
+      const steps = 100;
+      const intervalTime = duration / steps;
+      let currentStep = 0;
 
-    const fadeVolume = setInterval(() => {
-      currentStep++;
-      if (video) {
-        video.volume = Math.max(0, 0.8 * (1 - currentStep / steps));
-      }
-      if (currentStep >= steps) clearInterval(fadeVolume);
-    }, intervalTime);
+      // Fade do volume (diminuindo aos poucos)
+      const fadeVolume = setInterval(() => {
+        currentStep++;
+        if (video) {
+          video.volume = Math.max(0, initialVolume * (1 - currentStep / steps));
+        }
+        if (currentStep >= steps) clearInterval(fadeVolume);
+      }, intervalTime);
+    }, 100);
 
-    const timer = setTimeout(() => setFadeOut(true), duration);
-    const redirectTimer = setTimeout(() => navigate('/home'), duration + 500);
+    // Fade da tela
+    const timer = setTimeout(() => setFadeOut(true), 13000);
+
+    // Redireciona para /home após o splash
+    const redirectTimer = setTimeout(() => navigate('/home'), 13500);
 
     return () => {
-      clearInterval(fadeVolume);
       clearTimeout(timer);
       clearTimeout(redirectTimer);
     };
