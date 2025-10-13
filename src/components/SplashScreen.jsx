@@ -27,7 +27,7 @@ function SplashScreen() {
 
     // Delay curto para garantir que o autoplay iniciou
     setTimeout(() => {
-      video.muted = false; // habilita áudio
+      video.muted = true; // habilita áudio
       const initialVolume = 0.8;
       const duration = 13000; // 13 segundos
       const steps = 100;
