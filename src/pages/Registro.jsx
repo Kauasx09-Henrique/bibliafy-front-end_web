@@ -14,7 +14,7 @@ function Registro() {
   async function handleSubmit(event) {
     event.preventDefault();
     setError('');
-    
+
     try {
       await api.post('/api/users/register', { name, email, password });
       Swal.fire({
@@ -37,30 +37,29 @@ function Registro() {
       });
     }
   }
-
   return (
     <div className="auth-container">
       <form className="auth-form" onSubmit={handleSubmit}>
         <h2>Crie sua Conta</h2>
         <p>Junte-se à comunidade Bibliafy</p>
         {error && <p className="error-message">{error}</p>}
-        <input 
-          type="text" 
+        <input
+          type="text"
           placeholder="Nome completo"
           value={name}
-          onChange={e => setName(e.target.value)} 
+          onChange={e => setName(e.target.value)}
         />
-        <input 
-          type="email" 
+        <input
+          type="email"
           placeholder="E-mail"
           value={email}
-          onChange={e => setEmail(e.target.value)} 
+          onChange={e => setEmail(e.target.value)}
         />
-        <input 
-          type="password" 
+        <input
+          type="password"
           placeholder="Senha"
           value={password}
-          onChange={e => setPassword(e.target.value)} 
+          onChange={e => setPassword(e.target.value)}
         />
         <button type="submit">Cadastrar</button>
         <p className="redirect-link">
