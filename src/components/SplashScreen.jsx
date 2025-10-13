@@ -52,10 +52,10 @@ function SplashScreen() {
           autoPlay
           loop
           playsInline
-
+          muted
           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
         >
-          <source src={videoSource} type="video/mp4" />
+          <source src="/Intro.mp4" type="video/mp4" />
         </video>
 
       </div>
