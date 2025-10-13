@@ -21,9 +21,10 @@ function SplashScreen() {
 
     video.play().catch(() => console.log('Autoplay bloqueado'));
 
-    // Delay curto para garantir autoplay
     setTimeout(() => {
-      video.muted = false; // libera áudio
+      const video = videoRef.current;
+      if (!video) return;
+      video.muted = false;
       const initialVolume = 0.8;
       const duration = 13000;
       const steps = 100;
@@ -32,12 +33,11 @@ function SplashScreen() {
 
       const fadeVolume = setInterval(() => {
         currentStep++;
-        if (video) {
-          video.volume = Math.max(0, initialVolume * (1 - currentStep / steps));
-        }
+        if (video) video.volume = Math.max(0, initialVolume * (1 - currentStep / steps));
         if (currentStep >= steps) clearInterval(fadeVolume);
       }, intervalTime);
     }, 100);
+
 
     const fadeOutTimer = setTimeout(() => setFadeOut(true), 13000);
     const redirectTimer = setTimeout(() => navigate('/home'), 13500);
@@ -55,12 +55,13 @@ function SplashScreen() {
           ref={videoRef}
           autoPlay
           loop
-          muted // necessário para autoplay
+          muted
           playsInline
           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
         >
-          <source src="/Intro.mp4" type="video/mp4" />
+          <source src="/videos/Intro.mp4" type="video/mp4" />
         </video>
+
       </div>
 
       <div className="overlay"></div>
