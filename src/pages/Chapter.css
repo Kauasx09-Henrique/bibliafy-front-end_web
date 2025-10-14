@@ -1,388 +1,185 @@
-/* Variáveis CSS para temas */
+/* --- 1. VARIÁVEIS GLOBAIS E CONTAINER PRINCIPAL --- */
 :root {
-    --transition: all 0.3s ease;
-    --border-radius: 12px;
-    --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease;
+  --border-radius: 12px;
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
-/* Container principal */
 .chapter-container {
-    min-height: 100vh;
-    padding: 1rem;
-    transition: var(--transition);
-    position: relative;
+  min-height: 100vh;
+  padding: 1rem;
+  transition: background-color var(--transition), color var(--transition);
+  position: relative;
 }
 
-/* --- TEMAS AJUSTADOS PARA A PALETA DO APP --- */
+/* --- 2. TEMAS DE COR --- */
 .theme-light {
-    background: #f0f2f5;
-    color: #1c1e21;
-    --text-primary: #1c1e21;
-    --text-secondary: #65676b;
-    --accent-color: #007BFF;
-    /* Azul para contraste */
-    --hover-bg: rgba(0, 0, 0, 0.05);
+  background: #f0f2f5;
+  color: #1c1e21;
+  --text-primary: #1c1e21;
+  --text-secondary: #65676b;
+  --accent-color: #007BFF;
+  --hover-bg: rgba(0, 0, 0, 0.05);
 }
-
 .theme-dark {
-    /* Usando as variáveis globais que definimos no index.css */
-    background: var(--background);
-    color: var(--text-primary);
-    --text-primary: var(--text-primary);
-    --text-secondary: var(--text-secondary);
-    --accent-color: var(--text-secondary);
-    /* Cinza claro como cor de destaque */
-    --hover-bg: var(--borders);
+  background: var(--background);
+  color: var(--text-primary);
+  --text-primary: var(--text-primary);
+  --text-secondary: var(--text-secondary);
+  --accent-color: #8892b0;
+  --hover-bg: var(--borders);
 }
-
 .theme-sepia {
-    background: #FBF0D9;
-    color: #5B4636;
-    --text-primary: #5B4636;
-    --text-secondary: #8b7355;
-    --accent-color: #8d6e63;
-    --hover-bg: rgba(0, 0, 0, 0.05);
+  background: #FBF0D9;
+  color: #5B4636;
+  --text-primary: #5B4636;
+  --text-secondary: #8b7355;
+  --accent-color: #8d6e63;
+  --hover-bg: rgba(0, 0, 0, 0.05);
+}
+.theme-blue-dark {
+  background-color: #0A192F;
+  color: #CCD6F6;
+  --text-primary: #CCD6F6;
+  --text-secondary: #8892b0;
+  --accent-color: #64ffda;
+  --hover-bg: rgba(100, 255, 218, 0.1);
+}
+.theme-slate {
+  background-color: #2d3748;
+  color: #e2e8f0;
+  --text-primary: #e2e8f0;
+  --text-secondary: #a0aec0;
+  --accent-color: #9f7aea;
+  --hover-bg: rgba(159, 122, 234, 0.1);
 }
 
-/* --- O RESTO DO SEU CÓDIGO PERMANECE IGUAL --- */
+/* --- 3. FONTES DE LEITURA --- */
+.font-garamond { font-family: var(--font-garamond); }
+.font-lato { font-family: var(--font-lato); }
+.font-merriweather { font-family: var(--font-merriweather); }
+.font-roboto-slab { font-family: var(--font-roboto-slab); }
+.font-source-sans { font-family: var(--font-source-sans); }
+.font-inter { font-family: var(--font-inter); }
+.font-lora { font-family: var(--font-lora); }
 
-/* Classes de fonte */
-.font-garamond {
-    font-family: 'EB Garamond', serif;
-}
-
-.font-lato {
-    font-family: 'Lato', sans-serif;
-}
-
-.font-merriweather {
-    font-family: 'Merriweather', serif;
-}
-
-.font-roboto-slab {
-    font-family: 'Roboto Slab', serif;
-}
-
-.font-source-sans {
-    font-family: 'Source Sans 3', sans-serif;
-}
-
-/* Header melhorado */
+/* --- 4. CABEÇALHO DO CAPÍTULO --- */
 .chapter-header {
-    text-align: center;
-    margin-bottom: 2rem;
-    padding: 2rem 1rem 1rem;
-    position: relative;
+  text-align: center;
+  margin-bottom: 2rem;
+  padding: 2rem 1rem 1rem;
 }
-
 .chapter-header h1 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    font-family: var(--font-main);
-    margin-bottom: 0.5rem;
-    color: var(--text-primary);
-    /* Simplificado para usar a cor do tema */
+  font-size: 2.5rem;
+  font-weight: 700;
+  font-family: var(--font-main);
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
 }
-
 .chapter-subtitle {
-    color: var(--text-secondary);
-    font-size: 1.1rem;
-    opacity: 0.8;
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  opacity: 0.8;
 }
 
-/* Opções de Leitura - Redesign completo */
+/* --- 5. PAINEL DE OPÇÕES DE LEITURA --- */
 .reading-options {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 3rem;
-    padding: 1.5rem;
-    background: rgba(255, 255, 255, 0.05);
-    /* Efeito translúcido fica bom com a nossa paleta */
-    backdrop-filter: blur(10px);
-    border-radius: var(--border-radius);
-    border: 1px solid var(--highlight);
-    max-width: 900px;
-    margin-left: auto;
-    margin-right: auto;
-    flex-wrap: wrap;
-    gap: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 auto 3rem auto;
+  padding: 1.5rem;
+  background: rgba(120, 120, 120, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--highlight);
+  max-width: 900px;
+  flex-wrap: wrap;
+  gap: 1.5rem;
 }
-
-.option-group {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    flex-wrap: wrap;
-}
-
-.option-label {
-    font-weight: 600;
-    color: var(--text-primary);
-    font-size: 0.9rem;
-}
-
-/* Botões de tema melhorados */
-.theme-buttons {
-    display: flex;
-    gap: 0.5rem;
-}
-
+.option-group { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+.option-label { font-weight: 600; color: var(--text-secondary); font-size: 0.9rem; text-transform: uppercase; }
+.theme-buttons { display: flex; gap: 0.5rem; }
 .theme-btn {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    border: 3px solid transparent;
-    cursor: pointer;
-    transition: var(--transition);
-    position: relative;
-    overflow: hidden;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  transition: var(--transition);
 }
-
-.theme-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border-radius: 50%;
-    border: 2px solid var(--accent-color);
-    opacity: 0;
-    transition: var(--transition);
-}
-
-.theme-btn.active::before {
-    opacity: 1;
-}
-
-.theme-btn.light {
-    background: #f0f2f5;
-    color: #65676b;
-}
-
-.theme-btn.dark {
-    background: #0D0D0D;
-    color: #333333;
-}
-
-.theme-btn.sepia {
-    background: #FBF0D9;
-    color: #8d6e63;
-}
-
-.theme-btn:hover {
-    transform: scale(1.1);
-}
-
-/* Controles de fonte melhorados */
-.font-controls {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
+.theme-btn.active { border-color: var(--accent-color); }
+.theme-btn:hover { transform: scale(1.15); }
+.theme-btn.light { background: #f0f2f5; }
+.theme-btn.dark { background: #0D0D0D; }
+.theme-btn.sepia { background: #FBF0D9; }
+.theme-btn.blue-dark { background-color: #0A192F; }
+.theme-btn.slate { background-color: #2d3748; }
+.font-controls { display: flex; align-items: center; gap: 1rem; }
 .font-select {
-    background: transparent;
-    color: var(--text-primary);
-    border: 1px solid var(--text-secondary);
-    border-radius: 8px;
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-    min-width: 150px;
-    transition: var(--transition);
+  background: var(--hover-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--text-secondary);
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  min-width: 150px;
+  transition: var(--transition);
 }
+.font-select:hover { border-color: var(--accent-color); }
+.font-select option { background: var(--background); color: var(--text-primary); }
+.font-size-control { display: flex; align-items: center; gap: 0.5rem; }
+.font-size-btn { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--text-secondary); background: transparent; color: var(--text-primary); cursor: pointer; transition: var(--transition); }
+.font-size-btn:hover { background: var(--hover-bg); border-color: var(--accent-color); }
+.font-size-display { min-width: 40px; text-align: center; font-weight: 600; color: var(--accent-color); }
+.nav-btn { color: var(--text-secondary); padding: 0.5rem; border-radius: 50%; display: flex; transition: all 0.2s ease-in-out; }
+.nav-btn:hover { color: var(--text-primary); background-color: var(--hover-bg); }
 
-.font-select option {
-    background: var(--background);
-    /* Garante que as opções tenham o fundo escuro */
-    color: var(--text-primary);
-}
-
-
-.font-select:focus {
-    outline: none;
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 2px var(--hover-bg);
-}
-
-/* Controle de tamanho de fonte */
-.font-size-control {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.font-size-btn {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    border: 1px solid var(--text-secondary);
-    background: transparent;
-    color: var(--text-primary);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: var(--transition);
-}
-
-.font-size-btn:hover {
-    background: var(--hover-bg);
-    border-color: var(--accent-color);
-}
-
-.font-size-display {
-    min-width: 40px;
-    text-align: center;
-    font-weight: 600;
-    color: var(--accent-color);
-}
-
-/* Lista de versículos melhorada */
+/* --- 6. LISTA DE VERSÍCULOS --- */
 .verses-list {
-    max-width: 800px;
-    margin: 0 auto;
-    line-height: 1.8;
-    padding: 0 1rem;
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.9;
+  padding: 0 1rem;
 }
-
 .verse-item {
-    display: flex;
-    align-items: flex-start;
-    margin-bottom: 1.5rem;
-    padding: 1.5rem;
-    border-radius: var(--border-radius);
-    transition: var(--transition);
-    position: relative;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid transparent;
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  transition: var(--transition);
+  position: relative;
 }
+.verse-item:hover { background: var(--hover-bg); transform: translateY(-2px); }
+.verse-text { flex: 1; margin: 0; font-size: inherit; text-align: justify; }
+.verse-number { font-size: 0.8em; font-weight: 700; color: var(--accent-color); min-width: 24px; text-align: center; display: inline-block; padding-top: 0.1em; }
 
-.verse-item:hover {
-    background: var(--hover-bg);
-    border-color: var(--accent-color);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow);
-}
-
-.verse-text {
-    flex: 1;
-    margin: 0;
-    font-size: inherit;
-    text-align: justify;
-}
-
-.verse-number {
-    font-size: 0.75em;
-    font-weight: 700;
-    color: var(--accent-color);
-    margin-right: 0.75rem;
-    position: relative;
-    top: -0.2em;
-    background: var(--hover-bg);
-    padding: 0.2em 0.5em;
-    border-radius: 4px;
-    min-width: 24px;
-    text-align: center;
-    display: inline-block;
-}
-
-/* Ações dos versículos */
+/* --- 7. AÇÕES DOS VERSÍCULOS --- */
 .verse-actions {
-    display: flex;
-    gap: 0.5rem;
-    margin-left: 1rem;
-    opacity: 0.7;
-    transition: var(--transition);
+  display: flex;
+  gap: 0.5rem;
+  opacity: 0;
+  transform: translateX(10px);
+  transition: all 0.2s ease-in-out;
 }
+.verse-item:hover .verse-actions { opacity: 1; transform: translateX(0); }
+.action-btn { background: transparent; border: 1px solid transparent; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; color: var(--text-secondary); transition: var(--transition); display: flex; align-items: center; justify-content: center; }
+.action-btn:hover { background: var(--hover-bg); color: var(--accent-color); transform: scale(1.1); }
+.action-btn.active { color: #f6e05e; }
 
-.verse-item:hover .verse-actions {
-    opacity: 1;
-}
-
-.action-btn {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--text-secondary);
-    border-radius: 8px;
-    padding: 0.5rem;
-    cursor: pointer;
-    color: var(--text-secondary);
-    transition: var(--transition);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.action-btn:hover {
-    background: var(--accent-color);
-    color: var(--background);
-    border-color: var(--accent-color);
-    transform: scale(1.1);
-}
-
-.action-btn.active {
-    color: #f6e05e;
-    border-color: #f6e05e;
-}
-
-/* Loading state melhorado */
-.loading-message {
-    text-align: center;
-    padding: 4rem 2rem;
-    font-size: 1.2rem;
-    color: var(--text-secondary);
-}
-
-/* Responsividade */
+/* --- 8. ESTADOS E RESPONSIVIDADE --- */
+.loading-message { text-align: center; padding: 4rem 2rem; font-size: 1.2rem; color: var(--text-secondary); }
 @media (max-width: 768px) {
-    .chapter-header h1 {
-        font-size: 2rem;
-    }
-
-    .reading-options {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 1.5rem;
-    }
-
-    .option-group {
-        justify-content: center;
-    }
-
-    .verses-list {
-        padding: 0 0.5rem;
-    }
-
-    .verse-item {
-        padding: 1rem;
-        flex-direction: column;
-    }
-
-    .verse-actions {
-        margin-left: 0;
-        margin-top: 1rem;
-        align-self: flex-end;
-        opacity: 1;
-    }
+  .chapter-header h1 { font-size: 2rem; }
+  .reading-options { flex-direction: column; align-items: stretch; gap: 1.5rem; }
+  .option-group { justify-content: space-between; }
+  .verses-list { padding: 0 0.5rem; }
+  .verse-item { flex-direction: column; }
+  .verse-actions { margin-left: 0; margin-top: 1rem; align-self: flex-end; opacity: 1; transform: none; }
 }
-
 @media (max-width: 480px) {
-    .chapter-container {
-        padding: 0.5rem;
-    }
-
-    .font-controls {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .font-select {
-        min-width: auto;
-    }
-}
-/* Adiciona a cor amarela ao botão de favorito quando ativo */
-.action-btn.active {
-  color: #f6e05e; /* Amarelo para a estrela */
-  border-color: #f6e05e;
+  .chapter-container { padding: 0.5rem; }
+  .font-controls { flex-direction: column; align-items: stretch; }
+  .font-select { min-width: auto; }
 }

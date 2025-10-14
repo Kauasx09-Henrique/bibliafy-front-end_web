@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import SplashScreen from './components/SplashScreen';
+import Header from './components/Header'; // <-- CORREÇÃO APLICADA AQUI
+
+
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -18,10 +21,14 @@ function App() {
     return <SplashScreen />;
   }
 
+
   return (
-    <main>
-      <Outlet />
-    </main>
+    <> {/* Usamos um fragmento para não adicionar uma div desnecessária */}
+      <Header /> {/* O Header agora aparece em todas as páginas */}
+      <main>
+        <Outlet /> {/* O conteúdo da rota atual será renderizado aqui */}
+      </main>
+    </>
   );
 }
 

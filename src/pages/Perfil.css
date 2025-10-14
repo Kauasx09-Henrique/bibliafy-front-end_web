@@ -1,3 +1,8 @@
+:root {
+  --danger-color: #e53e3e; /* Vermelho para ações destrutivas */
+  --danger-hover-bg: #c53030;
+}
+
 .perfil-container {
   max-width: 900px;
   margin: 2rem auto;
@@ -7,56 +12,112 @@
   gap: 2.5rem;
 }
 
+/* --- Card de Informações do Usuário --- */
 .user-info-card {
   background-color: var(--borders);
   padding: 2rem;
   border-radius: var(--border-radius);
   border: 1px solid var(--highlight);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
 }
 
 .user-info-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--highlight);
+  padding-bottom: 1rem;
 }
 
 .user-info-header h2 {
   font-family: var(--font-main);
   font-size: 1.8rem;
+  color: var(--text-primary);
 }
 
+.user-details p {
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem;
+  font-size: 1.1rem;
+}
+
+.user-details strong {
+  color: var(--text-primary);
+  min-width: 70px;
+  display: inline-block;
+}
+
+/* --- Formulário de Edição --- */
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-weight: 500;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.form-input {
+  background-color: var(--background);
+  border: 1px solid var(--highlight);
+  color: var(--text-primary);
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--text-secondary);
+  box-shadow: 0 0 0 3px rgba(179, 179, 179, 0.2);
+}
+
+/* --- Botões --- */
 .edit-button {
   background: none;
   border: 1px solid var(--text-secondary);
   color: var(--text-secondary);
-  padding: 0.5rem 1rem;
+  padding: 0.6rem 1.2rem;
   border-radius: 6px;
   cursor: pointer;
-  transition: all 0.2s;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
 }
+
 .edit-button:hover {
   background-color: var(--highlight);
   color: var(--text-primary);
   border-color: var(--text-primary);
+  transform: translateY(-2px);
 }
 
-.user-info-card p {
-  color: var(--text-secondary);
-  margin-bottom: 0.5rem;
+.edit-button.primary {
+  background-color: var(--text-primary);
+  color: var(--background);
+  border-color: var(--text-primary);
 }
 
-.user-info-card strong {
-  color: var(--text-primary);
+.edit-button.primary:hover {
+  opacity: 0.85;
+}
+.edit-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
-.edit-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-top: 1.5rem;
-}
-
+/* --- Seção de Favoritos --- */
 .favorites-section h2 {
   font-family: var(--font-main);
   font-size: 1.8rem;
@@ -65,38 +126,65 @@
   padding-bottom: 0.8rem;
 }
 
+.favorites-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
 .favorite-item {
   background-color: var(--borders);
   padding: 1.5rem;
   border-radius: var(--border-radius);
-  border-left: 4px solid var(--accent-color);
-  margin-bottom: 1rem;
+  border-left: 4px solid var(--text-secondary);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 1rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.favorite-item:hover {
+  transform: translateX(5px);
+  border-left-color: var(--text-primary);
 }
 
 .favorite-item-text {
   font-style: italic;
-  margin-right: 1rem;
+  line-height: 1.6;
 }
 
 .favorite-item-ref {
   color: var(--text-secondary);
   font-size: 0.9rem;
-  margin-top: 0.5rem;
+  margin-top: 0.75rem;
+  font-weight: 500;
 }
 
 .remove-fav-btn {
-  background: none;
-  border: 1px solid #ff6b6b;
-  color: #ff6b6b;
-  padding: 0.5rem;
-  border-radius: 6px;
+  background: transparent;
+  border: 1px solid var(--danger-color);
+  color: var(--danger-color);
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  border-radius: 50%;
   cursor: pointer;
-  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease-in-out;
 }
 .remove-fav-btn:hover {
-  background: #ff6b6b;
+  background: var(--danger-color);
   color: white;
+  transform: scale(1.1) rotate(5deg);
+}
+
+/* --- Estados de Loading e Vazio --- */
+.loading-text, .empty-state {
+  text-align: center;
+  color: var(--text-secondary);
+  padding: 2rem;
+  font-style: italic;
 }

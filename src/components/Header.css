@@ -1,10 +1,14 @@
+/* --- ESTILO BASE DO HEADER --- */
 .app-header {
-  background-color: var(--borders);
-  border-bottom: 1px solid var(--highlight);
-  padding: 0 1.5rem;
+  background-color: var(--borders); /* Cor de fundo vinda das suas variáveis */
+  border-bottom: 1px solid var(--highlight); /* Linha divisória sutil */
+  padding: 0 1rem; /* Espaçamento nas laterais para telas pequenas */
   position: sticky;
   top: 0;
   z-index: 1000;
+  backdrop-filter: blur(8px); /* Efeito de vidro fosco para navegadores modernos */
+  background-color: rgba(21, 21, 21, 0.85); /* Fundo semi-transparente para o blur funcionar */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra suave para dar profundidade */
 }
 
 .header-content {
@@ -13,39 +17,52 @@
   align-items: center;
   max-width: 1200px;
   margin: 0 auto;
-  height: 70px;
+  height: 70px; /* Altura padrão do header */
 }
 
 .header-logo {
   font-family: var(--font-main);
   font-size: 1.8rem;
+  font-weight: 600; /* Deixa o logo com mais destaque */
   color: var(--text-primary);
   text-decoration: none;
+  transition: transform 0.2s ease-in-out;
 }
 
+.header-logo:hover {
+  transform: scale(1.05); /* Efeito de zoom sutil no hover */
+}
+
+
+/* --- ESTILOS DA NAVEGAÇÃO (container geral) --- */
 .header-nav {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 1rem; /* Espaçamento entre os itens */
 }
 
+
+/* --- ESTILOS PARA USUÁRIO LOGADO --- */
 .user-greeting {
   color: var(--text-secondary);
-  display: none; /* Escondido em telas pequenas */
-}
-
-@media (min-width: 768px) {
-  .user-greeting {
-    display: inline; /* Aparece em telas maiores */
-  }
+  font-size: 0.9rem;
+  display: none; /* Escondido por padrão em telas pequenas */
 }
 
 .nav-icon-button {
   color: var(--text-secondary);
-  transition: color 0.2s;
+  padding: 0.5rem; /* Aumenta a área de clique */
+  border-radius: 50%; /* Deixa o fundo redondo */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease-in-out;
 }
+
 .nav-icon-button:hover {
   color: var(--text-primary);
+  background-color: var(--highlight); /* Fundo sutil no hover */
+  transform: scale(1.1);
 }
 
 .logout-button {
@@ -55,10 +72,68 @@
   padding: 0.5rem 1rem;
   border-radius: 6px;
   cursor: pointer;
-  transition: all 0.2s;
+  font-weight: 500; /* Deixa a fonte um pouco mais forte */
+  transition: all 0.2s ease-in-out;
 }
+
 .logout-button:hover {
+  background-color: var(--text-secondary);
+  color: var(--borders);
+  border-color: var(--text-secondary);
+}
+
+
+/* --- ESTILOS PARA VISITANTES (NÃO LOGADOS) --- */
+.guest-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.nav-link-button {
+  text-decoration: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: all 0.2s ease-in-out;
+  border: 1px solid transparent;
+}
+
+/* Botão "Entrar" (estilo secundário) */
+.nav-link-button:not(.primary) {
+  color: var(--text-secondary);
+  background-color: transparent;
+}
+
+.nav-link-button:not(.primary):hover {
   background-color: var(--highlight);
   color: var(--text-primary);
-  border-color: var(--text-primary);
+}
+
+/* Botão "Cadastre-se" (estilo primário) */
+.nav-link-button.primary {
+  background-color: var(--text-primary);
+  color: var(--borders); /* Cor do texto que contrasta com o fundo */
+}
+
+.nav-link-button.primary:hover {
+  opacity: 0.85; /* Efeito suave no hover */
+  transform: translateY(-2px);
+}
+
+
+/* --- AJUSTES RESPONSIVOS --- */
+@media (min-width: 768px) {
+  .app-header {
+    padding: 0 1.5rem; /* Aumenta o espaçamento em telas maiores */
+  }
+
+  .header-nav {
+    gap: 1.5rem; /* Aumenta o espaçamento entre os itens */
+  }
+
+  .user-greeting {
+    display: inline; /* Mostra a saudação em telas maiores */
+  }
 }

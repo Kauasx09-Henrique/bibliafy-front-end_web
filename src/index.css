@@ -1,27 +1,31 @@
-/* Importação da fonte do Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap');
-/* Importação das fontes do Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=EB+Garamond&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Merriweather&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3&display=swap');
+/* --- 1. IMPORTAÇÃO ÚNICA E OTIMIZADA DE FONTES --- */
+/* Todas as fontes do projeto são carregadas em uma única requisição para melhor performance. */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=EB+Garamond&family=Inter:wght@400;500;600&family=Lato&family=Lora:ital,wght@0,400;0,500;1,400&family=Merriweather&family=Roboto+Slab&family=Source+Sans+3&display=swap');
 
-/* ... o resto do seu CSS continua aqui ... */
-/* Definição das variáveis de cor com a sua paleta */
+/* --- 2. VARIÁVEIS GLOBAIS (CORES E FONTES) --- */
 :root {
+  /* Paleta de Cores Padrão (Dark Theme) */
   --background: #0D0D0D;
   --text-primary: #FFFFFF;
   --text-secondary: #B3B3B3;
   --highlight: #333333;
   --borders: #1A1A1A;
 
+  /* Fontes Principais (para fácil acesso) */
   --font-main: 'Cinzel', serif;
-  --font-body: sans-serif;
+  --font-body: 'Inter', sans-serif;
+  
+  /* Todas as fontes disponíveis como variáveis para uso específico */
+  --font-garamond: 'EB Garamond', serif;
+  --font-lato: 'Lato', sans-serif;
+  --font-merriweather: 'Merriweather', serif;
+  --font-roboto-slab: 'Roboto Slab', serif;
+  --font-source-sans: 'Source Sans 3', sans-serif;
+  --font-inter: 'Inter', sans-serif;
+  --font-lora: 'Lora', serif;
 }
 
-/* Estilos globais */
+/* --- 3. ESTILOS GLOBAIS E RESET --- */
 * {
   margin: 0;
   padding: 0;
@@ -32,4 +36,6 @@ body {
   background-color: var(--background);
   color: var(--text-primary);
   font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
