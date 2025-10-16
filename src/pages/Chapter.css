@@ -20,14 +20,16 @@
   --text-secondary: #65676b;
   --accent-color: #007BFF;
   --hover-bg: rgba(0, 0, 0, 0.05);
+  --border-color: #ddd;
 }
 .theme-dark {
-  background: var(--background);
-  color: var(--text-primary);
-  --text-primary: var(--text-primary);
-  --text-secondary: var(--text-secondary);
+  background: #0D0D0D;
+  color: #FFFFFF;
+  --text-primary: #FFFFFF;
+  --text-secondary: #B3B3B3;
   --accent-color: #8892b0;
-  --hover-bg: var(--borders);
+  --hover-bg: #1A1A1A;
+  --border-color: #1A1A1A;
 }
 .theme-sepia {
   background: #FBF0D9;
@@ -36,6 +38,7 @@
   --text-secondary: #8b7355;
   --accent-color: #8d6e63;
   --hover-bg: rgba(0, 0, 0, 0.05);
+  --border-color: #e0d5c1;
 }
 .theme-blue-dark {
   background-color: #0A192F;
@@ -44,6 +47,7 @@
   --text-secondary: #8892b0;
   --accent-color: #64ffda;
   --hover-bg: rgba(100, 255, 218, 0.1);
+  --border-color: #1d2d44;
 }
 .theme-slate {
   background-color: #2d3748;
@@ -52,27 +56,41 @@
   --text-secondary: #a0aec0;
   --accent-color: #9f7aea;
   --hover-bg: rgba(159, 122, 234, 0.1);
+  --border-color: #4a5568;
 }
 
 /* --- 3. FONTES DE LEITURA --- */
-.font-garamond { font-family: var(--font-garamond); }
-.font-lato { font-family: var(--font-lato); }
-.font-merriweather { font-family: var(--font-merriweather); }
-.font-roboto-slab { font-family: var(--font-roboto-slab); }
-.font-source-sans { font-family: var(--font-source-sans); }
-.font-inter { font-family: var(--font-inter); }
-.font-lora { font-family: var(--font-lora); }
+.font-garamond { font-family: 'EB Garamond', serif; }
+.font-lato { font-family: 'Lato', sans-serif; }
+.font-merriweather { font-family: 'Merriweather', serif; }
+.font-roboto-slab { font-family: 'Roboto Slab', serif; }
+.font-source-sans { font-family: 'Source Sans 3', sans-serif; }
+.font-inter { font-family: 'Inter', sans-serif; }
+.font-lora { font-family: 'Lora', serif; }
 
-/* --- 4. CABEÇALHO DO CAPÍTULO --- */
+/* --- 4. CABEÇALHO E NAVEGAÇÃO DO CAPÍTULO --- */
 .chapter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   text-align: center;
   margin-bottom: 2rem;
   padding: 2rem 1rem 1rem;
 }
+
+.chapter-title-container {
+  flex-grow: 1;
+}
+
+.book-title-link {
+  text-decoration: none;
+  color: inherit;
+}
+
 .chapter-header h1 {
   font-size: 2.5rem;
   font-weight: 700;
-  font-family: var(--font-main);
+  font-family: var(--font-main, 'Cinzel', serif);
   margin-bottom: 0.5rem;
   color: var(--text-primary);
 }
@@ -82,20 +100,45 @@
   opacity: 0.8;
 }
 
+.chapter-nav {
+  flex-basis: 50px; /* Define um espaço fixo para as setas */
+  flex-shrink: 0;
+}
+
+.nav-arrow {
+  font-size: 2.5rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  padding: 0 1rem;
+  font-weight: 300;
+  transition: color 0.2s ease;
+  user-select: none; /* Impede que o texto da seta seja selecionado */
+}
+
+.nav-arrow:hover {
+  color: var(--accent-color);
+}
+
+.nav-arrow.disabled {
+  color: var(--text-secondary);
+  cursor: not-allowed;
+  opacity: 0.3;
+}
+
 /* --- 5. PAINEL DE OPÇÕES DE LEITURA --- */
 .reading-options {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   margin: 0 auto 3rem auto;
   padding: 1.5rem;
   background: rgba(120, 120, 120, 0.1);
   backdrop-filter: blur(10px);
   border-radius: var(--border-radius);
-  border: 1px solid var(--highlight);
-  max-width: 900px;
+  border: 1px solid var(--border-color);
+  max-width: 1000px; /* Aumentado para caber mais opções */
   flex-wrap: wrap;
-  gap: 1.5rem;
+  gap: 1.5rem 2rem;
+  justify-content: center;
 }
 .option-group { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
 .option-label { font-weight: 600; color: var(--text-secondary); font-size: 0.9rem; text-transform: uppercase; }
@@ -108,7 +151,7 @@
   cursor: pointer;
   transition: var(--transition);
 }
-.theme-btn.active { border-color: var(--accent-color); }
+.theme-btn.active { border-color: var(--accent-color); transform: scale(1.1); }
 .theme-btn:hover { transform: scale(1.15); }
 .theme-btn.light { background: #f0f2f5; }
 .theme-btn.dark { background: #0D0D0D; }
@@ -127,9 +170,8 @@
   transition: var(--transition);
 }
 .font-select:hover { border-color: var(--accent-color); }
-.font-select option { background: var(--background); color: var(--text-primary); }
-.font-size-control { display: flex; align-items: center; gap: 0.5rem; }
-.font-size-btn { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--text-secondary); background: transparent; color: var(--text-primary); cursor: pointer; transition: var(--transition); }
+.font-select option { background: var(--background, #0D0D0D); color: var(--text-primary); }
+.font-size-btn { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--text-secondary); background: transparent; color: var(--text-primary); cursor: pointer; transition: var(--transition); font-size: 1.2rem; }
 .font-size-btn:hover { background: var(--hover-bg); border-color: var(--accent-color); }
 .font-size-display { min-width: 40px; text-align: center; font-weight: 600; color: var(--accent-color); }
 .nav-btn { color: var(--text-secondary); padding: 0.5rem; border-radius: 50%; display: flex; transition: all 0.2s ease-in-out; }
@@ -168,8 +210,64 @@
 .action-btn:hover { background: var(--hover-bg); color: var(--accent-color); transform: scale(1.1); }
 .action-btn.active { color: #f6e05e; }
 
-/* --- 8. ESTADOS E RESPONSIVIDADE --- */
+/* --- 8. MODO DE COMPARAÇÃO --- */
+.compare-btn {
+  background-color: var(--hover-bg);
+  color: var(--text-secondary);
+  border: 1px solid var(--text-secondary);
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+.compare-btn:hover {
+  background-color: var(--accent-color);
+  color: var(--background, #0D0D0D);
+  border-color: var(--accent-color);
+}
+.compare-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.compare-grid .verse-item {
+  margin-bottom: 0;
+  border-bottom: 1px solid var(--border-color);
+  border-radius: 0;
+}
+.compare-grid .verse-item:hover {
+  transform: none;
+}
+.compare-grid .verse-item:nth-child(even) .verse-number {
+  visibility: hidden;
+}
+.compare-grid .verse-item:nth-child(even) .verse-actions {
+  display: none;
+}
+
+/* --- 9. ESTADOS E RESPONSIVIDADE --- */
 .loading-message { text-align: center; padding: 4rem 2rem; font-size: 1.2rem; color: var(--text-secondary); }
+@media (max-width: 900px) {
+  .compare-grid {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .compare-grid .verse-item:nth-child(odd) {
+    border-bottom: 2px solid var(--accent-color);
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .compare-grid .verse-item:nth-child(even) {
+     border-bottom: none;
+  }
+  .compare-grid .verse-item:nth-child(even) .verse-number {
+    visibility: visible;
+  }
+}
 @media (max-width: 768px) {
   .chapter-header h1 { font-size: 2rem; }
   .reading-options { flex-direction: column; align-items: stretch; gap: 1.5rem; }

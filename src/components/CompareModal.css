@@ -1,0 +1,99 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+.modal-content {
+  /* Usa as variáveis da sua paleta! */
+  background-color: var(--background, #1A1A1A);
+  color: var(--text-primary);
+  padding: 2rem;
+  border-radius: var(--border-radius, 12px);
+  width: 90%;
+  max-width: 600px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.modal-header {
+  position: relative;
+  text-align: center;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-family: var(--font-main, 'Cinzel', serif);
+}
+
+.modal-header p {
+  margin: 0.25rem 0 0;
+  color: var(--text-secondary);
+}
+
+.close-button {
+  position: absolute;
+  top: -1rem;
+  right: -0.5rem;
+  background: none;
+  border: none;
+  font-size: 2.5rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.close-button:hover {
+  color: var(--text-primary);
+}
+
+.modal-body {
+  line-height: 1.8;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.comparison-item {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.comparison-item:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.comparison-item p {
+  margin: 0.5rem 0 0 0;
+}
+
+.version-tag {
+  display: inline-block;
+  background-color: var(--hover-bg);
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.loading-comparison,
+.no-comparison-found {
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 2rem 0;
+}
