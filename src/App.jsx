@@ -1,22 +1,27 @@
 // src/App.jsx
 import React, { useState, useEffect } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import SplashScreen from "./components/SplashScreen";
 import Header from "./components/Header";
-import BottomNav from "./components/BottomNav"; // ✅ IMPORTADO
+import BottomNav from "./components/BottomNav";
 import "./index.css";
 
 function App() {
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
-  // Remove o tema fixo e deixa o Header controlar
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 13500); // mesmo tempo da splash
+
+      // Redireciona para home apenas se não estiver em login ou registro
+      if (window.location.pathname === "/") {
+        navigate("/home", { replace: true });
+      }
+    }, 13500);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [navigate]);
 
   if (loading) return <SplashScreen />;
 
@@ -26,8 +31,6 @@ function App() {
       <main className="main-content">
         <Outlet />
       </main>
-
-      {/* ✅ MENU MOBILE FIXO */}
       <BottomNav />
     </>
   );
