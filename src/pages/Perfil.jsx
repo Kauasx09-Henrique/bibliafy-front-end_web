@@ -4,28 +4,27 @@ import api from '../services/api';
 import Swal from 'sweetalert2';
 import './Perfil.css';
 
-// Ícone de lixeira para o botão de remover
-const TrashIcon = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>;
+import { LogOut, Edit, Trash2, Camera } from 'lucide-react';
 
 function Perfil() {
   const { user, token, logout } = useAuth();
   const [favorites, setFavorites] = useState([]);
   const [loadingFavorites, setLoadingFavorites] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
-
-  // NOVO: Estado de loading para o formulário de edição
   const [isUpdating, setIsUpdating] = useState(false);
-
   const [editName, setEditName] = useState(user?.name || '');
   const [editPassword, setEditPassword] = useState('');
+  const [avatar, setAvatar] = useState(localStorage.getItem('avatar') || '/avatar-default.png');
 
   const fetchFavorites = useCallback(async () => {
     if (!token) return;
     try {
-      const response = await api.get('/api/favorites', { headers: { Authorization: `Bearer ${token}` } });
+      const response = await api.get('/api/favorites', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setFavorites(response.data);
     } catch (error) {
-      console.error("Erro ao buscar favoritos", error);
+      console.error('Erro ao buscar favoritos', error);
     } finally {
       setLoadingFavorites(false);
     }
@@ -35,116 +34,143 @@ function Perfil() {
     fetchFavorites();
   }, [fetchFavorites]);
 
+  const handleAvatarChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setAvatar(imageUrl);
+      localStorage.setItem('avatar', imageUrl);
+    }
+  };
+
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
-    setIsUpdating(true); // Ativa o loading do botão
+    setIsUpdating(true);
     try {
-      await api.put('/api/users/profile',
+      await api.put(
+        '/api/users/profile',
         { name: editName, password: editPassword || undefined },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       await Swal.fire({
-        icon: 'success', title: 'Perfil atualizado!', text: 'Faça o login novamente para ver as alterações.',
-        customClass: { popup: 'swal2-popup' }
+        icon: 'success',
+        title: 'Perfil atualizado!',
+        text: 'Faça login novamente para ver as alterações.',
       });
-      logout(); // Desloga o usuário após o alerta
-    } catch (error) {
-      Swal.fire({ icon: 'error', title: 'Erro', text: 'Não foi possível atualizar o perfil.', customClass: { popup: 'swal2-popup' } });
+      logout();
+    } catch {
+      Swal.fire({
+        icon: 'error',
+        title: 'Erro',
+        text: 'Não foi possível atualizar o perfil.',
+      });
     } finally {
-      setIsUpdating(false); // Desativa o loading do botão
+      setIsUpdating(false);
     }
   };
 
-  const handleRemoveFavorite = async (verseId, verseRef) => {
-    // NOVO: Confirmação antes de remover
+  const handleRemoveFavorite = async (verseId, ref) => {
     const result = await Swal.fire({
-      title: 'Tem certeza?',
-      html: `Você deseja remover <strong>${verseRef}</strong> dos seus favoritos?`,
+      title: 'Remover favorito?',
+      html: `Deseja remover <strong>${ref}</strong>?`,
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Sim, remover!',
+      confirmButtonText: 'Sim',
       cancelButtonText: 'Cancelar',
-      customClass: { popup: 'swal2-popup' }
     });
 
     if (result.isConfirmed) {
       try {
-        await api.delete(`/api/favorites/${verseId}`, { headers: { Authorization: `Bearer ${token}` } });
-        setFavorites(currentFavorites => currentFavorites.filter(fav => fav.verse_id !== verseId));
-        Swal.fire({
-          title: 'Removido!', text: 'O versículo foi removido dos seus favoritos.', icon: 'success',
-          customClass: { popup: 'swal2-popup' }
+        await api.delete(`/api/favorites/${verseId}`, {
+          headers: { Authorization: `Bearer ${token}` },
         });
-      } catch (error) {
-        console.error("Erro ao remover favorito", error);
-        Swal.fire({ icon: 'error', title: 'Erro', text: 'Não foi possível remover o favorito.', customClass: { popup: 'swal2-popup' } });
+        setFavorites((prev) => prev.filter((f) => f.verse_id !== verseId));
+        Swal.fire('Removido!', '', 'success');
+      } catch {
+        Swal.fire('Erro', 'Não foi possível remover.', 'error');
       }
     }
   };
 
   return (
     <div className="perfil-container">
-      <div className="user-info-card">
-        <div className="user-info-header">
-          <h2>Meu Perfil</h2>
-          <button onClick={() => setIsEditing(!isEditing)} className="edit-button">
-            {isEditing ? 'Cancelar' : 'Editar Perfil'}
+      <div className="perfil-card">
+        <div className="perfil-avatar">
+          <img src={avatar} alt="Avatar do usuário" />
+          <label htmlFor="avatar-upload" className="camera-icon">
+            <Camera size={20} />
+          </label>
+          <input
+            id="avatar-upload"
+            type="file"
+            accept="image/*"
+            onChange={handleAvatarChange}
+            style={{ display: 'none' }}
+          />
+        </div>
+
+        <div className="perfil-info">
+          <h2>{user?.name}</h2>
+          <p>{user?.email}</p>
+          <button onClick={() => setIsEditing(!isEditing)} className="edit-btn">
+            <Edit size={18} /> {isEditing ? 'Cancelar' : 'Editar Perfil'}
+          </button>
+          <button onClick={logout} className="logout-btn">
+            <LogOut size={18} /> Sair
           </button>
         </div>
 
-        {!isEditing ? (
-          <div className="user-details">
-            <p><strong>Nome:</strong> {user?.name}</p>
-            <p><strong>Email:</strong> {user?.email}</p>
-          </div>
-        ) : (
+        {isEditing && (
           <form onSubmit={handleUpdateProfile} className="edit-form">
-            <div className="form-group">
-              <label htmlFor="name">Nome</label>
-              <input
-                id="name" type="text" value={editName}
-                onChange={(e) => setEditName(e.target.value)}
-                className="form-input" required
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="password">Nova Senha</label>
-              <input
-                id="password" type="password" value={editPassword}
-                onChange={(e) => setEditPassword(e.target.value)}
-                placeholder="Deixe em branco para não alterar"
-                className="form-input"
-              />
-            </div>
-            <button type="submit" className="edit-button primary" disabled={isUpdating}>
-              {isUpdating ? 'Salvando...' : 'Salvar Alterações'}
+            <input
+              type="text"
+              value={editName}
+              onChange={(e) => setEditName(e.target.value)}
+              placeholder="Novo nome"
+            />
+            <input
+              type="password"
+              value={editPassword}
+              onChange={(e) => setEditPassword(e.target.value)}
+              placeholder="Nova senha"
+            />
+            <button type="submit" disabled={isUpdating}>
+              {isUpdating ? 'Salvando...' : 'Salvar alterações'}
             </button>
           </form>
         )}
       </div>
 
-      <div className="favorites-section">
-        <h2>Meus Favoritos</h2>
-        {loadingFavorites ? <p className="loading-text">Carregando favoritos...</p> : (
-          favorites.length > 0 ? (
-            <div className="favorites-list">
-              {favorites.map(fav => (
-                <div key={fav.verse_id} className="favorite-item">
-                  <div className="favorite-item-content">
-                    <p className="favorite-item-text">"{fav.verse_text}"</p>
-                    <p className="favorite-item-ref">{`${fav.book_name} ${fav.chapter}:${fav.verse}`}</p>
-                  </div>
-                  <button onClick={() => handleRemoveFavorite(fav.verse_id, `${fav.book_name} ${fav.chapter}:${fav.verse}`)} className="remove-fav-btn" title="Remover favorito">
-                    <TrashIcon />
-                  </button>
+      <div className="favoritos-card">
+        <h3>📖 Meus Favoritos</h3>
+        {loadingFavorites ? (
+          <p className="loading-text">Carregando...</p>
+        ) : favorites.length > 0 ? (
+          <div className="favoritos-list">
+            {favorites.map((fav) => (
+              <div key={fav.verse_id} className="favorito-item">
+                <div className="favorito-texto">
+                  <p>"{fav.verse_text}"</p>
+                  <span>
+                    {fav.book_name} {fav.chapter}:{fav.verse}
+                  </span>
                 </div>
-              ))}
-            </div>
-          ) : (
-            <p className="empty-state">Você ainda não favoritou nenhum versículo.</p>
-          )
+                <button
+                  className="remove-fav-btn"
+                  onClick={() =>
+                    handleRemoveFavorite(
+                      fav.verse_id,
+                      `${fav.book_name} ${fav.chapter}:${fav.verse}`
+                    )
+                  }
+                >
+                  <Trash2 size={18} />
+                </button>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="empty-state">Você ainda não favoritou nenhum versículo.</p>
         )}
       </div>
     </div>

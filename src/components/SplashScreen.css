@@ -1,159 +1,159 @@
-/* Seu CSS existente ... */
-.splash-screen {
+/* ================================
+   CINEMATIC SPLASH – BIBLIAFY
+   Estilo Tech Santo Premium
+==================================*/
+
+.splash-container {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background: black;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  padding: 20px;
-  position: relative;
-  overflow: hidden;
+  z-index: 9999;
+  transition: opacity 1.3s ease;
 }
-.video-background {
+
+.splash-container.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* --- Vídeo de Fundo --- */
+.splash-video {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-}
-.video-background video {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  filter: brightness(25%) contrast(120%);
+  z-index: 1;
 }
-.overlay {
+
+/* --- Overlay Cinemático --- */
+.splash-overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.4);
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.06), rgba(0,0,0,0.92));
+  backdrop-filter: blur(2px);
   z-index: 2;
 }
-.splash-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  max-width: 300px;
-  position: relative;
+
+/* --- Partículas Premium --- */
+.particles-layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
   z-index: 3;
 }
-.logo-wrapper {
-  position: relative;
-  margin-bottom: 30px;
-}
-.splash-logo {
-  width: 100px;
-  height: 100px;
-  border-radius: 25px;
-  object-fit: cover;
-  border: 3px solid rgba(255, 255, 255, 0.9);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.3);
-  animation: logoPulse 3s ease-in-out infinite;
-  position: relative;
-  z-index: 2;
-  backdrop-filter: blur(10px);
-}
-.logo-glow {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 120px;
-  height: 120px;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
-  border-radius: 30px;
-  animation: glowPulse 2s ease-in-out infinite alternate;
-  z-index: 1;
-}
-.splash-title {
-  font-size: 2.5rem;
-  font-weight: 800;
-  color: #ffffff;
-  text-align: center;
-  margin-bottom: 12px;
-  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
-  animation: slideDown 0.8s ease-out;
-  letter-spacing: -0.5px;
-}
-.splash-subtitle {
-  font-size: 1.1rem;
-  color: rgba(255, 255, 255, 0.95);
-  text-align: center;
-  margin-bottom: 50px;
-  line-height: 1.5;
-  animation: slideUp 0.8s ease-out 0.2s both;
-  font-weight: 400;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-}
-.loading-container {
-  width: 100%;
-  max-width: 200px;
-  animation: fadeIn 0.8s ease-out 0.4s both;
-}
-.loading-text {
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 0.9rem;
-  text-align: center;
-  margin-bottom: 15px;
-  font-weight: 500;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
-}
-.loading-bar {
-  width: 100%;
-  height: 6px;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 3px;
-  overflow: hidden;
-  position: relative;
-  backdrop-filter: blur(5px);
-}
-.loading-progress {
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, #ffd700, #ffed4e, #ffd700);
-  border-radius: 3px;
-  animation: loading 13s linear forwards; /* Duração corresponde ao timer */
-  box-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
-}
 
-/* ... Suas animações ... */
-@keyframes logoPulse { 0%, 100% { transform: scale(1) rotate(0deg); } 50% { transform: scale(1.05) rotate(2deg); } }
-@keyframes glowPulse { 0% { opacity: 0.4; transform: translate(-50%, -50%) scale(1); } 100% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.1); } }
-@keyframes slideDown { 0% { opacity: 0; transform: translateY(-30px); } 100% { opacity: 1; transform: translateY(0); } }
-@keyframes slideUp { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
-@keyframes fadeIn { 0% { opacity: 0; } 100% { opacity: 1; } }
-@keyframes loading { from { width: 0%; } to { width: 100%; } }
-
-.particles {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 2;
-}
 .particle {
   position: absolute;
-  bottom: 0;
-  width: 3px;
-  height: 3px;
-  background: rgba(255, 255, 255, 0.7);
+  width: 2px;
+  height: 2px;
+  background: rgba(255,255,255,0.5);
   border-radius: 50%;
-  animation-name: particleFloat;
-  animation-iteration-count: infinite;
-  animation-timing-function: linear;
+  animation: float 6s infinite ease-in-out;
+  opacity: 0.8;
 }
 
-@keyframes particleFloat { from { transform: translateY(0); opacity: 1; } to { transform: translateY(-100vh); opacity: 0; } }
+@keyframes float {
+  0% { transform: translateY(0); opacity: 0; }
+  50% { opacity: 0.4; }
+  100% { transform: translateY(-120vh); opacity: 0; }
+}
 
-/* Efeito de fade-out da tela */
-.splash-screen.fade-out {
+.particle:nth-child(odd) { animation-duration: 8s; }
+
+/* --- Conteúdo Central --- */
+.splash-center {
+  position: relative;
+  text-align: center;
+  color: white;
+  z-index: 4;
+}
+
+.splash-logo {
+  width: 160px;
+  margin-bottom: 1rem;
   opacity: 0;
-  transition: opacity 0.5s ease-out;
-  pointer-events: none;
+  animation: glow-in 1.8s forwards;
+  border-radius: 18px; /* ✅ bordas arredondadas */
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.15); /* brilho suave para ficar premium */
+}
+.splash-logo {
+  width: 160px;
+  margin-bottom: 1rem;
+  opacity: 0;
+  animation: glow-in 1.8s forwards;
+  border-radius: 18px; /* ✅ bordas arredondadas */
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.15); /* brilho suave para ficar premium */
 }
 
+
+@keyframes glow-in {
+  0% { opacity: 0; transform: scale(0.8); filter: blur(6px); }
+  100% { opacity: 1; transform: scale(1); filter: blur(0); }
+}
+
+.splash-title {
+  font-family: "Inter", sans-serif;
+  font-size: 3rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 6px;
+  margin-top: 1rem;
+  opacity: 0;
+  animation: rise-text 2s forwards;
+}
+
+@keyframes rise-text {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.splash-subtitle {
+  font-family: "Inter", sans-serif;
+  font-size: 1.15rem;
+  color: #bababa;
+  margin-top: 0.7rem;
+  letter-spacing: 2px;
+  opacity: 0;
+  animation: fade-in-sub 2s forwards;
+}
+
+@keyframes fade-in-sub {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Loader Cinemático --- */
+.cinematic-loader {
+  margin-top: 3rem;
+  height: 2px;
+  width: 380px;
+  max-width: 90%;
+  margin-inline: auto;
+  overflow: hidden;
+  position: relative;
+}
+
+.loader-bar {
+  height: 100%;
+  background: linear-gradient(90deg, white, rgba(255,255,255,0.1));
+  animation: loader 2.5s infinite;
+}
+
+@keyframes loader {
+  0% { transform: translateX(-100%); }
+  50% { transform: translateX(0%); }
+  100% { transform: translateX(100%); }
+}
+
+/* --- Responsivo --- */
+@media (max-width: 768px) {
+  .splash-title { font-size: 2.2rem; letter-spacing: 4px; }
+  .splash-subtitle { font-size: 1rem; }
+}

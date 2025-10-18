@@ -1,33 +1,34 @@
-import React, { useState, useEffect } from 'react';
-import { Outlet } from 'react-router-dom';
-import SplashScreen from './components/SplashScreen';
-import Header from './components/Header'; // <-- CORREÇÃO APLICADA AQUI
-
-
+// src/App.jsx
+import React, { useState, useEffect } from "react";
+import { Outlet } from "react-router-dom";
+import SplashScreen from "./components/SplashScreen";
+import Header from "./components/Header";
+import BottomNav from "./components/BottomNav"; // ✅ IMPORTADO
+import "./index.css";
 
 function App() {
   const [loading, setLoading] = useState(true);
 
+  // Remove o tema fixo e deixa o Header controlar
   useEffect(() => {
-    // Splash dura 13,5 segundos para combinar com o fade do vídeo
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 13500); // 13,5 segundos
+    }, 13500); // mesmo tempo da splash
 
     return () => clearTimeout(timer);
   }, []);
 
-  if (loading) {
-    return <SplashScreen />;
-  }
-
+  if (loading) return <SplashScreen />;
 
   return (
-    <> {/* Usamos um fragmento para não adicionar uma div desnecessária */}
-      <Header /> {/* O Header agora aparece em todas as páginas */}
-      <main>
-        <Outlet /> {/* O conteúdo da rota atual será renderizado aqui */}
+    <>
+      <Header />
+      <main className="main-content">
+        <Outlet />
       </main>
+
+      {/* ✅ MENU MOBILE FIXO */}
+      <BottomNav />
     </>
   );
 }

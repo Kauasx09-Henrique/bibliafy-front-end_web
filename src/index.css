@@ -1,27 +1,43 @@
-/* Importação da fonte do Google Fonts */
+/* =======================
+   FONTES OFICIAIS
+======================= */
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap');
-/* Importação das fontes do Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=EB+Garamond&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Merriweather&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
 
-/* ... o resto do seu CSS continua aqui ... */
-/* Definição das variáveis de cor com a sua paleta */
-:root {
-  --background: #0D0D0D;
-  --text-primary: #FFFFFF;
-  --text-secondary: #B3B3B3;
-  --highlight: #333333;
-  --borders: #1A1A1A;
-
-  --font-main: 'Cinzel', serif;
-  --font-body: sans-serif;
+/* =======================
+   TEMA LIGHT PREMIUM
+======================= */
+body.light-theme {
+  --background: #F9F9F9;
+  --borders: #E5E5E5;
+  --highlight: #D0D0D0;
+  --text-primary: #1A1A1A;
+  --text-secondary: #555555;
+  --accent: #C62828; /* Vermelho intenso oficial Bibliafy */
+  --card-bg: #FFFFFF;
+  --shadow: rgba(0, 0, 0, 0.08);
+  --shadow-hover: rgba(0, 0, 0, 0.12);
 }
 
-/* Estilos globais */
+/* =======================
+   TEMA DARK PREMIUM
+======================= */
+body.dark-theme {
+  --background: #0D0D0D;
+  --borders: #1A1A1A;
+  --highlight: #333333;
+  --text-primary: #FFFFFF;
+  --text-secondary: #B3B3B3;
+  --accent: #C62828;
+  --card-bg: #141414;
+  --shadow: rgba(0, 0, 0, 0.4);
+  --shadow-hover: rgba(0, 0, 0, 0.55);
+}
+
+/* =======================
+   RESET GLOBAL
+======================= */
 * {
   margin: 0;
   padding: 0;
@@ -31,5 +47,39 @@
 body {
   background-color: var(--background);
   color: var(--text-primary);
-  font-family: var(--font-body);
+  font-family: 'Inter', sans-serif;
+  transition: background 0.35s ease, color 0.35s ease;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  outline: none;
+  font-family: inherit;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--highlight);
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+.main-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
 }

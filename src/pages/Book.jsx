@@ -1,60 +1,47 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, Link, useSearchParams } from 'react-router-dom';
-import api from '../services/api';
-import './Book.css';
+import React, { useState, useEffect } from "react";
+import { useParams, Link, useSearchParams } from "react-router-dom";
+import api from "../services/api";
+import { ChevronLeft, BookOpen } from "lucide-react";
+import "./Book.css";
+
+// Swiper (carrossel mobile)
+import { Swiper, SwiperSlide } from "swiper/react";
+import { FreeMode } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/free-mode";
 
 function Book() {
-  // --- ESTADOS ---
-  const [chapters, setChapters] = useState([]);
-  const [bookName, setBookName] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [versions, setVersions] = useState([]);
-  const [error, setError] = useState(null);
-
-  // --- HOOKS DO REACT ROUTER ---
   const { bookId } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
+  const selectedVersion = searchParams.get("version") || "NVI";
 
-  const selectedVersion = searchParams.get('version') || 'NVI';
+  const [chapters, setChapters] = useState([]);
+  const [bookName, setBookName] = useState("");
+  const [versions, setVersions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
-      setError(null);
+      setError("");
       try {
-        const chaptersPromise = api.get(`/api/bible/books/${bookId}/chapters`);
-        const booksPromise = api.get('/api/bible/books');
-        // ✅ CORREÇÃO APLICADA AQUI: Adicionado '/bible' ao caminho
-        const versionsPromise = api.get('/api/bible/versions');
-
-        const [chaptersResponse, booksResponse, versionsResponse] = await Promise.all([
-          chaptersPromise,
-          booksPromise,
-          versionsPromise
+        const [chaptersRes, booksRes, versionsRes] = await Promise.all([
+          api.get(`/api/bible/books/${bookId}/chapters`),
+          api.get("/api/bible/books"),
+          api.get("/api/bible/versions"),
         ]);
 
-        setChapters(chaptersResponse.data);
-        setVersions(versionsResponse.data);
+        setChapters(chaptersRes.data || []);
+        setVersions(versionsRes.data || []);
 
-        const currentBook = booksResponse.data.find(b => b.id.toString() === bookId);
-        if (currentBook) {
-          setBookName(currentBook.name);
-        } else {
-          throw new Error(`Livro com ID ${bookId} não encontrado.`);
-        }
-
-      } catch (err) {
-        console.error("--- ERRO DETALHADO DA API ---");
-        if (err.response) {
-          console.error("Status do Erro:", err.response.status);
-          console.error("Dados do Erro:", err.response.data);
-        } else if (err.request) {
-          console.error("Nenhuma resposta recebida. Verifique o backend e as políticas de CORS.");
-        } else {
-          console.error('Erro na configuração do Axios:', err.message);
-        }
-        console.error("-----------------------------");
-        setError('Não foi possível carregar os dados do livro.');
+        const current = (booksRes.data || []).find(
+          (b) => String(b.id) === String(bookId)
+        );
+        if (!current) throw new Error("Livro não encontrado.");
+        setBookName(current.name);
+      } catch (e) {
+        setError("Não foi possível carregar os dados do livro.");
       } finally {
         setLoading(false);
       }
@@ -62,48 +49,84 @@ function Book() {
     fetchData();
   }, [bookId]);
 
-  const handleVersionChange = (event) => {
-    const newVersion = event.target.value;
-    setSearchParams({ version: newVersion });
+  const handleVersionChange = (e) => {
+    setSearchParams({ version: e.target.value });
   };
 
-  if (loading) {
-    return <p className="loading-message">Carregando...</p>;
-  }
+  if (loading) return <p className="loading-message">Carregando…</p>;
+  if (error) return <p className="error-message-home">{error}</p>;
 
-  if (error) {
-    return <p className="error-message-home">{error}</p>;
-  }
+  const ChapterPill = ({ n }) => (
+    <Link
+      to={`/livro/${bookId}/capitulo/${n}?version=${selectedVersion}`}
+      className="chapter-pill"
+      aria-label={`Capítulo ${n}`}
+    >
+      {n}
+    </Link>
+  );
 
   return (
-    <div className="book-container">
-      <div className="book-header">
-        <h1>{bookName}</h1>
-        <div className="version-selector-container-book">
+    <div className="book-wrapper animate-in">
+      {/* Toolbar */}
+      <div className="book-toolbar">
+        <Link to="/home" className="back-btn" aria-label="Voltar para Home">
+          <ChevronLeft size={18} />
+          <span>Voltar</span>
+        </Link>
+
+        <div className="version-selector-book">
+          <label htmlFor="version">Versão</label>
           <select
+            id="version"
             value={selectedVersion}
             onChange={handleVersionChange}
-            className="version-selector-book"
           >
-            {versions.map(version => (
-              <option key={version.id} value={version.abbreviation}>
-                {version.name} ({version.abbreviation})
+            {versions.map((v) => (
+              <option key={v.id} value={v.abbreviation}>
+                {v.name} ({v.abbreviation})
               </option>
             ))}
           </select>
         </div>
       </div>
 
-      <h2>Selecione um Capítulo</h2>
+      {/* Header */}
+      <header className="book-header">
+        <div className="book-title">
+          <BookOpen size={22} />
+          <h1>{bookName}</h1>
+        </div>
+        <p className="book-subtitle">Selecione um capítulo</p>
+      </header>
+
+      {/* Carrossel (mobile) */}
+      <div className="chapters-carousel">
+        <Swiper
+          modules={[FreeMode]}
+          freeMode
+          grabCursor
+          spaceBetween={10}
+          slidesPerView={4.2}
+          breakpoints={{
+            420: { slidesPerView: 5.2 },
+            520: { slidesPerView: 6.2 },
+            640: { slidesPerView: 7.2 },
+          }}
+          className="chapters-swiper"
+        >
+          {chapters.map((n) => (
+            <SwiperSlide key={n}>
+              <ChapterPill n={n} />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </div>
+
+      {/* Grid (desktop) */}
       <div className="chapters-grid">
-        {chapters.map(chapterNum => (
-          <Link
-            to={`/livro/${bookId}/capitulo/${chapterNum}?version=${selectedVersion}`}
-            key={chapterNum}
-            className="chapter-link"
-          >
-            {chapterNum}
-          </Link>
+        {chapters.map((n) => (
+          <ChapterPill key={`grid-${n}`} n={n} />
         ))}
       </div>
     </div>

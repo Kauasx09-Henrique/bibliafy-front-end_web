@@ -1,9 +1,9 @@
+// src/pages/Registro.jsx
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import Swal from 'sweetalert2';
 import './Auth.css';
-
 
 function Registro() {
   const [name, setName] = useState('');
@@ -23,46 +23,54 @@ function Registro() {
         title: 'Cadastro realizado!',
         text: 'Você será redirecionado para o login.',
         timer: 2500,
-        showConfirmButton: false
+        showConfirmButton: false,
       });
-      setTimeout(() => {
-        navigate('/login');
-      }, 2500);
+      setTimeout(() => navigate('/login'), 2500);
     } catch (err) {
-      const errorMessage = err.response?.data?.message || 'Erro ao realizar o cadastro. Tente novamente.';
+      const errorMessage =
+        err.response?.data?.message ||
+        'Erro ao realizar o cadastro. Tente novamente.';
       setError(errorMessage);
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: errorMessage
+        text: errorMessage,
       });
     }
   }
+
   return (
     <div className="auth-container">
       <form className="auth-form" onSubmit={handleSubmit}>
-        <h2>Crie sua Conta</h2>
+        <h2>Criar Conta</h2>
         <p>Junte-se à comunidade Bibliafy</p>
+
         {error && <p className="error-message">{error}</p>}
+
         <input
           type="text"
           placeholder="Nome completo"
           value={name}
-          onChange={e => setName(e.target.value)}
+          onChange={(e) => setName(e.target.value)}
+          required
         />
         <input
           type="email"
           placeholder="E-mail"
           value={email}
-          onChange={e => setEmail(e.target.value)}
+          onChange={(e) => setEmail(e.target.value)}
+          required
         />
         <input
           type="password"
           placeholder="Senha"
           value={password}
-          onChange={e => setPassword(e.target.value)}
+          onChange={(e) => setPassword(e.target.value)}
+          required
         />
+
         <button type="submit">Cadastrar</button>
+
         <p className="redirect-link">
           Já tem uma conta? <Link to="/login">Entre aqui</Link>
         </p>

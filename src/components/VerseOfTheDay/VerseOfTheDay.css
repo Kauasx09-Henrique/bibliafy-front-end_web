@@ -1,0 +1,59 @@
+.votd-card {
+  background: var(--card-bg);
+  border: 1px solid var(--borders);
+  border-left: 4px solid var(--accent);
+  border-radius: 14px;
+  padding: 1.25rem 1.2rem 1.1rem;
+  max-width: 860px;
+  margin: 0 auto 1.2rem;
+  box-shadow: 0 12px 28px var(--shadow);
+  animation: votdEnter .6s ease both;
+}
+@keyframes votdEnter {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.votd-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: .35rem;
+}
+.votd-header h3 {
+  color: var(--text-secondary);
+  font-size: .95rem;
+  letter-spacing: .4px;
+  text-transform: uppercase;
+}
+
+.votd-refresh {
+  background: transparent;
+  border: 1px solid var(--borders);
+  color: var(--text-secondary);
+  border-radius: 8px;
+  padding: .32rem .5rem;
+  display: inline-flex;
+  align-items: center;
+  transition: .25s ease;
+}
+.votd-refresh:hover {
+  background: var(--highlight);
+  color: var(--text-primary);
+  transform: translateY(-1px) rotate(-12deg);
+}
+
+.votd-text {
+  font-family: 'Lora', serif;
+  font-size: 1.22rem;
+  line-height: 1.7;
+  color: var(--text-primary);
+  margin: .45rem 0 .5rem;
+  text-align: center;
+}
+.votd-ref {
+  text-align: center;
+  color: var(--accent);
+  font-weight: 600;
+  font-size: .95rem;
+}

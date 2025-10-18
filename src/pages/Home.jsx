@@ -1,131 +1,180 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Link } from 'react-router-dom';
-import api from '../services/api';
-import './Home.css';
+import React, { useState, useEffect, useCallback } from "react";
+import { Link } from "react-router-dom";
+import { BookOpen } from "lucide-react";
+import api from "../services/api";
+import { useAuth } from "../contexts/AuthContext";
+import VerseOfTheDay from "../components/VerseOfTheDay/VerseOfTheDay";
+import "./Home.css";
+
+// Swiper (carrossel mobile)
+import { Swiper, SwiperSlide } from "swiper/react";
+import { FreeMode } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/free-mode";
 
 function Home() {
+  const { token } = useAuth();
   const [books, setBooks] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [isOldTestamentOpen, setIsOldTestamentOpen] = useState(true);
-  const [isNewTestamentOpen, setIsNewTestamentOpen] = useState(true);
+  const [versions, setVersions] = useState([]);
+  const [selectedVersion, setSelectedVersion] = useState("");
   const [verseOfTheDay, setVerseOfTheDay] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(true);
 
-  const fetchNewDailyData = useCallback(async () => {
+  // Carrega versões
+  const fetchVersions = useCallback(async () => {
     try {
-      const verseResponse = await api.get('/api/bible/verses/random');
-      const verse = verseResponse.data;
-      const today = new Date().toISOString().split('T')[0];
-      const dailyData = { verse, date: today };
-      localStorage.setItem('dailyData', JSON.stringify(dailyData));
-      setVerseOfTheDay(verse);
-    } catch (err) {
-      console.error("Erro ao buscar o versículo do dia:", err);
-    }
+      const r = await api.get("/api/bible/versions", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setVersions(r.data || []);
+      if (r.data?.length) setSelectedVersion(r.data[0].abbreviation);
+    } catch {}
+  }, [token]);
+
+  // Versículo do dia
+  const fetchVerseOfTheDay = useCallback(async () => {
+    try {
+      const r = await api.get(
+        `/api/bible/verses/random?version=${selectedVersion || "NVI"}`
+      );
+      setVerseOfTheDay(r.data);
+    } catch {}
+  }, [selectedVersion]);
+
+  // Livros
+  const fetchBooks = useCallback(async () => {
+    try {
+      const r = await api.get("/api/bible/books");
+      setBooks(r.data || []);
+    } catch {}
   }, []);
 
   useEffect(() => {
-    async function fetchInitialData() {
+    (async () => {
       setLoading(true);
-      try {
-        const storedData = localStorage.getItem('dailyData');
-        const today = new Date().toISOString().split('T')[0];
-        let shouldFetchNew = true;
+      await fetchVersions();
+      await fetchBooks();
+      await fetchVerseOfTheDay();
+      setLoading(false);
+    })();
+  }, [fetchVersions, fetchBooks, fetchVerseOfTheDay]);
 
-        if (storedData) {
-          const { verse, date } = JSON.parse(storedData);
-          if (date === today && verse) {
-            setVerseOfTheDay(verse);
-            shouldFetchNew = false;
-          }
-        }
+  // Filtro
+  const filteredBooks = books.filter((b) =>
+    b.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+  const oldTestament = filteredBooks.filter((b) => b.testament_id === 1);
+  const newTestament = filteredBooks.filter((b) => b.testament_id === 2);
 
-        if (shouldFetchNew) {
-          await fetchNewDailyData();
-        }
-
-        const booksResponse = await api.get('/api/bible/books');
-        setBooks(booksResponse.data);
-      } catch (err) {
-        setError('Não foi possível carregar os dados. Tente novamente mais tarde.');
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchInitialData();
-  }, [fetchNewDailyData]);
-
-  const filteredBooks = books.filter(book =>
-    book.name.toLowerCase().includes(searchTerm.toLowerCase())
+  // Card
+  const BookCard = ({ book }) => (
+    <Link
+      to={`/livro/${book.id}?version=${selectedVersion}`}
+      className="book-link"
+      aria-label={book.name}
+    >
+      <div className="book-card">
+        <div className="book-icon">
+          <BookOpen size={24} />
+        </div>
+        <div className="book-info">
+          <h3>{book.name}</h3>
+          <p>{book.total_chapters} capítulos</p>
+        </div>
+      </div>
+    </Link>
   );
 
-  const oldTestamentBooks = filteredBooks.filter(book => book.testament_id === 1);
-  const newTestamentBooks = filteredBooks.filter(book => book.testament_id === 2);
+  // Grid (desktop)
+  const renderGrid = (list) => (
+    <div className="books-grid desktop-grid">
+      {list.map((b) => (
+        <BookCard key={b.id} book={b} />
+      ))}
+    </div>
+  );
 
-  if (loading) return <p className="loading-message">Carregando...</p>;
-  if (error) return <p className="error-message-home">{error}</p>;
+  // Carrossel (mobile)
+  const renderCarousel = (list) => (
+    <div className="mobile-carousel">
+      <Swiper
+        modules={[FreeMode]}
+        freeMode
+        grabCursor
+        spaceBetween={12}
+        slidesPerView={2.2}
+        breakpoints={{
+          420: { slidesPerView: 2.6 },
+          520: { slidesPerView: 3.2 },
+          640: { slidesPerView: 3.6 },
+        }}
+        className="books-swiper"
+      >
+        {list.map((b) => (
+          <SwiperSlide key={b.id}>
+            <BookCard book={b} />
+          </SwiperSlide>
+        ))}
+      </Swiper>
+    </div>
+  );
+
+  if (loading) return <p className="loading-message">Carregando…</p>;
 
   return (
-    <div className="home-container">
-      <h1>Bibliafy</h1>
-
-      {verseOfTheDay && (
-        <div className="verse-of-the-day">
-          <p className="verse-of-the-day-text">"{verseOfTheDay.text}"</p>
-          <p className="verse-of-the-day-ref">
-            {`${verseOfTheDay.book_name} ${verseOfTheDay.chapter}:${verseOfTheDay.verse}`}
-          </p>
+    <div className="home-wrapper">
+      {/* Topo */}
+      <div className="home-top animate-in">
+        <h1 className="home-title">Bibliafy</h1>
+        <div className="version-selector">
+          <label htmlFor="version">Versão</label>
+          <select
+            id="version"
+            value={selectedVersion}
+            onChange={(e) => setSelectedVersion(e.target.value)}
+          >
+            {versions.map((v) => (
+              <option key={v.id} value={v.abbreviation}>
+                {v.name} ({v.abbreviation})
+              </option>
+            ))}
+          </select>
         </div>
-      )}
+      </div>
 
+      {/* Versículo do dia */}
+      <VerseOfTheDay verse={verseOfTheDay} onRefresh={fetchVerseOfTheDay} />
+
+      {/* Busca */}
       <div className="search-container">
         <input
           type="search"
-          placeholder="Pesquisar livro..."
           className="search-bar"
+          placeholder="Pesquisar livro…"
           value={searchTerm}
-          onChange={e => setSearchTerm(e.target.value)}
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
 
+      {/* Velho Testamento */}
       <section className="testament-section">
-        <h2 onClick={() => setIsOldTestamentOpen(!isOldTestamentOpen)}>
+        <h2>
           Velho Testamento
-          <span className={`arrow-icon ${isOldTestamentOpen ? 'open' : ''}`}>▼</span>
+          <span className="section-accent" />
         </h2>
-        {isOldTestamentOpen && (
-          <div className="books-list">
-            {oldTestamentBooks.map(book => (
-              <Link to={`/livro/${book.id}`} key={book.id} className="book-link">
-                <div className="book-card">
-                  <h3>{book.name}</h3>
-                  <p>({book.abbreviation})</p>
-                </div>
-              </Link>
-            ))}
-          </div>
-        )}
+        {renderCarousel(oldTestament)}
+        {renderGrid(oldTestament)}
       </section>
 
+      {/* Novo Testamento */}
       <section className="testament-section">
-        <h2 onClick={() => setIsNewTestamentOpen(!isNewTestamentOpen)}>
+        <h2>
           Novo Testamento
-          <span className={`arrow-icon ${isNewTestamentOpen ? 'open' : ''}`}>▼</span>
+          <span className="section-accent" />
         </h2>
-        {isNewTestamentOpen && (
-          <div className="books-list">
-            {newTestamentBooks.map(book => (
-              <Link to={`/livro/${book.id}`} key={book.id} className="book-link">
-                <div className="book-card new-testament">
-                  <h3>{book.name}</h3>
-                  <p>({book.abbreviation})</p>
-                </div>
-              </Link>
-            ))}
-          </div>
-        )}
+        {renderCarousel(newTestament)}
+        {renderGrid(newTestament)}
       </section>
     </div>
   );

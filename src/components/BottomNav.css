@@ -1,0 +1,67 @@
+/* ================================
+   BOTTOM NAV - MOBILE NAVIGATION
+================================== */
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 62px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(14px);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding-bottom: env(safe-area-inset-bottom); /* suporte iPhone */
+  z-index: 999;
+  animation: fadeUp 0.6s ease-in-out;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.bottom-nav a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  font-size: 0.75rem;
+  transition: 0.25s ease;
+}
+
+.bottom-nav a:hover {
+  transform: scale(1.1);
+}
+
+.bottom-nav a.active {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.bottom-nav svg {
+  stroke-width: 2.4;
+  transition: 0.25s ease;
+}
+
+/* Vibração suave ao toque (Android e iOS suporte) */
+.bottom-nav a:active {
+  transform: scale(0.92);
+}
+
+/* DESATIVAR NO DESKTOP */
+@media (min-width: 768px) {
+  .bottom-nav {
+    display: none;
+  }
+}

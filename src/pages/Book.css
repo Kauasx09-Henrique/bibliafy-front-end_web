@@ -1,141 +1,132 @@
-.book-container {
-  padding: 2rem 1rem;
-  max-width: 1200px;
+/* ===============================
+   BOOK – LISTA DE CAPÍTULOS PREMIUM
+================================= */
+
+.book-wrapper {
+  max-width: 1000px;
   margin: 0 auto;
+  padding: 1.25rem 1rem 6rem; /* espaço pro bottom nav */
 }
 
-.book-container h1 {
-  font-family: var(--font-main);
-  font-size: 2rem;
-  margin-bottom: 2rem;
-  border-bottom: 1px solid var(--highlight);
-  padding-bottom: 1rem;
+/* animação de entrada */
+.animate-in { animation: pageEnter .6s ease both; }
+@keyframes pageEnter {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-.chapters-grid {
-  display: grid;
-  /* Cria um grid responsivo de capítulos */
-  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
-  gap: 1rem;
-}
-
-.chapter-link {
+/* toolbar */
+.book-toolbar {
   display: flex;
   align-items: center;
-  justify-content: center;
-  background-color: var(--borders);
-  border: 1px solid var(--highlight);
-  border-radius: 8px;
-  height: 60px;
-  text-decoration: none;
-  color: var(--text-secondary);
-  font-size: 1.2rem;
-  font-weight: bold;
-  transition: all 0.2s ease-in-out;
-}
-
-.chapter-link:hover {
-  background-color: var(--highlight);
-  color: var(--text-primary);
-  transform: scale(1.05);
-}
-
-/* Container principal da página do livro */
-.book-container {
-  max-width: 900px;
-  margin: 2rem auto;
-  padding: 0 1.5rem 4rem;
-  color: var(--text-primary);
-}
-
-/* NOVO: Cabeçalho com título e seletor lado a lado */
-.book-header {
-  display: flex;
   justify-content: space-between;
+  margin-bottom: .9rem;
+}
+.back-btn {
+  display: inline-flex;
   align-items: center;
-  border-bottom: 1px solid var(--borders);
-  padding-bottom: 1rem;
-  margin-bottom: 2rem;
-}
-
-.book-container h1 {
-  font-family: var(--font-main);
-  font-size: 2.5rem;
-  margin: 0;
-}
-
-.book-container h2 {
-  font-family: var(--font-body);
-  font-weight: 500;
-  font-size: 1.4rem;
-  text-align: center;
-  margin-bottom: 1.5rem;
+  gap: .45rem;
+  background: var(--card-bg);
   color: var(--text-secondary);
+  border: 1px solid var(--borders);
+  border-radius: 10px;
+  padding: .45rem .7rem;
+  transition: .22s ease;
+}
+.back-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--highlight);
+  transform: translateY(-1px);
 }
 
-/* Grid para os números dos capítulos */
-.chapters-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
-  gap: 1rem;
+/* seletor de versão */
+.version-selector-book {
+  display: inline-flex;
+  align-items: center;
+  gap: .55rem;
+}
+.version-selector-book label {
+  color: var(--text-secondary);
+  font-size: .9rem;
+}
+.version-selector-book select {
+  background: var(--card-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--borders);
+  border-radius: 10px;
+  padding: .5rem .7rem;
+  transition: .2s ease;
+}
+.version-selector-book select:focus {
+  outline: none;
+  border-color: var(--highlight);
 }
 
-/* Estilo para cada link de capítulo */
-.chapter-link {
+/* header */
+.book-header {
+  margin: .4rem 0 1rem;
+}
+.book-title {
   display: flex;
   align-items: center;
-  justify-content: center;
-  height: 60px;
-  background-color: var(--highlight);
-  border: 1px solid var(--borders);
-  border-radius: 50%;
-  /* Deixa os links redondos */
-  text-decoration: none;
-  font-family: var(--font-body);
-  font-size: 1.2rem;
-  font-weight: 500;
+  gap: .6rem;
+}
+.book-title h1 {
+  font-family: 'Cinzel', serif;
   color: var(--text-primary);
-  transition: all 0.2s ease-in-out;
+  font-size: 1.8rem;
+  letter-spacing: .4px;
 }
-
-.chapter-link:hover {
-  background-color: var(--accent);
-  color: var(--highlight);
-  border-color: var(--accent);
-  transform: scale(1.05);
-}
-
-/* --- NOVO: Estilos para o Seletor de Versão --- */
-.version-selector-container-book {
-  position: relative;
-}
-
-.version-selector-book {
-  font-family: var(--font-body);
-  font-size: 1rem;
-  background-color: var(--background);
-  color: var(--text-primary);
-  border: 1px solid var(--borders);
-  border-radius: 8px;
-  padding: 0.6rem 2.2rem 0.6rem 1rem;
-  cursor: pointer;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  transition: border-color 0.2s ease;
-}
-
-.version-selector-book:hover {
-  border-color: var(--accent);
-}
-
-.version-selector-container-book::after {
-  content: '▼';
-  font-size: 0.8rem;
+.book-subtitle {
   color: var(--text-secondary);
-  position: absolute;
-  right: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: none;
+  margin-top: .25rem;
+}
+
+/* carrossel (mobile-first) */
+.chapters-carousel { display: block; margin-bottom: .6rem; }
+.chapters-swiper .chapter-pill { height: 44px; }
+.swiper-slide { width: auto !important; }
+
+/* grid (desktop) */
+.chapters-grid {
+  display: none;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 10px;
+}
+
+/* capítulo "pill" */
+.chapter-pill {
+  display: grid;
+  place-items: center;
+  padding: .7rem 0;
+  min-width: 44px;
+  background: var(--card-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--borders);
+  border-radius: 12px;
+  font-weight: 600;
+  transition: .18s ease;
+  box-shadow: 0 10px 24px var(--shadow);
+  text-decoration: none;
+}
+.chapter-pill:hover {
+  transform: translateY(-3px);
+  border-color: var(--highlight);
+  box-shadow: 0 14px 30px var(--shadow-hover);
+}
+
+/* responsivo */
+@media (min-width: 768px) {
+  .chapters-carousel { display: none; }
+  .chapters-grid { display: grid; grid-template-columns: repeat(10, 1fr); }
+}
+@media (min-width: 1024px) {
+  .chapters-grid { grid-template-columns: repeat(12, 1fr); }
+}
+
+/* feedback */
+.loading-message, .error-message-home {
+  text-align: center;
+  color: var(--text-secondary);
+  margin: 2rem 0;
 }

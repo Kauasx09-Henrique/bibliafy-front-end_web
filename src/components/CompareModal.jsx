@@ -8,11 +8,11 @@ function CompareModal({ verse, comparisonData, isLoading, onClose, currentVersio
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      {/* Adiciona a classe de tema ao modal para que ele use a paleta correta */}
       <div className={`modal-content ${theme}`} onClick={(e) => e.stopPropagation()}>
         <header className="modal-header">
           <h2>Comparar Versículo</h2>
-          <p>{`${verse.bookName} ${verse.chapter}:${verse.number}`}</p>
+          {/* CORREÇÃO: Trocado 'verse.number' por 'verse.verse' */}
+          <p>{`${verse.bookName} ${verse.chapter}:${verse.verse}`}</p>
           <button onClick={onClose} className="close-button">&times;</button>
         </header>
         <div className="modal-body">
@@ -20,13 +20,11 @@ function CompareModal({ verse, comparisonData, isLoading, onClose, currentVersio
             <p className="loading-comparison">Carregando comparações...</p>
           ) : (
             <>
-              {/* Versículo Original */}
               <div className="comparison-item original-verse">
                 <span className="version-tag">{currentVersion}</span>
                 <p>{verse.text}</p>
               </div>
 
-              {/* Versículos Comparados */}
               {comparisonData.length > 0 ? (
                 comparisonData.map((data, index) => (
                   <div key={index} className="comparison-item">
@@ -35,7 +33,6 @@ function CompareModal({ verse, comparisonData, isLoading, onClose, currentVersio
                   </div>
                 ))
               ) : (
-                // Mensagem caso não encontre outras versões
                 <p className="no-comparison-found">Nenhuma outra versão encontrada para comparar.</p>
               )}
             </>

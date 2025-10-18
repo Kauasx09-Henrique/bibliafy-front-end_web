@@ -1,141 +1,138 @@
-/* --- ESTILOS GERAIS DA PÁGINA HOME --- */
-.home-container {
+/* ===============================
+   HOME – BIBLIAFY 2.0 PREMIUM
+================================= */
+
+.home-wrapper {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 1.5rem 1rem;
+  padding: 1.25rem 1rem 6rem; /* espaço p/ bottom nav */
 }
 
-.home-container h1 {
-  font-family: var(--font-main);
-  text-align: center;
-  font-size: 2.5rem;
-  margin-bottom: 1.5rem;
-  color: var(--text-primary);
+/* entrada suave */
+.animate-in { animation: pageEnter .6s ease both; }
+@keyframes pageEnter {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-/* --- ESTILOS PARA O VERSÍCULO DO DIA --- */
-.verse-of-the-day {
-  background-color: var(--borders);
-  border: 1px solid var(--highlight);
-  border-radius: 12px;
-  padding: 2rem;
-  margin: 20px auto 2.5rem auto;
-  max-width: 800px;
-  color: var(--text-primary);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+/* topo */
+.home-top {
+  display: grid;
+  grid-template-columns: 1fr auto;
   align-items: center;
-  text-align: center;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-  transition: background-color 0.3s ease;
+  gap: 1rem;
+  margin-bottom: .8rem;
 }
-
-.verse-of-the-day:hover {
-  background-color: var(--highlight);
-}
-
-.verse-of-the-day-text {
-  font-family: var(--font-lora);
-  font-size: 1.4rem;
-  font-style: italic;
-  margin-bottom: 1rem;
-  line-height: 1.6;
+.home-title {
+  font-family: 'Cinzel', serif;
+  font-size: 2rem;
+  letter-spacing: .5px;
   color: var(--text-primary);
 }
 
-.verse-of-the-day-ref {
-  font-weight: 500;
-  font-size: 1rem;
+/* seletor de versão */
+.version-selector {
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+}
+.version-selector label {
   color: var(--text-secondary);
+  font-size: .9rem;
+}
+.version-selector select {
+  background: var(--card-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--borders);
+  border-radius: 10px;
+  padding: .48rem .7rem;
+  transition: .2s ease;
+}
+.version-selector select:focus {
+  outline: none;
+  border-color: var(--highlight);
 }
 
-/* --- ESTILOS DA BARRA DE PESQUISA E LISTAS --- */
-.search-container {
-  margin-bottom: 2.5rem;
-}
-
+/* busca */
+.search-container { margin: 1.1rem 0 1.25rem; }
 .search-bar {
   width: 100%;
-  padding: 0.8rem 1rem;
-  border-radius: 8px;
-  border: 1px solid var(--highlight);
-  background-color: var(--borders);
+  padding: .9rem 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--borders);
+  background: var(--card-bg);
   color: var(--text-primary);
-  font-size: 1rem;
+  transition: .2s ease;
 }
-.search-bar:focus {
-  outline: none;
-  border-color: var(--text-secondary);
-}
+.search-bar:focus { outline: none; border-color: var(--highlight); }
 
-.testament-section {
-  margin-bottom: 3rem;
-}
+/* títulos de seção */
+.testament-section { margin-top: 1rem; }
 .testament-section h2 {
-  font-family: var(--font-main);
-  font-size: 1.5rem;
-  color: var(--text-secondary);
-  border-bottom: 1px solid var(--highlight);
-  padding-bottom: 0.8rem;
-  margin-bottom: 1.5rem;
-  cursor: pointer;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  user-select: none;
+  gap: .6rem;
+  color: var(--text-secondary);
+  font-weight: 700;
+  letter-spacing: .6px;
+  border-bottom: 1px solid var(--borders);
+  padding-bottom: .7rem;
+  margin-bottom: .8rem;
 }
-.arrow-icon {
-  font-size: 1rem;
-  transition: transform 0.3s ease;
-}
-.arrow-icon.open {
-  transform: rotate(180deg);
+.section-accent {
+  display: inline-block;
+  width: 18px;
+  height: 4px;
+  background: var(--accent);
+  border-radius: 999px;
 }
 
-.books-list {
+/* grid desktop */
+.books-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
 }
-.book-link {
-  text-decoration: none;
-  color: inherit;
-}
+.desktop-grid { display: none; }
+
+/* card do livro */
+.book-link { text-decoration: none; }
 .book-card {
-  background-color: var(--borders);
-  padding: 1.5rem;
-  border-radius: 8px;
-  border-left: 4px solid var(--highlight);
-  transition: transform 0.2s ease-in-out, background-color 0.2s;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.5rem;
-  height: 100%;
+  background: var(--card-bg);
+  border: 1px solid var(--borders);
+  border-radius: 14px;
+  padding: .9rem .95rem;
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  gap: .75rem;
+  align-items: center;
+  box-shadow: 0 10px 24px var(--shadow);
+  transform: translateZ(0);
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+  will-change: transform;
 }
 .book-card:hover {
-  transform: translateY(-5px);
-  background-color: var(--highlight);
+  transform: translateY(-4px);
+  box-shadow: 0 14px 30px var(--shadow-hover);
+  border-color: var(--highlight);
 }
-.book-card h3 {
-  font-family: var(--font-body);
-  font-weight: 600;
-  font-size: 1rem;
+.book-icon { display: grid; place-items: center; color: var(--text-secondary); }
+.book-info h3 { color: var(--text-primary); font-size: 1rem; margin: 0 0 2px; font-weight: 600; }
+.book-info p { color: var(--text-secondary); font-size: .8rem; text-transform: uppercase; letter-spacing: .4px; }
+
+/* carrossel mobile */
+.mobile-carousel { display: block; }
+.books-swiper .book-card { height: 88px; }
+.swiper-slide { width: auto !important; }
+
+/* responsivo */
+@media (min-width: 768px) {
+  .desktop-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .mobile-carousel { display: none; }
 }
-.book-card p {
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-  text-transform: uppercase;
-}
-.book-card.new-testament {
-  border-left-color: var(--text-primary);
+@media (min-width: 1024px) {
+  .desktop-grid { grid-template-columns: repeat(6, 1fr); }
 }
 
-/* --- MENSAGENS DE ESTADO --- */
-.loading-message, .error-message-home {
-  font-size: 1.2rem;
-  color: var(--text-secondary);
-  text-align: center;
-  margin-top: 4rem;
-}
+/* feedback */
+.loading-message { text-align: center; color: var(--text-secondary); margin: 2rem 0; }

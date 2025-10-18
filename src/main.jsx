@@ -29,12 +29,16 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           {/* O componente App serve como layout (com Header e <Outlet />) */}
           <Route element={<App />}>
 
-            {/* --- ROTAS PÚBLICAS --- */}
-            <Route path="/home" element={<Home />} />
+            {/* --- ROTAS PÚBLICAS (Acessíveis a todos) --- */}
+            {/* Mantemos as páginas de livros e capítulos como públicas */}
             <Route path="/livro/:bookId" element={<Book />} />
             <Route path="/livro/:bookId/capitulo/:chapterNum" element={<Chapter />} />
 
-            {/* --- ROTAS PRIVADAS --- */}
+            {/* --- ROTAS PRIVADAS (Exigem login) --- */}
+            
+            {/* ✅ CORREÇÃO 1: A Home agora é protegida para carregar o progresso do usuário */}
+            <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+
             <Route path="/anotacoes" element={<ProtectedRoute><Anotacoes /></ProtectedRoute>} />
             <Route path="/perfil" element={<ProtectedRoute><Perfil /></ProtectedRoute>} />
 
@@ -45,6 +49,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <Route path="/registro" element={<Register />} />
 
           {/* --- REDIRECIONAMENTO PADRÃO --- */}
+          {/* ✅ CORREÇÃO 2: Redireciona para /home se logado, ou para /login se não estiver */}
           <Route path="*" element={<Navigate to="/home" replace />} />
 
         </Routes>
