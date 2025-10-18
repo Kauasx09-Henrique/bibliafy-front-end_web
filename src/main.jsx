@@ -25,34 +25,26 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
       <AuthProvider>
-        <Routes>
-          {/* O componente App serve como layout (com Header e <Outlet />) */}
-          <Route element={<App />}>
+       <Routes>
+  <Route element={<App />}>
+    {/* --- ROTAS PÚBLICAS --- */}
+    <Route path="/home" element={<Home />} />  {/* agora pública */}
+    <Route path="/livro/:bookId" element={<Book />} />
+    <Route path="/livro/:bookId/capitulo/:chapterNum" element={<Chapter />} />
 
-            {/* --- ROTAS PÚBLICAS (Acessíveis a todos) --- */}
-            {/* Mantemos as páginas de livros e capítulos como públicas */}
-            <Route path="/livro/:bookId" element={<Book />} />
-            <Route path="/livro/:bookId/capitulo/:chapterNum" element={<Chapter />} />
+    {/* --- ROTAS PRIVADAS --- */}
+    <Route path="/anotacoes" element={<ProtectedRoute><Anotacoes /></ProtectedRoute>} />
+    <Route path="/perfil" element={<ProtectedRoute><Perfil /></ProtectedRoute>} />
+  </Route>
 
-            {/* --- ROTAS PRIVADAS (Exigem login) --- */}
-            
-            {/* ✅ CORREÇÃO 1: A Home agora é protegida para carregar o progresso do usuário */}
-            <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+  {/* --- ROTAS FORA DO LAYOUT PRINCIPAL --- */}
+  <Route path="/login" element={<Login />} />
+  <Route path="/registro" element={<Register />} />
 
-            <Route path="/anotacoes" element={<ProtectedRoute><Anotacoes /></ProtectedRoute>} />
-            <Route path="/perfil" element={<ProtectedRoute><Perfil /></ProtectedRoute>} />
+  {/* --- REDIRECIONAMENTO PADRÃO --- */}
+  <Route path="*" element={<Navigate to="/home" replace />} />
+</Routes>
 
-          </Route>
-
-          {/* --- ROTAS FORA DO LAYOUT PRINCIPAL (sem Header) --- */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/registro" element={<Register />} />
-
-          {/* --- REDIRECIONAMENTO PADRÃO --- */}
-          {/* ✅ CORREÇÃO 2: Redireciona para /home se logado, ou para /login se não estiver */}
-          <Route path="*" element={<Navigate to="/home" replace />} />
-
-        </Routes>
       </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>
