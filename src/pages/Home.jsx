@@ -1,14 +1,29 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { BookOpen } from "lucide-react";
 import api from "../services/api";
 import VerseOfTheDay from "../components/VerseOfTheDay/VerseOfTheDay";
 import "./Home.css";
 
-import { Swiper, SwiperSlide } from "swiper/react";
-import { FreeMode } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/free-mode";
+// Imports de Carrossel (Slick/Swiper) REMOVIDOS
+
+// Card memoizado (continua otimizado)
+const BookCard = React.memo(({ book, selectedVersion }) => (
+  <Link
+    to={`/livro/${book.id}?version=${selectedVersion}`}
+    className="book-link"
+  >
+    <div className="book-card">
+      <div className="book-icon">
+        <BookOpen size={24} />
+      </div>
+      <div className="book-info">
+        <h3>{book.name}</h3>
+        <p>{book.total_chapters} capítulos</p>
+      </div>
+    </div>
+  </Link>
+));
 
 function Home() {
   const [books, setBooks] = useState([]);
@@ -19,8 +34,10 @@ function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // Carrega versões
-  const fetchVersions = useCallback(async () => {
+  // (Funções fetchVersions, fetchVerseOfTheDay, fetchBooks, useEffect...
+  // ...continuam iguais, omitidas para brevidade)
+   // Carrega versões
+   const fetchVersions = useCallback(async () => {
     try {
       const r = await api.get("/api/bible/versions");
       setVersions(r.data || []);
@@ -35,8 +52,12 @@ function Home() {
   const fetchVerseOfTheDay = useCallback(async () => {
     if (!selectedVersion) return;
     try {
-      const r = await api.get(`/api/bible/verses/random?version=${selectedVersion}`);
-      setVerseOfTheDay(r.data || { text: "Nenhum versículo disponível", reference: "" });
+      const r = await api.get(
+        `/api/bible/verses/random?version=${selectedVersion}`
+      );
+      setVerseOfTheDay(
+        r.data || { text: "Nenhum versículo disponível", reference: "" }
+      );
     } catch (err) {
       console.error("Erro ao carregar versículo do dia:", err);
       setVerseOfTheDay({ text: "Erro ao carregar versículo", reference: "" });
@@ -60,65 +81,49 @@ function Home() {
       setLoading(true);
       await fetchVersions();
       await fetchBooks();
-      await fetchVerseOfTheDay();
-      setLoading(false);
+      setLoading(false); // Move setLoading para cá
     })();
-  }, [fetchVersions, fetchBooks, fetchVerseOfTheDay]);
+  }, [fetchVersions, fetchBooks]);
 
-  // Filtro
-  const filteredBooks = books.filter((b) =>
-    b.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-  const oldTestament = filteredBooks.filter((b) => b.testament_id === 1);
-  const newTestament = filteredBooks.filter((b) => b.testament_id === 2);
+   // Efeito separado para buscar versículo
+   useEffect(() => {
+    // Busca o versículo assim que selectedVersion estiver disponível
+    if (selectedVersion) {
+      fetchVerseOfTheDay();
+    }
+  }, [selectedVersion, fetchVerseOfTheDay]);
 
-  // Card
-  const BookCard = ({ book }) => (
-    <Link to={`/livro/${book.id}?version=${selectedVersion}`} className="book-link">
-      <div className="book-card">
-        <div className="book-icon">
-          <BookOpen size={24} />
-        </div>
-        <div className="book-info">
-          <h3>{book.name}</h3>
-          <p>{book.total_chapters} capítulos</p>
-        </div>
-      </div>
-    </Link>
-  );
+  // Filtros (otimizados com useMemo)
+  const filteredBooks = useMemo(() =>
+    books.filter((b) =>
+      b.name.toLowerCase().includes(searchTerm.toLowerCase())
+    ), [books, searchTerm]);
 
-  // Grid desktop
+  const oldTestament = useMemo(() =>
+    filteredBooks.filter((b) => b.testament_id === 1), [filteredBooks]);
+
+  const newTestament = useMemo(() =>
+    filteredBooks.filter((b) => b.testament_id === 2), [filteredBooks]);
+
+
+  // ✅ Função ÚNICA: Renderiza o Grid (Mobile e Desktop)
   const renderGrid = (list) => (
-    <div className="books-grid desktop-grid">
+    <div className="books-grid"> {/* Classe única para o grid */}
       {list.map((b) => (
-        <BookCard key={b.id} book={b} />
+        <BookCard
+          key={b.id}
+          book={b}
+          selectedVersion={selectedVersion}
+        />
       ))}
     </div>
   );
 
-  // Carrossel mobile
-  const renderCarousel = (list) => (
-    <div className="mobile-carousel">
-      <Swiper
-        modules={[FreeMode]}
-        freeMode
-        grabCursor
-        spaceBetween={12}
-        slidesPerView={2.2}
-        breakpoints={{ 420: { slidesPerView: 2.6 }, 520: { slidesPerView: 3.2 }, 640: { slidesPerView: 3.6 } }}
-        className="books-swiper"
-      >
-        {list.map((b) => (
-          <SwiperSlide key={b.id}>
-            <BookCard book={b} />
-          </SwiperSlide>
-        ))}
-      </Swiper>
-    </div>
-  );
+  // Função renderCarousel REMOVIDA
 
-  if (loading) return <p className="loading-message">Carregando…</p>;
-  if (error) return <p className="error-message">{error}</p>;
+  // Mensagem de carregamento (pode usar o spinner do index.css)
+  if (loading) return <div className="loading-message">Carregando…</div>;
+  if (error) return <div className="error-message">{error}</div>;
 
   return (
     <div className="home-wrapper">
@@ -126,15 +131,26 @@ function Home() {
         <h1 className="home-title">Bibliafy</h1>
         <div className="version-selector">
           <label htmlFor="version">Versão</label>
-          <select id="version" value={selectedVersion} onChange={(e) => setSelectedVersion(e.target.value)}>
+          <select
+            id="version"
+            value={selectedVersion}
+            onChange={(e) => setSelectedVersion(e.target.value)}
+          >
             {versions.map((v) => (
-              <option key={v.id} value={v.abbreviation}>{v.name} ({v.abbreviation})</option>
+              <option key={v.id} value={v.abbreviation}>
+                {v.name} ({v.abbreviation})
+              </option>
             ))}
           </select>
         </div>
       </div>
 
-      {verseOfTheDay && <VerseOfTheDay verse={verseOfTheDay} onRefresh={fetchVerseOfTheDay} />}
+      {verseOfTheDay && (
+        <VerseOfTheDay
+          verse={verseOfTheDay}
+          onRefresh={fetchVerseOfTheDay}
+        />
+      )}
 
       <div className="search-container">
         <input
@@ -147,14 +163,20 @@ function Home() {
       </div>
 
       <section className="testament-section">
-        <h2>Velho Testamento<span className="section-accent" /></h2>
-        {renderCarousel(oldTestament)}
+        <h2>
+          Velho Testamento
+          <span className="section-accent" />
+        </h2>
+        {/* ✅ Chama APENAS o grid */}
         {renderGrid(oldTestament)}
       </section>
 
       <section className="testament-section">
-        <h2>Novo Testamento<span className="section-accent" /></h2>
-        {renderCarousel(newTestament)}
+        <h2>
+          Novo Testamento
+          <span className="section-accent" />
+        </h2>
+        {/* ✅ Chama APENAS o grid */}
         {renderGrid(newTestament)}
       </section>
     </div>

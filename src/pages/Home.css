@@ -1,138 +1,233 @@
-/* ===============================
-   HOME – BIBLIAFY 2.0 PREMIUM
-================================= */
+/* ./Home.css (COMPLETO - APENAS GRID DE 2 COLUNAS NO MOBILE) */
 
+/* O Bloco :root foi REMOVIDO. */
+
+/* 2. Estilos Globais e Layout Principal */
 .home-wrapper {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 1.25rem 1rem 6rem; /* espaço p/ bottom nav */
+  padding: 1.5rem 1rem;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
-/* entrada suave */
-.animate-in { animation: pageEnter .6s ease both; }
-@keyframes pageEnter {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
+/* Animação de entrada */
+.animate-in {
+  animation: fadeIn 0.5s ease-out;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-/* topo */
+/* 3. Cabeçalho (Título e Seletor de Versão) */
 .home-top {
-  display: grid;
-  grid-template-columns: 1fr auto;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 1rem;
-  margin-bottom: .8rem;
+  margin-bottom: 1.5rem;
+  padding: 0 0.5rem;
 }
 .home-title {
-  font-family: 'Cinzel', serif;
-  font-size: 2rem;
-  letter-spacing: .5px;
+  font-size: clamp(1.8rem, 5vw, 2.5rem);
+  font-weight: 800;
   color: var(--text-primary);
+  margin: 0;
 }
-
-/* seletor de versão */
 .version-selector {
   display: flex;
-  align-items: center;
-  gap: .55rem;
+  flex-direction: column;
+  align-items: flex-end;
 }
 .version-selector label {
+  font-size: 0.8rem;
   color: var(--text-secondary);
-  font-size: .9rem;
+  margin-bottom: 0.25rem;
+  font-weight: 500;
 }
 .version-selector select {
-  background: var(--card-bg);
-  color: var(--text-primary);
+  background-color: var(--card-bg);
   border: 1px solid var(--borders);
-  border-radius: 10px;
-  padding: .48rem .7rem;
-  transition: .2s ease;
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  box-shadow: 0 2px 4px var(--shadow);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  cursor: pointer;
 }
+.version-selector select:hover { border-color: var(--highlight); }
 .version-selector select:focus {
   outline: none;
-  border-color: var(--highlight);
+  border-color: var(--text-primary);
+  box-shadow: 0 0 0 3px rgba(var(--text-primary-rgb), 0.2);
 }
 
-/* busca */
-.search-container { margin: 1.1rem 0 1.25rem; }
+/* 4. Versículo do Dia */
+.verse-of-the-day-container {
+  background-color: var(--card-bg);
+  border: 1px solid var(--borders);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  position: relative;
+  border-left: 4px solid var(--accent);
+}
+/* ... (estilos versículo) ... */
+.verse-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
+.verse-title { font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin: 0; padding-top: 0.25rem; }
+.verse-refresh-btn { background-color: transparent; border: 1px solid var(--borders); color: var(--text-secondary); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s ease; flex-shrink: 0; }
+.verse-refresh-btn:hover { background-color: var(--background); border-color: var(--highlight); }
+.verse-refresh-btn:focus { outline: none; border-color: var(--text-primary); box-shadow: 0 0 0 3px rgba(var(--text-primary-rgb), 0.2); }
+.verse-content { margin: 0; padding: 0; }
+.verse-text { font-size: 1.1rem; color: var(--text-primary); line-height: 1.6; margin: 0; }
+.verse-reference { display: block; text-align: right; margin-top: 1rem; font-size: 0.9rem; font-weight: 600; color: var(--accent); font-style: normal; }
+
+
+/* 5. Barra de Pesquisa */
+.search-container {
+  margin-bottom: 2.5rem;
+  padding: 0 0.5rem;
+}
 .search-bar {
   width: 100%;
-  padding: .9rem 1rem;
-  border-radius: 12px;
+  padding: 0.9rem 1rem;
+  font-size: 1rem;
+  background-color: var(--card-bg);
   border: 1px solid var(--borders);
-  background: var(--card-bg);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px var(--shadow);
   color: var(--text-primary);
-  transition: .2s ease;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
 }
-.search-bar:focus { outline: none; border-color: var(--highlight); }
+.search-bar::placeholder { color: var(--text-secondary); opacity: 0.8; }
+.search-bar:focus {
+  outline: none;
+  border-color: var(--text-primary);
+  box-shadow: 0 0 0 3px rgba(var(--text-primary-rgb), 0.2);
+}
 
-/* títulos de seção */
-.testament-section { margin-top: 1rem; }
+/* 6. Seções dos Testamentos */
+.testament-section {
+  margin-bottom: 2.5rem;
+}
 .testament-section h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 1.25rem;
   display: flex;
   align-items: center;
-  gap: .6rem;
-  color: var(--text-secondary);
-  font-weight: 700;
-  letter-spacing: .6px;
-  border-bottom: 1px solid var(--borders);
-  padding-bottom: .7rem;
-  margin-bottom: .8rem;
+  padding: 0 0.5rem;
 }
 .section-accent {
   display: inline-block;
-  width: 18px;
+  width: 40px;
   height: 4px;
-  background: var(--accent);
-  border-radius: 999px;
+  background-color: var(--text-primary);
+  margin-left: 0.75rem;
+  border-radius: 2px;
 }
 
-/* grid desktop */
-.books-grid {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 12px;
+/* 7. Card do Livro (BookCard) - Estilo Geral */
+.book-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  outline: none;
+  height: 100%;
 }
-.desktop-grid { display: none; }
-
-/* card do livro */
-.book-link { text-decoration: none; }
+.book-link:focus-visible .book-card {
+  border-color: var(--text-primary);
+  box-shadow: 0 0 0 3px rgba(var(--text-primary-rgb), 0.2);
+}
 .book-card {
-  background: var(--card-bg);
+  background-color: var(--card-bg);
   border: 1px solid var(--borders);
-  border-radius: 14px;
-  padding: .9rem .95rem;
-  display: grid;
-  grid-template-columns: 34px 1fr;
-  gap: .75rem;
+  border-radius: 10px;
+  padding: 1.25rem 1rem;
+  display: flex;
   align-items: center;
-  box-shadow: 0 10px 24px var(--shadow);
-  transform: translateZ(0);
-  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
-  will-change: transform;
+  gap: 1rem;
+  box-shadow: 0 3px 6px var(--shadow);
+  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out, border-color 0.2s ease-out;
+  height: 100%; /* Garante que cards no grid tenham mesma altura */
+  box-sizing: border-box;
+  overflow: hidden;
 }
 .book-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 14px 30px var(--shadow-hover);
+  box-shadow: 0 6px 12px var(--shadow-hover);
   border-color: var(--highlight);
 }
-.book-icon { display: grid; place-items: center; color: var(--text-secondary); }
-.book-info h3 { color: var(--text-primary); font-size: 1rem; margin: 0 0 2px; font-weight: 600; }
-.book-info p { color: var(--text-secondary); font-size: .8rem; text-transform: uppercase; letter-spacing: .4px; }
+.book-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--background);
+  color: var(--text-primary);
+  border: 1px solid var(--borders);
+}
+.book-info {
+  min-width: 0; /* Permite encolher */
+  overflow: hidden; /* Esconde o excesso */
+}
+.book-info h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 0.25rem 0;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.book-info p {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
 
-/* carrossel mobile */
-.mobile-carousel { display: block; }
-.books-swiper .book-card { height: 88px; }
-.swiper-slide { width: auto !important; }
+/* ======================================================
+   ✅ 8. LAYOUT RESPONSIVO (APENAS GRID)
+====================================================== */
+/* ./Home.css */
 
-/* responsivo */
+/* ... (todo o resto do seu CSS continua igual) ... */
+
+
+/* ======================================================
+   ✅ 8. LAYOUT RESPONSIVO (GRID - AGORA 3 COLUNAS NO MOBILE)
+====================================================== */
+
+/* Carrossel REMOVIDO */
+.mobile-carousel, .slick-carousel-container {
+  display: none;
+}
+
+/* Grid padrão (Mobile): AGORA 3 COLUNAS */
+.books-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* <-- MUDOU DE 2 PARA 3 */
+  gap: 0.75rem; /* <-- Diminuí um pouco o gap para caber melhor */
+  padding: 0 0.5rem;
+}
+
+/* Desktop (Telas Maiores) */
 @media (min-width: 768px) {
-  .desktop-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-  .mobile-carousel { display: none; }
-}
-@media (min-width: 1024px) {
-  .desktop-grid { grid-template-columns: repeat(6, 1fr); }
+  .home-wrapper {
+    padding: 2rem 1.5rem; /* Mais padding */
+  }
+
+  .books-grid {
+    /* Grid automático no desktop (continua igual) */
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.25rem; /* Espaçamento maior no desktop */
+  }
 }
 
-/* feedback */
-.loading-message { text-align: center; color: var(--text-secondary); margin: 2rem 0; }
+/* ... (o resto do seu CSS continua igual) ... */

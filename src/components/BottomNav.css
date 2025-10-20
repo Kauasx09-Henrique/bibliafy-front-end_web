@@ -1,40 +1,64 @@
+/* ./BottomNav.css */
+
 .bottom-nav {
   position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 60px;
+  height: 60px; 
+  
+  /* ✅ CORRETO: Usando variáveis de tema */
   background-color: var(--card-bg);
+  border-top: 1px solid var(--borders);
+  box-shadow: 0 -4px 12px var(--shadow);
+  
   display: flex;
   justify-content: space-around;
   align-items: center;
-  border-top: 1px solid var(--borders);
-  box-shadow: 0 -4px 12px var(--shadow);
   z-index: 1000;
-  transition: background 0.3s ease, box-shadow 0.3s ease;
+  transition: background 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
 .nav-item {
   display: flex;
+  flex-direction: column; /* Layout vertical (ícone + texto) */
   align-items: center;
   justify-content: center;
+  gap: 4px; /* Espaço entre ícone e texto */
+  
+  /* ✅ CORRETO: Cor padrão (cinza) */
   color: var(--text-secondary);
   transition: transform 0.2s, color 0.3s;
+  
+  text-decoration: none;
+  flex-grow: 1; 
+  height: 100%;
+}
+
+.nav-label {
+  font-size: 0.7rem; 
+  font-weight: 500;
 }
 
 .nav-item:hover {
-  color: var(--accent);
+  /* ✅ CORRETO: Cor de hover (neutra) */
+  color: var(--text-primary);
   transform: translateY(-3px);
 }
 
 .nav-item.active {
-  color: var(--accent);
+  /* ✅ CORRETO: Cor ativa (neutra) */
+  color: var(--text-primary);
   transform: translateY(-3px);
+}
+
+/* ✅ CORRETO: Força os ícones a usarem a cor do .nav-item */
+.nav-item svg {
+  stroke: currentColor; 
 }
 
 @media (min-width: 768px) {
   .bottom-nav {
     display: none;
-    /* Esconde no desktop */
   }
 }

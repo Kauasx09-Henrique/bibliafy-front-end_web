@@ -14,7 +14,7 @@ function SplashScreen() {
   useEffect(() => {
     // Garantir autoplay
     const video = videoRef.current;
-    if (video) video.play().catch(() => {});
+    if (video) video.play().catch(() => { });
 
     // Etapas revelação cinematográfica
     setTimeout(() => setShowLogo(true), 2000); // mostra logo
@@ -47,7 +47,7 @@ function SplashScreen() {
       <div className="splash-center">
         {showLogo && (
           <img
-            src="/Logo_Branca.png"
+            src="/logo.jpg"
             alt="Bibliafy"
             className="splash-logo animate-fade"
           />

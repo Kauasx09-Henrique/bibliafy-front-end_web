@@ -1,58 +1,89 @@
-#root {
-  max-width: 1280px;
+/* =======================
+   FONTES OFICIAIS
+======================= */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+
+/* =======================
+   TEMA LIGHT PREMIUM
+======================= */
+body.light-theme {
+  --background: #F9F9F9;
+  --borders: #E5E5E5;
+  --highlight: #D0D0D0;
+  --text-primary: #1A1A1A;
+  --text-secondary: #555555;
+  --accent: #C62828; /* Vermelho intenso oficial Bibliafy */
+  --card-bg: #FFFFFF;
+  --shadow: rgba(0, 0, 0, 0.08);
+  --shadow-hover: rgba(0, 0, 0, 0.12);
+}
+
+/* =======================
+   TEMA DARK PREMIUM
+======================= */
+body.dark-theme {
+  --background: #0D0D0D;
+  --borders: #1A1A1A;
+  --highlight: #333333;
+  --text-primary: #FFFFFF;
+  --text-secondary: #B3B3B3;
+  --accent: #C62828;
+  --card-bg: #141414;
+  --shadow: rgba(0, 0, 0, 0.4);
+  --shadow-hover: rgba(0, 0, 0, 0.55);
+}
+
+/* =======================
+   RESET GLOBAL
+======================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  transition: background 0.35s ease, color 0.35s ease;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  outline: none;
+  font-family: inherit;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--highlight);
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+.main-content {
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  padding: 2rem 1rem;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
-}
-
-/* Transição suave do splash para o app */
-.app-transition {
-  animation: appEnter 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-@keyframes appEnter {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+/* O BLOCO .bottom-nav FOI REMOVIDO DAQUI.
+  Ele estava errado e não é necessário neste arquivo.
+*/

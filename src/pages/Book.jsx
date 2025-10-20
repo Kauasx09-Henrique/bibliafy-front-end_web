@@ -1,14 +1,23 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useParams, Link, useSearchParams } from "react-router-dom";
 import api from "../services/api";
 import { ChevronLeft, BookOpen } from "lucide-react";
 import "./Book.css";
 
-// Swiper (carrossel mobile)
-import { Swiper, SwiperSlide } from "swiper/react";
-import { FreeMode } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/free-mode";
+// Imports do Swiper removidos
+
+// --- Otimização: Mover para fora e usar memo ---
+// Isso impede que as "pílulas" sejam recriadas em toda renderização
+const ChapterPill = React.memo(({ n, bookId, selectedVersion }) => (
+  <Link
+    to={`/livro/${bookId}/capitulo/${n}?version=${selectedVersion}`}
+    className="chapter-pill"
+    aria-label={`Capítulo ${n}`}
+  >
+    {n}
+  </Link>
+));
+// --- Fim da otimização ---
 
 function Book() {
   const { bookId } = useParams();
@@ -28,7 +37,7 @@ function Book() {
       try {
         const [chaptersRes, booksRes, versionsRes] = await Promise.all([
           api.get(`/api/bible/books/${bookId}/chapters`),
-          api.get("/api/bible/books"),
+          api.get("/api/bible/books"), // Necessário para pegar o nome
           api.get("/api/bible/versions"),
         ]);
 
@@ -47,24 +56,14 @@ function Book() {
       }
     }
     fetchData();
-  }, [bookId]);
+  }, [bookId]); // Dependência está correta
 
   const handleVersionChange = (e) => {
     setSearchParams({ version: e.target.value });
   };
 
   if (loading) return <p className="loading-message">Carregando…</p>;
-  if (error) return <p className="error-message-home">{error}</p>;
-
-  const ChapterPill = ({ n }) => (
-    <Link
-      to={`/livro/${bookId}/capitulo/${n}?version=${selectedVersion}`}
-      className="chapter-pill"
-      aria-label={`Capítulo ${n}`}
-    >
-      {n}
-    </Link>
-  );
+  if (error) return <p className="error-message">{error}</p>; // Corrigido de 'error-message-home'
 
   return (
     <div className="book-wrapper animate-in">
@@ -100,33 +99,17 @@ function Book() {
         <p className="book-subtitle">Selecione um capítulo</p>
       </header>
 
-      {/* Carrossel (mobile) */}
-      <div className="chapters-carousel">
-        <Swiper
-          modules={[FreeMode]}
-          freeMode
-          grabCursor
-          spaceBetween={10}
-          slidesPerView={4.2}
-          breakpoints={{
-            420: { slidesPerView: 5.2 },
-            520: { slidesPerView: 6.2 },
-            640: { slidesPerView: 7.2 },
-          }}
-          className="chapters-swiper"
-        >
-          {chapters.map((n) => (
-            <SwiperSlide key={n}>
-              <ChapterPill n={n} />
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      </div>
+      {/* Carrossel (mobile) REMOVIDO */}
 
-      {/* Grid (desktop) */}
+      {/* Grid (agora usado para mobile e desktop) */}
       <div className="chapters-grid">
         {chapters.map((n) => (
-          <ChapterPill key={`grid-${n}`} n={n} />
+          <ChapterPill
+            key={n}
+            n={n}
+            bookId={bookId}
+            selectedVersion={selectedVersion}
+          />
         ))}
       </div>
     </div>

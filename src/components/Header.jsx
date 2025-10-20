@@ -1,33 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import { Sun, Moon, LogOut } from "lucide-react";
+// 1. Removemos Sun e Moon
+import { LogOut } from "lucide-react";
 import "./Header.css";
 
 function Header() {
   const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
-  const [theme, setTheme] = useState("light");
 
-  // Detecta o tema do sistema + salva no localStorage
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const defaultTheme = savedTheme || (prefersDark ? "dark" : "light");
-
-    setTheme(defaultTheme);
-    document.body.classList.remove("light-theme", "dark-theme");
-    document.body.classList.add(defaultTheme + "-theme");
-  }, []);
-
-  // Alternar tema
-  const toggleTheme = () => {
-    const newTheme = theme === "light" ? "dark" : "light";
-    setTheme(newTheme);
-    document.body.classList.remove("light-theme", "dark-theme");
-    document.body.classList.add(newTheme + "-theme");
-    localStorage.setItem("theme", newTheme);
-  };
+  // 2. Toda a lógica de tema (useState, useEffect, applyTheme, toggleTheme) foi REMOVIDA.
 
   // Logout
   const handleLogout = () => {
@@ -38,21 +20,23 @@ function Header() {
   return (
     <header className="bib-header">
       <div className="bib-header-content">
-        {/* ✅ Logo */}
+        {/* 3. Logo agora é fixo (usando o logo escuro para o tema claro) */}
         <Link to="/home" className="bib-logo">
-          <img src="/Logo_Branca.png" alt="Bibliafy" />
+          <img src="/Logo_Bibliafy.jpg" alt="Bibliafy" /> 
         </Link>
 
         {/* ✅ Botões lado direito */}
         <div className="bib-header-actions">
-          {/* Toggle de Tema */}
-          <button className="theme-toggle" onClick={toggleTheme}>
-            {theme === "light" ? <Moon size={20} /> : <Sun size={20} />}
-          </button>
+          
+          {/* 4. O Botão de Tema foi REMOVIDO daqui */}
 
-          {/* Logout */}
+          {/* Logout (com Acessibilidade) */}
           {isAuthenticated && (
-            <button className="logout-btn" onClick={handleLogout}>
+            <button
+              className="logout-btn"
+              onClick={handleLogout}
+              aria-label="Sair da conta"
+            >
               <LogOut size={20} />
             </button>
           )}

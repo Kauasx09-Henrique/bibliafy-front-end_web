@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useParams, Link, useNavigate, useSearchParams } from "react-router-dom";
 import api from "../services/api";
 import { useAuth } from "../contexts/AuthContext";
@@ -10,15 +10,130 @@ import {
   StickyNote,
   Type,
   Copy,
-  RefreshCw,
+  RefreshCw, // Você pode trocar por 'Contrast' se preferir
   BookOpenCheck,
-  Contrast,
+  Contrast, // Ícone para Configurações
   BookOpen,
-  Columns
+  Columns,
+  X, // Ícone para fechar modal
 } from "lucide-react";
 import NoteModal from "../components/NoteModal";
 import CompareModal from "../components/CompareModal";
 import "./Chapter.css";
+
+// ---
+// 1. Componente para o Modal de Configurações
+// ---
+const SettingsModal = ({
+  isOpen,
+  onClose,
+  fontSize,
+  incFont,
+  decFont,
+  fontFace,
+  setFontFace,
+  selectedVersion,
+  handleVersionChange,
+  versions,
+  compactMode,
+  setCompactMode,
+}) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="settings-modal-overlay" onClick={onClose}>
+      <div className="settings-modal-content" onClick={(e) => e.stopPropagation()}>
+        <div className="settings-header">
+          <h2>Configurações de Leitura</h2>
+          <button onClick={onClose} className="rt-icon" aria-label="Fechar">
+            <X size={20} />
+          </button>
+        </div>
+
+        {/* --- Tamanho da Fonte --- */}
+        <div className="settings-group">
+          <h3>Tamanho da Fonte</h3>
+          <div className="settings-control">
+            <button
+              className="rt-icon"
+              title="Diminuir fonte"
+              onClick={decFont}
+              aria-label="Diminuir fonte"
+            >
+              <Type size={18} />
+              <span className="muted">-</span>
+            </button>
+            <span className="rt-fontsize-modal">{fontSize}px</span>
+            <button
+              className="rt-icon"
+              title="Aumentar fonte"
+              onClick={incFont}
+              aria-label="Aumentar fonte"
+            >
+              <Type size={18} />
+              <span className="muted">+</span>
+            </button>
+          </div>
+        </div>
+
+        {/* --- Tipo de Fonte --- */}
+        <div className="settings-group">
+          <h3>Tipo de Fonte</h3>
+          <select
+            className="rt-select-modal"
+            value={fontFace}
+            onChange={(e) => setFontFace(e.target.value)}
+            aria-label="Tipo de fonte"
+          >
+            <option value="font-inter">Moderna (Inter)</option>
+            <option value="font-lora">Elegante (Lora)</option>
+            <option value="font-garamond">Clássica (Garamond)</option>
+          </select>
+        </div>
+
+        {/* --- Versão --- */}
+        <div className="settings-group">
+          <h3>Versão Bíblica</h3>
+          <select
+            className="rt-select-modal"
+            value={selectedVersion}
+            onChange={handleVersionChange}
+            aria-label="Versão bíblica"
+          >
+            {versions.map((v) => (
+              <option key={v.id} value={v.abbreviation}>
+                {v.name} ({v.abbreviation})
+              </option>
+            ))}
+          </select>
+        </div>
+        
+        {/* --- Modo Compacto --- */}
+        <div className="settings-group">
+          <h3>Modo de Leitura</h3>
+          <button
+            className={`rt-toggle ${compactMode ? "active" : ""}`}
+            onClick={() => setCompactMode((s) => !s)}
+            aria-label="Modo compacto"
+          >
+            <Columns size={18} />
+            <span>{compactMode ? "Modo Compacto Ativado" : "Modo Padrão"}</span>
+          </button>
+        </div>
+
+        {/* --- Navegação --- */}
+        <div className="settings-group">
+          <h3>Navegação</h3>
+           <Link to="/home" className="rt-toggle" title="Home">
+            <Home size={18} />
+            <span>Ir para Home</span>
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 
 export default function Chapter() {
   const { bookId, chapterNum } = useParams();
@@ -39,7 +154,7 @@ export default function Chapter() {
 
   // Leitura / UI
   const [fontSize, setFontSize] = useState(18);
-  const [fontFace, setFontFace] = useState("font-inter"); // font-inter | font-lora | font-garamond
+  const [fontFace, setFontFace] = useState("font-inter");
   const [compactMode, setCompactMode] = useState(false);
 
   // Modais
@@ -47,62 +162,63 @@ export default function Chapter() {
   const [compareVerse, setCompareVerse] = useState(null);
   const [compareLoading, setCompareLoading] = useState(false);
   const [compareData, setCompareData] = useState([]);
+  // ---
+  // 2. Novo estado para o modal de configurações
+  // ---
+  const [settingsModalOpen, setSettingsModalOpen] = useState(false);
 
   const currentChapter = useMemo(() => parseInt(chapterNum, 10), [chapterNum]);
   const prevChapter = currentChapter > 1 ? currentChapter - 1 : null;
 
   // Carrega dados iniciais
-  useEffect(() => {
-    async function loadData() {
-      setLoading(true);
-      setError("");
-      try {
-        const [versesRes, booksRes, chaptersRes, versionsRes] = await Promise.all([
-          api.get(`/api/bible/books/${bookId}/chapters/${chapterNum}?version=${selectedVersion}`),
-          api.get("/api/bible/books"),
-          api.get(`/api/bible/books/${bookId}/chapters`),
-          api.get("/api/bible/versions"),
-        ]);
+  const loadData = useCallback(async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const [versesRes, booksRes, chaptersRes, versionsRes] = await Promise.all([
+        api.get(`/api/bible/books/${bookId}/chapters/${chapterNum}?version=${selectedVersion}`),
+        api.get("/api/bible/books"),
+        api.get(`/api/bible/books/${bookId}/chapters`),
+        api.get("/api/bible/versions"),
+      ]);
 
-        const bk = (booksRes.data || []).find(b => String(b.id) === String(bookId));
-        setBookName(bk ? bk.name : "Livro");
+      const bk = (booksRes.data || []).find(b => String(b.id) === String(bookId));
+      setBookName(bk ? bk.name : "Livro");
 
-        setVerses(versesRes.data || []);
-        setTotalChapters((chaptersRes.data || []).length);
-        setVersions(versionsRes.data || []);
+      setVerses(versesRes.data || []);
+      setTotalChapters((chaptersRes.data || []).length);
+      setVersions(versionsRes.data || []);
 
-        if (isAuthenticated) {
-          const favRes = await api.get("/api/favorites", {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          setFavorites(new Set((favRes.data || []).map(f => f.verse_id)));
-        } else {
-          setFavorites(new Set());
-        }
-      } catch (e) {
-        setError("Não foi possível carregar o capítulo.");
-      } finally {
-        setLoading(false);
+      if (isAuthenticated) {
+        const favRes = await api.get("/api/favorites", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setFavorites(new Set((favRes.data || []).map(f => f.verse_id)));
+      } else {
+        setFavorites(new Set());
       }
+    } catch (e) {
+      setError("Não foi possível carregar o capítulo.");
+    } finally {
+      setLoading(false);
     }
-    loadData();
   }, [bookId, chapterNum, selectedVersion, isAuthenticated, token]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]); // O useEffect agora depende da função memoizada
 
   // Troca versão
   const handleVersionChange = (e) => setSearchParams({ version: e.target.value });
 
   // Navegação capítulos
-  const handlePrev = () => {
-    if (!prevChapter) return;
-    navigate(`/livro/${bookId}/capitulo/${prevChapter}?version=${selectedVersion}`);
+  const navigateToChapter = (chapter) => {
+    if (!chapter || chapter < 1 || chapter > totalChapters) return;
+    navigate(`/livro/${bookId}/capitulo/${chapter}?version=${selectedVersion}`);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
-  const handleNext = () => {
-    if (currentChapter < totalChapters) {
-      navigate(`/livro/${bookId}/capitulo/${currentChapter + 1}?version=${selectedVersion}`);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-  };
+  const handlePrev = () => navigateToChapter(prevChapter);
+  const handleNext = () => navigateToChapter(currentChapter + 1);
 
   // Font size
   const incFont = () => setFontSize(v => Math.min(v + 2, 40));
@@ -160,7 +276,6 @@ export default function Chapter() {
       );
       setNoteModalVerse(null);
     } catch (e) {
-      // Silencioso para não interromper leitura
       setNoteModalVerse(null);
     }
   };
@@ -169,6 +284,7 @@ export default function Chapter() {
   const copyVerse = async (v) => {
     try {
       await navigator.clipboard.writeText(`${bookName} ${chapterNum}:${v.verse} — ${v.text}`);
+      // (Opcional) Adicionar um feedback visual (ex: toast)
     } catch {}
   };
 
@@ -209,114 +325,47 @@ export default function Chapter() {
   if (error)
     return (
       <div className="chapter-wrapper">
-        <p className="error-message-home">{error}</p>
+        <p className="error-message">{error}</p>
       </div>
     );
 
   return (
-    <div className={`chapter-wrapper ${compactMode ? "compact" : ""}`}>
-      {/* Toolbar fixa */}
+    // Aplica a classe da fonte e o padding
+    <div className={`chapter-wrapper ${compactMode ? "compact" : ""} ${fontFace}`}>
+      
+      {/* 4. Toolbar fixa SUPERIOR (Limpa) */}
       <div className="reading-toolbar">
         <div className="rt-left">
           <Link to={`/livro/${bookId}?version=${selectedVersion}`} className="rt-btn">
             <ChevronLeft size={18} />
-            <span>{bookName}</span>
+            <span className="rt-book-name">{bookName}</span>
           </Link>
         </div>
 
+        {/* Título Fixo */}
         <div className="rt-middle">
-          <button
-            className="rt-icon"
-            title="Diminuir fonte"
-            onClick={decFont}
-            aria-label="Diminuir fonte"
-          >
-            <Type size={18} />
-            <span className="muted">-</span>
-          </button>
-          <span className="rt-fontsize">{fontSize}px</span>
-          <button
-            className="rt-icon"
-            title="Aumentar fonte"
-            onClick={incFont}
-            aria-label="Aumentar fonte"
-          >
-            <Type size={18} />
-            <span className="muted">+</span>
-          </button>
-
-          <select
-            className="rt-select"
-            value={fontFace}
-            onChange={(e) => setFontFace(e.target.value)}
-            aria-label="Tipo de fonte"
-          >
-            <option value="font-inter">Moderna</option>
-            <option value="font-lora">Elegante</option>
-            <option value="font-garamond">Clássica</option>
-          </select>
-
-          <select
-            className="rt-select"
-            value={selectedVersion}
-            onChange={handleVersionChange}
-            aria-label="Versão bíblica"
-          >
-            {versions.map((v) => (
-              <option key={v.id} value={v.abbreviation}>
-                {v.name} ({v.abbreviation})
-              </option>
-            ))}
-          </select>
-
-          <button
-            className={`rt-icon ${compactMode ? "active" : ""}`}
-            onClick={() => setCompactMode((s) => !s)}
-            title="Modo compacto"
-            aria-label="Modo compacto"
-          >
-            <Columns size={18} />
-          </button>
+          <div className="chapter-title-top">
+            <BookOpen size={16} />
+            <h1>Cap. {chapterNum}</h1>
+          </div>
         </div>
 
+        {/* Botão de Configurações */}
         <div className="rt-right">
-          <Link to="/home" className="rt-btn" title="Home">
-            <Home size={18} />
-            <span>Home</span>
-          </Link>
+          <button
+            className="rt-icon"
+            onClick={() => setSettingsModalOpen(true)}
+            title="Configurações de leitura"
+          >
+            <Contrast size={18} />
+          </button>
         </div>
       </div>
-
-      {/* Cabeçalho do capítulo */}
-      <header className="chapter-header">
-        <button
-          className={`nav-arrow ${!prevChapter ? "disabled" : ""}`}
-          onClick={handlePrev}
-          disabled={!prevChapter}
-          aria-label="Capítulo anterior"
-        >
-          <ChevronLeft size={18} />
-        </button>
-
-        <div className="chapter-title">
-          <BookOpen size={18} />
-          <h1>
-            {bookName} <span>•</span> Cap. {chapterNum}
-          </h1>
-        </div>
-
-        <button
-          className={`nav-arrow ${currentChapter >= totalChapters ? "disabled" : ""}`}
-          onClick={handleNext}
-          disabled={currentChapter >= totalChapters}
-          aria-label="Próximo capítulo"
-        >
-          <ChevronRight size={18} />
-        </button>
-      </header>
+      
+      {/* 5. Cabeçalho do capítulo foi removido daqui */}
 
       {/* Lista de versículos */}
-      <main className={`verses ${fontFace}`} style={{ fontSize: `${fontSize}px` }}>
+      <main className="verses" style={{ fontSize: `${fontSize}px` }}>
         {verses.map((v) => {
           const isFav = favorites.has(v.id);
           return (
@@ -362,7 +411,7 @@ export default function Chapter() {
                   title="Comparar versões"
                   aria-label="Comparar versões"
                 >
-                  <Contrast size={18} />
+                  <RefreshCw size={18} />
                 </button>
               </div>
             </article>
@@ -370,8 +419,8 @@ export default function Chapter() {
         })}
       </main>
 
-      {/* Rodapé de navegação */}
-      <footer className="chapter-footer">
+      {/* 6. Rodapé de navegação FIXO */}
+      <footer className="chapter-footer sticky-footer">
         <button
           className="footer-nav"
           onClick={handlePrev}
@@ -411,6 +460,22 @@ export default function Chapter() {
         isLoading={compareLoading}
         onClose={() => setCompareVerse(null)}
         currentVersion={selectedVersion}
+      />
+
+      {/* 7. O novo Modal de Configurações */}
+      <SettingsModal
+        isOpen={settingsModalOpen}
+        onClose={() => setSettingsModalOpen(false)}
+        fontSize={fontSize}
+        incFont={incFont}
+        decFont={decFont}
+        fontFace={fontFace}
+        setFontFace={setFontFace}
+        selectedVersion={selectedVersion}
+        handleVersionChange={handleVersionChange}
+        versions={versions}
+        compactMode={compactMode}
+        setCompactMode={setCompactMode}
       />
     </div>
   );
