@@ -5,6 +5,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;600&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
 
+/* =========================================================
+   DEFINIÇÃO DE TEMAS
+========================================================= */
+
 /* 1. TEMA CLARO (WHITE MODE) - Padrão */
 :root {
   /* Cores Globais */
@@ -13,11 +17,11 @@
   --highlight: #D0D0D0;
   --text-primary: #1A1A1A;
   --text-secondary: #555555;
-  --accent: #C62828; 
+  --accent: #C62828;
   --card-bg: #FFFFFF;
   --shadow: rgba(0, 0, 0, 0.08);
   --shadow-hover: rgba(0, 0, 0, 0.12);
-  --text-primary-rgb: 26, 26, 26; /* <-- Variável para o box-shadow */
+  --text-primary-rgb: 26, 26, 26; /* Variável para o box-shadow */
 
   /* Variáveis específicas do Header */
   --header-bg: rgba(255, 255, 255, 0.65);
@@ -38,7 +42,7 @@
   --card-bg: #141414;
   --shadow: rgba(0, 0, 0, 0.4);
   --shadow-hover: rgba(0, 0, 0, 0.55);
-  --text-primary-rgb: 255, 255, 255; /* <-- Variável para o box-shadow */
+  --text-primary-rgb: 255, 255, 255; /* Variável para o box-shadow */
 
   /* Variáveis específicas do Header */
   --header-bg: rgba(0, 0, 0, 0.45);
@@ -47,7 +51,10 @@
   --header-icon-hover-bg: rgba(255, 255, 255, 0.08);
 }
 
-/* RESET GLOBAL */
+
+/* =======================
+   RESET GLOBAL
+======================= */
 * {
   margin: 0;
   padding: 0;
@@ -67,14 +74,21 @@ body {
     padding-bottom: 0;
   }
 }
-/* ... (restante do seu reset, scrollbar, etc.) ... */
+
 a { text-decoration: none; color: inherit; }
 button { cursor: pointer; border: none; outline: none; font-family: inherit; }
 ::-webkit-scrollbar { width: 8px; }
 ::-webkit-scrollbar-track { background: var(--background); }
 ::-webkit-scrollbar-thumb { background: var(--highlight); border-radius: 8px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
-.main-content { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem; }
+
+/* Layout Principal (Usado no App.jsx) */
+.main-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
 /* =======================
    MENSAGENS DE ESTADO (COM SPINNER)
 ======================= */
@@ -86,43 +100,36 @@ button { cursor: pointer; border: none; outline: none; font-family: inherit; }
   color: var(--text-secondary);
   padding: 4rem 1rem;
   font-weight: 500;
-  
-  /* Novo: Transforma em flex para alinhar o spinner */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1.5rem; /* Espaço entre o spinner e o texto */
+  gap: 1.5rem;
 }
 
-/* O Spinner (criado com pseudo-elemento) */
+/* O Spinner */
 .loading-message::before {
   content: "";
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  
-  /* Cor "cinza" (trilha) */
-  border: 4px solid var(--borders); 
-  
-  /* Cor principal (a que gira) */
-  border-top-color: var(--text-primary); 
-  
-  /* Animação */
+  border: 4px solid var(--borders);
+  border-top-color: var(--text-primary);
   animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
-/* Estilo do Erro (sem spinner) */
+/* Estilo do Erro */
 .error-message {
-  color: var(--accent); /* Vermelho */
+  color: var(--accent);
   font-weight: 700;
+}
+
+/* Garante que erro não tenha spinner */
+.error-message::before {
+  display: none;
 }

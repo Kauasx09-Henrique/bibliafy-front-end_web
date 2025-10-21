@@ -17,6 +17,7 @@ import Book from './pages/Book';
 import Chapter from './pages/Chapter';
 import Anotacoes from './pages/Anotacoes';
 import Perfil from './pages/Perfil';
+import FavoritesPage from './pages/Favoritos.jsx'; // ✅ IMPORTAR A PÁGINA DE FAVORITOS
 
 // 3. Importação do CSS Global
 import './index.css';
@@ -25,26 +26,27 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
       <AuthProvider>
-       <Routes>
-  <Route element={<App />}>
-    {/* --- ROTAS PÚBLICAS --- */}
-    <Route path="/home" element={<Home />} />  {/* agora pública */}
-    <Route path="/livro/:bookId" element={<Book />} />
-    <Route path="/livro/:bookId/capitulo/:chapterNum" element={<Chapter />} />
+        <Routes>
+          <Route element={<App />}>
+            {/* --- ROTAS PÚBLICAS --- */}
+            <Route path="/home" element={<Home />} />
+            <Route path="/livro/:bookId" element={<Book />} />
+            <Route path="/livro/:bookId/capitulo/:chapterNum" element={<Chapter />} />
 
-    {/* --- ROTAS PRIVADAS --- */}
-    <Route path="/anotacoes" element={<ProtectedRoute><Anotacoes /></ProtectedRoute>} />
-    <Route path="/perfil" element={<ProtectedRoute><Perfil /></ProtectedRoute>} />
-  </Route>
+            {/* --- ROTAS PRIVADAS --- */}
+            <Route path="/anotacoes" element={<ProtectedRoute><Anotacoes /></ProtectedRoute>} />
+            <Route path="/perfil" element={<ProtectedRoute><Perfil /></ProtectedRoute>} />
+            {/* ✅ ADICIONAR ROTA DE FAVORITOS AQUI */}
+            <Route path="/favoritos" element={<ProtectedRoute><FavoritesPage /></ProtectedRoute>} />
+          </Route>
 
-  {/* --- ROTAS FORA DO LAYOUT PRINCIPAL --- */}
-  <Route path="/login" element={<Login />} />
-  <Route path="/registro" element={<Register />} />
+          {/* --- ROTAS FORA DO LAYOUT PRINCIPAL --- */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/registro" element={<Register />} />
 
-  {/* --- REDIRECIONAMENTO PADRÃO --- */}
-  <Route path="*" element={<Navigate to="/home" replace />} />
-</Routes>
-
+          {/* --- REDIRECIONAMENTO PADRÃO --- */}
+          <Route path="*" element={<Navigate to="/home" replace />} />
+        </Routes>
       </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>

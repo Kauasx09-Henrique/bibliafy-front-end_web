@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import * as jwt from 'jwt-decode'; // compatível com Vite
+// ✅ CORREÇÃO AQUI: Importa a função específica 'jwtDecode'
+import { jwtDecode } from 'jwt-decode'; 
 
 const AuthContext = createContext(null);
 
@@ -11,23 +12,32 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     if (token) {
       try {
-        const decodedUser = jwt(token); // ✅ aqui é só jwt(token)
+        // ✅ CORREÇÃO AQUI: Chama a função importada 'jwtDecode'
+        const decodedUser = jwtDecode(token); 
+        // Opcional: Verificar expiração do token (se jwtDecode retornar 'exp')
+        // if (decodedUser.exp * 1000 < Date.now()) {
+        //   throw new Error("Token expirado");
+        // }
         setUser(decodedUser);
-        localStorage.setItem('token', token);
+        // Não precisa salvar de novo, já está no state
+        // localStorage.setItem('token', token); 
       } catch (err) {
-        console.error('Token inválido:', err);
+        console.error('Token inválido ou expirado:', err);
         setUser(null);
         setToken(null);
         localStorage.removeItem('token');
       }
     } else {
       setUser(null);
-      localStorage.removeItem('token');
+      // Garante que não haja token no storage se não houver no state
+      localStorage.removeItem('token'); 
     }
     setLoading(false);
   }, [token]);
 
   const login = (newToken) => {
+    // Salva no localStorage ANTES de atualizar o state
+    localStorage.setItem('token', newToken); 
     setToken(newToken);
   };
 
@@ -45,6 +55,12 @@ export function AuthProvider({ children }) {
     isAuthenticated: !!token,
     loading,
   };
+
+  // Renderiza null ou children dependendo do loading para evitar piscar
+  // (Opcional, mas boa prática se o App depender do user/auth no primeiro render)
+  // if (loading) {
+  //   return null; // Ou um spinner global
+  // }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

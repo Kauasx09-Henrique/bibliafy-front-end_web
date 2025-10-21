@@ -81,13 +81,12 @@ function Home() {
       setLoading(true);
       await fetchVersions();
       await fetchBooks();
-      setLoading(false); // Move setLoading para cá
+      setLoading(false); 
     })();
   }, [fetchVersions, fetchBooks]);
 
    // Efeito separado para buscar versículo
    useEffect(() => {
-    // Busca o versículo assim que selectedVersion estiver disponível
     if (selectedVersion) {
       fetchVerseOfTheDay();
     }
@@ -106,9 +105,9 @@ function Home() {
     filteredBooks.filter((b) => b.testament_id === 2), [filteredBooks]);
 
 
-  // ✅ Função ÚNICA: Renderiza o Grid (Mobile e Desktop)
+  // ✅ Função ÚNICA: Renderiza o Grid (que será lista no mobile via CSS)
   const renderGrid = (list) => (
-    <div className="books-grid"> {/* Classe única para o grid */}
+    <div className="books-grid"> {/* Classe única */}
       {list.map((b) => (
         <BookCard
           key={b.id}
@@ -118,8 +117,6 @@ function Home() {
       ))}
     </div>
   );
-
-  // Função renderCarousel REMOVIDA
 
   // Mensagem de carregamento (pode usar o spinner do index.css)
   if (loading) return <div className="loading-message">Carregando…</div>;
@@ -167,7 +164,7 @@ function Home() {
           Velho Testamento
           <span className="section-accent" />
         </h2>
-        {/* ✅ Chama APENAS o grid */}
+        {/* Chama APENAS o grid */}
         {renderGrid(oldTestament)}
       </section>
 
@@ -176,7 +173,7 @@ function Home() {
           Novo Testamento
           <span className="section-accent" />
         </h2>
-        {/* ✅ Chama APENAS o grid */}
+        {/* Chama APENAS o grid */}
         {renderGrid(newTestament)}
       </section>
     </div>

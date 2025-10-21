@@ -5,7 +5,8 @@
       "headers": [
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; img-src 'self' data: https://source.unsplash.com https://i.imgur.com https://cdn.pixabay.com; connect-src 'self' https://bibliafy-api.onrender.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;"
+    
+          "value": "default-src 'self'; worker-src 'self' blob:; img-src 'self' data: https://source.unsplash.com https://i.imgur.com https://cdn.pixabay.com; connect-src 'self' https://bibliafy-api.onrender.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;"
         }
       ]
     }
