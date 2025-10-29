@@ -1,114 +1,422 @@
-/* ./Home.css (COMPLETO - LISTA VERTICAL MOBILE / GRID DESKTOP) */
-
-/* O Bloco :root foi REMOVIDO. */
-
-/* 2. Estilos Globais e Layout Principal */
+/* --- Wrapper Principal --- */
 .home-wrapper {
-  max-width: 1200px;
+  max-width: 1000px;
   margin: 0 auto;
-  padding: 1.5rem 1rem;
-  box-sizing: border-box;
-  overflow-x: hidden;
+  padding: 1rem;
 }
 
-/* Animação de entrada */
-.animate-in {
-  animation: fadeIn 0.5s ease-out;
-}
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* 3. Cabeçalho */
-/* ... (Estilos do .home-top, .home-title, .version-selector iguais) ... */
-.home-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding: 0 0.5rem; }
-.home-title { font-size: clamp(1.8rem, 5vw, 2.5rem); font-weight: 800; color: var(--text-primary); margin: 0; }
-.version-selector { display: flex; flex-direction: column; align-items: flex-end; }
-.version-selector label { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.25rem; font-weight: 500; }
-.version-selector select { background-color: var(--card-bg); border: 1px solid var(--borders); border-radius: 6px; padding: 0.5rem 0.75rem; font-size: 0.9rem; color: var(--text-primary); box-shadow: 0 2px 4px var(--shadow); transition: border-color 0.2s, box-shadow 0.2s; cursor: pointer; }
-.version-selector select:hover { border-color: var(--highlight); }
-.version-selector select:focus { outline: none; border-color: var(--text-primary); box-shadow: 0 0 0 3px rgba(var(--text-primary-rgb), 0.2); }
-
-
-/* 4. Versículo do Dia */
-/* ... (Estilos do .verse-of-the-day-container iguais) ... */
-.verse-of-the-day-container { background-color: var(--card-bg); border: 1px solid var(--borders); border-radius: 10px; box-shadow: var(--shadow); padding: 1.5rem; margin-bottom: 2rem; position: relative; border-left: 4px solid var(--accent); }
-.verse-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
-.verse-title { font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin: 0; padding-top: 0.25rem; }
-.verse-refresh-btn { background-color: transparent; border: 1px solid var(--borders); color: var(--text-secondary); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s ease; flex-shrink: 0; }
-.verse-refresh-btn:hover { background-color: var(--background); border-color: var(--highlight); }
-.verse-refresh-btn:focus { outline: none; border-color: var(--text-primary); box-shadow: 0 0 0 3px rgba(var(--text-primary-rgb), 0.2); }
-.verse-content { margin: 0; padding: 0; }
-.verse-text { font-size: 1.1rem; color: var(--text-primary); line-height: 1.6; margin: 0; }
-.verse-reference { display: block; text-align: right; margin-top: 1rem; font-size: 0.9rem; font-weight: 600; color: var(--accent); font-style: normal; }
-
-
-/* 5. Barra de Pesquisa */
-/* ... (Estilos do .search-container iguais) ... */
-.search-container { margin-bottom: 2.5rem; padding: 0 0.5rem; }
-.search-bar { width: 100%; padding: 0.9rem 1rem; font-size: 1rem; background-color: var(--card-bg); border: 1px solid var(--borders); border-radius: 8px; box-shadow: 0 2px 4px var(--shadow); color: var(--text-primary); transition: border-color 0.2s, box-shadow 0.2s; box-sizing: border-box; }
-.search-bar::placeholder { color: var(--text-secondary); opacity: 0.8; }
-.search-bar:focus { outline: none; border-color: var(--text-primary); box-shadow: 0 0 0 3px rgba(var(--text-primary-rgb), 0.2); }
-
-
-/* 6. Seções dos Testamentos */
-/* ... (Estilos do .testament-section iguais) ... */
-.testament-section { margin-bottom: 2.5rem; }
-.testament-section h2 { font-size: 1.75rem; font-weight: 700; margin-bottom: 1.25rem; display: flex; align-items: center; padding: 0 0.5rem; }
-.section-accent { display: inline-block; width: 40px; height: 4px; background-color: var(--text-primary); margin-left: 0.75rem; border-radius: 2px; }
-
-
-/* 7. Card do Livro (BookCard) - Estilo Geral */
-/* ... (Estilos do .book-card e filhos iguais) ... */
-.book-link { text-decoration: none; color: inherit; display: block; outline: none; height: auto; /* Altura auto na lista */ }
-.book-link:focus-visible .book-card { border-color: var(--text-primary); box-shadow: 0 0 0 3px rgba(var(--text-primary-rgb), 0.2); }
-.book-card { background-color: var(--card-bg); border: 1px solid var(--borders); border-radius: 10px; padding: 1.25rem 1rem; display: flex; align-items: center; gap: 1rem; box-shadow: 0 3px 6px var(--shadow); transition: transform 0.2s ease-out, box-shadow 0.2s ease-out, border-color 0.2s ease-out; height: auto; /* Altura auto na lista */ box-sizing: border-box; overflow: hidden; }
-.book-card:hover { transform: translateY(-4px); box-shadow: 0 6px 12px var(--shadow-hover); border-color: var(--highlight); }
-.book-icon { flex-shrink: 0; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background-color: var(--background); color: var(--text-primary); border: 1px solid var(--borders); }
-.book-info { min-width: 0; overflow: hidden; }
-.book-info h3 { font-size: 1.1rem; font-weight: 600; margin: 0 0 0.25rem 0; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.book-info p { font-size: 0.9rem; color: var(--text-secondary); margin: 0; }
-
-
-/* ======================================================
-   ✅ 8. LAYOUT RESPONSIVO (LISTA VERTICAL MOBILE / GRID DESKTOP)
-====================================================== */
-
-/* Carrossel REMOVIDO */
-.mobile-carousel, .slick-carousel-container {
-  display: none;
+/* --- Cabeçalho (Título + Versão) --- */
+.home-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
 }
 
-/* Padrão (Mobile): Lista Vertical */
+.home-title {
+  font-family: 'Cinzel', serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.version-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.version-selector label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  padding-left: 0.25rem;
+}
+
+.version-selector select {
+  background-color: var(--highlight);
+  color: var(--text-primary);
+  border: 1px solid var(--borders);
+  border-radius: 8px;
+  padding: 0.6rem 0.8rem;
+  font-size: 1rem;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23B3B3B3' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708 .708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.7rem center;
+  background-size: 16px;
+  padding-right: 2.5rem; /* Espaço para a seta */
+}
+
+.version-selector select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.3);
+}
+
+/* --- Pesquisa --- */
+.search-container {
+  margin: 2rem 0;
+}
+
+.search-bar {
+  width: 100%;
+  padding: 0.9rem 1.2rem;
+  font-size: 1.1rem;
+  background-color: var(--card-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--borders);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px var(--shadow);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.search-bar::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.8;
+}
+
+.search-bar:focus {
+  outline: none;
+  border-color: var(--highlight);
+  box-shadow: 0 4px 12px var(--shadow-hover);
+}
+
+/* --- Seção de Tópicos --- */
+.topic-section {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.topic-section h2 {
+  font-family: 'Lora', serif;
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  position: relative;
+  padding-bottom: 0.5rem;
+}
+
+.topic-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 colunas no desktop */
+  gap: 1.25rem;
+}
+
+.topic-link {
+  text-decoration: none;
+}
+
+.topic-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--borders);
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 4px 10px var(--shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.topic-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 15px var(--shadow-hover);
+  border-color: var(--highlight);
+}
+
+.topic-icon {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  background-color: var(--highlight);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent); /* Destaque no ícone */
+}
+
+.topic-info h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.2rem;
+}
+
+.topic-info p {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-family: 'Inter', sans-serif;
+}
+
+/* --- Seções (Testamentos) --- */
+.testament-section {
+  margin-top: 3rem;
+}
+
+.testament-section h2 {
+  font-family: 'Lora', serif;
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  position: relative;
+  padding-bottom: 0.5rem;
+}
+
+.section-accent {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 50px;
+  height: 3px;
+  background-color: var(--accent);
+  border-radius: 2px;
+}
+
+/* --- Grid de Livros (Desktop) --- */
 .books-grid {
-  display: flex; /* MUDOU PARA FLEX */
-  flex-direction: column; /* MUDOU PARA COLUNA */
-  gap: 0.75rem; /* Espaçamento entre os itens da lista */
-  padding: 0 0.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
 }
 
-/* Desktop (Telas Maiores) */
-@media (min-width: 768px) {
+/* --- Card de Livro --- */
+.book-link {
+  text-decoration: none;
+}
+
+.book-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--borders);
+  border-radius: 12px;
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  box-shadow: 0 4px 10px var(--shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.book-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 15px var(--shadow-hover);
+  border-color: var(--highlight);
+}
+
+.book-icon {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  background-color: var(--highlight);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+  transition: width 0.2s ease, height 0.2s ease;
+}
+
+.book-info h3 {
+  font-family: 'Lora', serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+  transition: font-size 0.2s ease;
+}
+
+.book-info p {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  transition: font-size 0.2s ease;
+}
+
+/* --- 💡 MELHORIA MOBILE (Responsividade) 💡 --- */
+@media (max-width: 768px) {
   .home-wrapper {
-    padding: 2rem 1.5rem; /* Mais padding */
+    padding: 0.75rem;
   }
 
-  .books-grid {
-    /* Volta a ser Grid no desktop */
-    display: grid; 
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.25rem; /* Espaçamento maior */
+  .home-title {
+    font-size: 2rem;
   }
   
-  /* Garante altura 100% no grid desktop */
-  .books-grid .book-link,
-  .books-grid .book-card {
-     height: 100%;
+  .home-top {
+    gap: 1rem;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .version-selector select {
+    width: 100%;
+  }
+
+  .search-bar {
+    font-size: 1rem;
+    padding: 0.8rem 1rem;
+  }
+
+  .testament-section h2,
+  .topic-section h2 {
+    font-size: 1.5rem;
+  }
+
+  /* --- Responsividade dos Tópicos (Scroll Horizontal) --- */
+  .topic-grid {
+    /* Remove o grid */
+    grid-template-columns: none; 
+    
+    /* Ativa o scroll horizontal */
+    display: flex;
+    overflow-x: auto;
+    gap: 0.75rem;
+    
+    /* Adiciona padding para os cards não colarem nas bordas */
+    padding-bottom: 1rem; 
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+
+    /* Esconde a barra de scroll (mas mantém a funcionalidade) */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE e Edge */
+  }
+  
+  .topic-grid::-webkit-scrollbar {
+    display: none; /* Chrome, Safari e Opera */
+  }
+
+  .topic-card {
+    /* Define um tamanho fixo para os cards no scroll */
+    width: 160px;
+    flex-shrink: 0;
+  }
+
+  /* --- Responsividade dos Livros (2 colunas) --- */
+  .books-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+  
+  .book-card {
+    flex-direction: column; 
+    padding: 0.75rem;
+    gap: 0.5rem;
+    text-align: center;
+    border-radius: 10px;
+  }
+  
+  .book-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .book-info h3 {
+    font-size: 1rem;
+    margin-bottom: 0.1rem;
+  }
+  
+  .book-info p {
+    font-size: 0.8rem;
   }
 }
 
-/* 9. Mensagens de Estado */
-/* ... (Estilos de .loading-message, .error-message iguais) ... */
-.loading-message, .error-message { /* ... */ }
-.error-message::before { display: none; }
+@media (max-width: 380px) {
+  .books-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .book-card {
+    flex-direction: row;
+    text-align: left;
+    padding: 1rem;
+  }
+
+  .book-info h3 {
+    font-size: 1.1rem;
+  }
+}
+
+/* --- 7. NOVOS ESTILOS "CONTINUAR LENDO" --- */
+.continue-reading-card {
+  background: var(--card-bg);
+  border: 1px solid var(--borders);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 10px var(--shadow);
+  transition: box-shadow 0.2s ease;
+}
+
+.continue-reading-card:hover {
+  box-shadow: 0 6px 15px var(--shadow-hover);
+}
+
+.continue-info {
+  /* Impede que o texto quebre e empurre o botão */
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding-right: 1rem;
+}
+
+.continue-title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--accent); /* Dá um destaque */
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.25rem;
+}
+
+.continue-book {
+  font-family: 'Lora', serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.continue-button {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  background: var(--highlight);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.continue-button:hover {
+  background-color: var(--accent);
+  transform: scale(1.05);
+}
+
+/* Responsividade para o card "Continuar Lendo" */
+@media (max-width: 768px) {
+  .continue-reading-card {
+    padding: 1rem 1.25rem;
+  }
+  .continue-book {
+    font-size: 1.1rem;
+  }
+  .continue-button {
+    width: 40px;
+    height: 40px;
+  }
+}
+

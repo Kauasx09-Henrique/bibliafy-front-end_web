@@ -4,10 +4,6 @@ import api from "../services/api";
 import { ChevronLeft, BookOpen } from "lucide-react";
 import "./Book.css";
 
-// Imports do Swiper removidos
-
-// --- Otimização: Mover para fora e usar memo ---
-// Isso impede que as "pílulas" sejam recriadas em toda renderização
 const ChapterPill = React.memo(({ n, bookId, selectedVersion }) => (
   <Link
     to={`/livro/${bookId}/capitulo/${n}?version=${selectedVersion}`}
@@ -17,7 +13,6 @@ const ChapterPill = React.memo(({ n, bookId, selectedVersion }) => (
     {n}
   </Link>
 ));
-// --- Fim da otimização ---
 
 function Book() {
   const { bookId } = useParams();
@@ -37,7 +32,7 @@ function Book() {
       try {
         const [chaptersRes, booksRes, versionsRes] = await Promise.all([
           api.get(`/api/bible/books/${bookId}/chapters`),
-          api.get("/api/bible/books"), // Necessário para pegar o nome
+          api.get("/api/bible/books"),
           api.get("/api/bible/versions"),
         ]);
 
@@ -56,18 +51,17 @@ function Book() {
       }
     }
     fetchData();
-  }, [bookId]); // Dependência está correta
+  }, [bookId]);
 
   const handleVersionChange = (e) => {
     setSearchParams({ version: e.target.value });
   };
 
   if (loading) return <p className="loading-message">Carregando…</p>;
-  if (error) return <p className="error-message">{error}</p>; // Corrigido de 'error-message-home'
+  if (error) return <p className="error-message">{error}</p>;
 
   return (
     <div className="book-wrapper animate-in">
-      {/* Toolbar */}
       <div className="book-toolbar">
         <Link to="/home" className="back-btn" aria-label="Voltar para Home">
           <ChevronLeft size={18} />
@@ -90,7 +84,6 @@ function Book() {
         </div>
       </div>
 
-      {/* Header */}
       <header className="book-header">
         <div className="book-title">
           <BookOpen size={22} />
@@ -99,9 +92,6 @@ function Book() {
         <p className="book-subtitle">Selecione um capítulo</p>
       </header>
 
-      {/* Carrossel (mobile) REMOVIDO */}
-
-      {/* Grid (agora usado para mobile e desktop) */}
       <div className="chapters-grid">
         {chapters.map((n) => (
           <ChapterPill

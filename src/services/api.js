@@ -1,4 +1,4 @@
-// Em: src/services/api.js
+
 
 import axios from 'axios';
 
@@ -7,7 +7,6 @@ const api = axios.create({
 });
 
 api.interceptors.request.use(async config => {
-  // ✅ CORREÇÃO: Altere a chave para 'token' para corresponder ao seu AuthContext
   const token = localStorage.getItem('token');
 
   if (token) {

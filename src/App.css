@@ -1,29 +1,8 @@
-/* =======================
-   FONTES OFICIAIS
-======================= */
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;600&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
 
-/* =======================
-   TEMA LIGHT PREMIUM
-======================= */
-body.light-theme {
-  --background: #F9F9F9;
-  --borders: #E5E5E5;
-  --highlight: #D0D0D0;
-  --text-primary: #1A1A1A;
-  --text-secondary: #555555;
-  --accent: #C62828; /* Vermelho intenso oficial Bibliafy */
-  --card-bg: #FFFFFF;
-  --shadow: rgba(0, 0, 0, 0.08);
-  --shadow-hover: rgba(0, 0, 0, 0.12);
-}
-
-/* =======================
-   TEMA DARK PREMIUM
-======================= */
-body.dark-theme {
+:root {
   --background: #0D0D0D;
   --borders: #1A1A1A;
   --highlight: #333333;
@@ -33,11 +12,13 @@ body.dark-theme {
   --card-bg: #141414;
   --shadow: rgba(0, 0, 0, 0.4);
   --shadow-hover: rgba(0, 0, 0, 0.55);
+  --text-primary-rgb: 255, 255, 255;
+  --header-bg: rgba(0, 0, 0, 0.45);
+  --header-border: rgba(255, 255, 255, 0.08);
+  --header-text: #FFFFFF;
+  --header-icon-hover-bg: rgba(255, 255, 255, 0.08);
 }
 
-/* =======================
-   RESET GLOBAL
-======================= */
 * {
   margin: 0;
   padding: 0;
@@ -49,6 +30,13 @@ body {
   color: var(--text-primary);
   font-family: 'Inter', sans-serif;
   transition: background 0.35s ease, color 0.35s ease;
+  padding-bottom: 60px;
+}
+
+@media (min-width: 768px) {
+  body {
+    padding-bottom: 0;
+  }
 }
 
 a {
@@ -63,17 +51,19 @@ button {
   font-family: inherit;
 }
 
-/* Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
+
 ::-webkit-scrollbar-track {
   background: var(--background);
 }
+
 ::-webkit-scrollbar-thumb {
   background: var(--highlight);
   border-radius: 8px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-secondary);
 }
@@ -84,6 +74,62 @@ button {
   padding: 2rem 1rem;
 }
 
-/* O BLOCO .bottom-nav FOI REMOVIDO DAQUI.
-  Ele estava errado e não é necessário neste arquivo.
-*/
+.loading-message,
+.error-message {
+  text-align: center;
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  padding: 4rem 1rem;
+  font-weight: 500;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.loading-message::before {
+  content: "";
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 4px solid var(--borders);
+  border-top-color: var(--text-primary);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.error-message {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.error-message::before {
+  display: none;
+}
+
+/* --- Animação de entrada (Global) --- */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
