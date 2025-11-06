@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;600&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
 :root {
   --background: #0D0D0D;
@@ -8,7 +9,7 @@
   --highlight: #333333;
   --text-primary: #FFFFFF;
   --text-secondary: #B3B3B3;
-  --accent: #C62828;
+  --accent: #666666; /* substituído o vermelho por um cinza de destaque */
   --card-bg: #141414;
   --shadow: rgba(0, 0, 0, 0.4);
   --shadow-hover: rgba(0, 0, 0, 0.55);
@@ -19,6 +20,7 @@
   --header-icon-hover-bg: rgba(255, 255, 255, 0.08);
 }
 
+
 * {
   margin: 0;
   padding: 0;
@@ -28,7 +30,7 @@
 body {
   background-color: var(--background);
   color: var(--text-primary);
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   transition: background 0.35s ease, color 0.35s ease;
   padding-bottom: 60px;
 }

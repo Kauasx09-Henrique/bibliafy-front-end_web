@@ -1,72 +1,66 @@
-// src/components/SplashScreen.jsx
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import Lottie from "lottie-react";
+import bibleAnimation from "../../public/Book Animation.json";
 import "./SplashScreen.css";
 
 function SplashScreen() {
-  const videoRef = useRef(null);
-  const [showLogo, setShowLogo] = useState(false);
-  const [showTitle, setShowTitle] = useState(false);
-  const [showSubtitle, setShowSubtitle] = useState(false);
-  const [fadeOut, setFadeOut] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Garantir autoplay
-    const video = videoRef.current;
-    if (video) video.play().catch(() => { });
-
-    // Etapas revelação cinematográfica
-    setTimeout(() => setShowLogo(true), 2000); // mostra logo
-    setTimeout(() => setShowTitle(true), 3500); // mostra bibliafy
-    setTimeout(() => setShowSubtitle(true), 5000); // mostra frase
-
-    // Fade final e transição
-    setTimeout(() => setFadeOut(true), 12500); // fade suave
-    setTimeout(() => navigate("/home"), 13500);
+    const timer = setTimeout(() => navigate("/home"), 4200);
+    return () => clearTimeout(timer);
   }, [navigate]);
 
   return (
-    <div className={`splash-container ${fadeOut ? "fade-out" : ""}`}>
-      {/* 🔥 Video de fundo */}
-      <video ref={videoRef} className="splash-video" muted playsInline loop>
-        <source src="/videos/Intro.mp4" type="video/mp4" />
-      </video>
+    <AnimatePresence>
+      <motion.div
+        className="splash-white"
+        initial={{ opacity: 1 }}
+        exit={{ opacity: 0, transition: { duration: 0.8 } }}
+      >
+        {/* 🔆 Luz de fundo pulsante */}
+        <motion.div
+          className="light-bg"
+          initial={{ scale: 0.7, opacity: 0.4 }}
+          animate={{ scale: [0.7, 1.2, 1], opacity: [0.4, 0.8, 0.5] }}
+          transition={{ duration: 2.8, ease: "easeInOut", repeat: Infinity }}
+        />
 
-      {/* 🖤 Overlay cinematográfico */}
-      <div className="splash-overlay" />
-
-      {/* ✨ Partículas Premium */}
-      <div className="particles-layer">
-        {[...Array(18)].map((_, i) => (
-          <div key={i} className="particle"></div>
-        ))}
-      </div>
-
-      {/* 🎬 Conteúdo central */}
-      <div className="splash-center">
-        {showLogo && (
-          <img
-            src="/logo.jpg"
-            alt="Bibliafy"
-            className="splash-logo animate-fade"
+        {/* 📖 Animação da Bíblia */}
+        <motion.div
+          className="lottie-container"
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 1.2, ease: "easeOut" }}
+        >
+          <Lottie
+            animationData={bibleAnimation}
+            loop={false}
+            style={{ width: 260, height: 260 }}
           />
-        )}
-        {showTitle && (
-          <h1 className="splash-title animate-up">Bibliafy</h1>
-        )}
-        {showSubtitle && (
-          <p className="splash-subtitle animate-up-delay">
-            Uma jornada começa com uma palavra
-          </p>
-        )}
+        </motion.div>
 
-        {/* 🔥 Loading Cinematográfico */}
-        <div className="cinematic-loader">
-          <div className="loader-bar"></div>
-        </div>
-      </div>
-    </div>
+        {/* ✝️ Texto “Bibliafy” com glow */}
+        <motion.h1
+          className="splash-title-white"
+          initial={{ y: 25, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 1.4, delay: 1.3, ease: "easeOut" }}
+        >
+          Bibliafy
+        </motion.h1>
+
+        {/* 🌤️ Fade branco final */}
+        <motion.div
+          className="fade-white-full"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: [0, 0, 0.3, 1] }}
+          transition={{ duration: 1.2, delay: 3.3 }}
+        />
+      </motion.div>
+    </AnimatePresence>
   );
 }
 
