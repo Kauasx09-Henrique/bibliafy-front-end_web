@@ -14,11 +14,10 @@ function App() {
     const timer = setTimeout(() => {
       setLoading(false);
 
-      // garante redirecionamento apenas se estiver na raiz
       if (window.location.pathname === "/") {
         navigate("/home", { replace: true });
       }
-    }, 3200); // reduzido para ~3.2s
+    }, 3200); 
 
     return () => clearTimeout(timer);
   }, [navigate]);

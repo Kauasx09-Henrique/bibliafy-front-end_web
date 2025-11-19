@@ -1,159 +1,208 @@
-/* --- Fontes --- */
-.font-inter .verses {
-  font-family: 'Inter', sans-serif;
-  line-height: 1.8;
-}
-.font-lora .verses {
-  font-family: 'Lora', serif;
-  line-height: 1.9;
-}
-.font-garamond .verses {
-  font-family: 'Garamond', serif;
-  line-height: 1.9;
-  font-size: 1.05em; /* Garamond é um pouco menor */
+@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lora:wght@400;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Garamond:wght@400;600&display=swap");
+
+/* -----------------------------------------------------
+   ROOT + CORES
+------------------------------------------------------ */
+:root {
+  --background: #0d0d0d;
+  --borders: #1a1a1a;
+  --highlight: #333;
+  --text-primary: #fff;
+  --text-secondary: #b3b3b3;
+  --accent: #666;
+  --card-bg: #141414;
+  --shadow: rgba(0, 0, 0, 0.4);
+  --shadow-hover: rgba(0, 0, 0, 0.55);
+  --header-bg: rgba(0, 0, 0, 0.45);
+  --header-border: rgba(255, 255, 255, 0.08);
+  --header-text: #fff;
+  --header-icon-hover-bg: rgba(255, 255, 255, 0.08);
 }
 
-/* --- Wrapper --- */
+/* -----------------------------------------------------
+   RESET
+------------------------------------------------------ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--text-primary);
+  font-family: "Inter", sans-serif;
+  transition: background 0.35s ease, color 0.35s ease;
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--highlight);
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+/* -----------------------------------------------------
+   ANIMAÇÕES GLOBAIS
+------------------------------------------------------ */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes textFadeIn {
+  from { opacity: 0; transform: translateY(10px); filter: blur(4px); }
+  to   { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+@keyframes verseFade {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes wrapperFade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes footerUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: scale(0.85); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* -----------------------------------------------------
+   TIPOGRAFIA DE LEITURA
+------------------------------------------------------ */
+
+.font-inter .verses {
+  font-family: "Inter", sans-serif;
+  line-height: 1.85;
+  letter-spacing: 0.2px;
+  animation: textFadeIn 0.6s ease;
+}
+
+.font-lora .verses {
+  font-family: "Lora", serif;
+  line-height: 1.95;
+  letter-spacing: 0.15px;
+  animation: textFadeIn 0.6s ease;
+}
+
+.font-garamond .verses {
+  font-family: "Garamond", serif;
+  line-height: 1.95;
+  letter-spacing: 0.3px;
+  font-size: 1.1em;
+  animation: textFadeIn 0.6s ease;
+}
+
+/* -----------------------------------------------------
+   WRAPPER GERAL
+------------------------------------------------------ */
 .chapter-wrapper {
   background: var(--background);
   color: var(--text-primary);
   min-height: 100vh;
-  padding-top: 70px; /* Espaço para toolbar superior */
-  padding-bottom: 80px; /* Espaço para footer inferior */
-  transition: background 0.3s ease, color 0.3s ease;
+  padding-top: 75px;
+  padding-bottom: 90px;
+  animation: wrapperFade 0.6s ease;
+  transition: background 0.45s ease, color 0.45s ease;
 }
 
-/* --- Toolbar Superior Fixa --- */
+/* -----------------------------------------------------
+   TOOLBAR SUPERIOR
+------------------------------------------------------ */
 .reading-toolbar {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  inset: 0 0 auto 0;
+  height: 58px;
   z-index: 100;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0.6rem 0.75rem;
-  
   background: var(--header-bg);
   border-bottom: 1px solid var(--header-border);
   backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  transition: background 0.3s ease, border-color 0.3s ease;
+  transition: opacity 0.4s ease;
+  animation: fadeIn 0.5s ease;
 }
 
-.rt-left, .rt-right {
-  flex: 1;
-}
-.rt-right {
-  display: flex;
-  justify-content: flex-end;
-}
-.rt-middle {
-  flex: 2;
-  display: flex;
-  justify-content: center;
-}
-
-.rt-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  background: var(--header-icon-hover-bg);
-  color: var(--header-text);
-  padding: 0.5rem 0.75rem;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  transition: background 0.2s ease;
-}
-.rt-btn:hover {
-  background: var(--highlight);
-}
-.rt-book-name {
-  max-width: 100px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.chapter-title-top {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: var(--text-secondary);
-}
-.chapter-title-top h1 {
-  font-family: 'Lora', serif;
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: var(--header-text);
-}
-
+.rt-btn,
 .rt-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 38px;
-  height: 38px;
-  background: transparent;
-  color: var(--header-text);
-  border-radius: 50%;
-  transition: background 0.2s ease;
+  transition: background 0.25s ease, transform 0.15s ease;
 }
+
+.rt-btn:hover,
 .rt-icon:hover {
   background: var(--header-icon-hover-bg);
-}
-.rt-icon .muted {
-  font-size: 0.8rem;
-  margin-left: 2px;
-  font-weight: 600;
-  color: var(--text-secondary);
+  transform: translateY(-2px);
 }
 
-/* --- Conteúdo (Versículos) --- */
+.rt-btn:active,
+.rt-icon:active {
+  transform: scale(0.9);
+}
+
+/* -----------------------------------------------------
+   CONTEÚDO — VERSÍCULOS
+------------------------------------------------------ */
+
 .verses {
-  max-width: 800px;
+  max-width: 850px;
   margin: 0 auto;
-  padding: 1.5rem;
-  font-size: 18px; /* Base, será sobrescrito pelo state */
+  padding: 1.6rem 1.3rem;
+  font-size: 18px;
 }
 
 .verse {
-  margin-bottom: 1.25rem;
-  display: flex;
-  flex-direction: column;
+  margin-bottom: 1.9rem;
+  padding-bottom: 0.4rem;
+  border-radius: 8px;
+  transition: background 0.25s ease, transform 0.25s ease;
+  animation: verseFade 0.55s ease both;
 }
 
-/* Modo Compacto */
-.chapter-wrapper.compact .verse {
-  display: inline;
-  margin-bottom: 0;
-}
-.chapter-wrapper.compact .verse-text {
-  display: inline;
-}
-.chapter-wrapper.compact .verse-actions {
-  display: none; /* Esconde ações no modo compacto */
+.verse:hover {
+  background: var(--highlight);
+  transform: translateX(3px);
 }
 
-.verse-text {
-  color: var(--text-primary);
-}
 .verse-text .n {
-  font-size: 0.8em;
-  font-weight: 700;
+  font-size: 0.78em;
+  opacity: 0.85;
+  margin-right: 0.45rem;
   color: var(--text-secondary);
-  margin-right: 0.5rem;
-  vertical-align: super;
 }
 
+/* Ações */
 .verse-actions {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
-  margin-top: 0.75rem;
-  margin-left: 1.5rem; /* Alinha com o texto */
+  gap: 0.45rem;
+  margin-top: 0.65rem;
+  margin-left: 1.4rem;
+  animation: fadeIn 0.4s ease;
 }
 
 .va-btn {
@@ -165,101 +214,73 @@
   border: 1px solid var(--borders);
   border-radius: 6px;
   padding: 0.4rem 0.6rem;
-  transition: background 0.2s ease, color 0.2s ease;
+  transition: transform 0.15s ease, background 0.2s ease;
 }
+
 .va-btn:hover {
   background: var(--card-bg);
   color: var(--text-primary);
-}
-.va-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-.va-btn.active {
-  background: var(--accent);
-  color: #FFF;
-  border-color: var(--accent);
+  transform: translateY(-2px);
 }
 
-/* --- Rodapé Fixo (Navegação) --- */
+.va-btn:active {
+  transform: scale(0.9);
+}
+
+.va-btn.active {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* -----------------------------------------------------
+   RODAPÉ FIXO
+------------------------------------------------------ */
 .chapter-footer {
   position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 100;
+  inset: auto 0 0 0;
+  padding: 0.75rem;
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 0.75rem;
-  
   background: var(--header-bg);
   border-top: 1px solid var(--header-border);
   backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  transition: background 0.3s ease, border-color 0.3s ease;
+  animation: footerUp 0.5s ease;
 }
 
 .footer-nav {
   flex: 1;
   display: flex;
-  align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1rem;
   background: var(--highlight);
-  color: var(--text-primary);
   border: 1px solid var(--borders);
   border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 500;
-  transition: background 0.2s ease;
+  transition: background 0.25s ease, transform 0.15s ease;
 }
-.footer-nav:first-child {
-  justify-content: flex-start;
-}
-.footer-nav:last-child {
-  justify-content: flex-end;
-}
+
 .footer-nav:hover {
   background: var(--card-bg);
-}
-.footer-nav:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-  background: var(--highlight);
+  transform: translateY(-2px);
 }
 
-.footer-title {
-  flex: 0.5;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.25rem;
-  background: transparent;
-  color: var(--text-secondary);
-  font-size: 0.8rem;
-  font-weight: 500;
-}
-.footer-title:hover {
-  color: var(--text-primary);
+.footer-nav:active {
+  transform: scale(0.9);
 }
 
+/* -----------------------------------------------------
+   MODAL
+------------------------------------------------------ */
 
-/* --- Modal de Configurações --- */
 .settings-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0,0,0,0.55);
   backdrop-filter: blur(5px);
-  z-index: 2000;
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: modalFadeIn 0.3s ease;
-}
-@keyframes modalFadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  animation: modalFadeIn 0.35s ease;
+  z-index: 2000;
 }
 
 .settings-modal-content {
@@ -269,181 +290,49 @@
   padding: 1.5rem;
   width: 90%;
   max-width: 450px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+  animation: modalFadeIn 0.32s ease;
 }
 
-.settings-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.settings-header h2 {
-  font-family: 'Lora', serif;
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: var(--text-primary);
+/* Botões internos */
+.rt-theme-btn:hover,
+.rt-toggle:hover,
+.rt-select-modal:hover {
+  transform: translateY(-2px);
 }
 
-.settings-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-.settings-group h3 {
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
+/* -----------------------------------------------------
+   RESPONSIVO
+------------------------------------------------------ */
 
-.settings-control {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: var(--highlight);
-  border-radius: 8px;
-  padding: 0.5rem;
-}
-.rt-fontsize-modal {
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-.rt-select-modal {
-  width: 100%;
-  background-color: var(--highlight);
-  color: var(--text-primary);
-  border: 1px solid var(--borders);
-  border-radius: 8px;
-  padding: 0.8rem;
-  font-size: 1rem;
-  font-family: 'Inter', sans-serif;
-  cursor: pointer;
-}
-
-.rt-toggle {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  width: 100%;
-  background-color: var(--highlight);
-  color: var(--text-primary);
-  border: 1px solid var(--borders);
-  border-radius: 8px;
-  padding: 0.8rem;
-  font-size: 1rem;
-  font-weight: 500;
-  text-align: left;
-}
-.rt-toggle.active {
-  background: var(--accent);
-  color: #FFF;
-  border-color: var(--accent);
-}
-
-.rt-theme-btn {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.75rem 0.5rem;
-  background: transparent;
-  color: var(--text-secondary);
-  border: 2px solid transparent;
-  border-radius: 8px;
-  font-size: 0.8rem;
-  font-weight: 500;
-}
-.rt-theme-btn.active {
-  color: var(--accent);
-  border-color: var(--accent);
-  background: var(--background);
-}
-
-/* --- Responsividade (Mobile) --- */
 @media (max-width: 768px) {
   .chapter-wrapper {
-    padding-top: 60px;
-    padding-bottom: 70px;
-  }
-  .verses {
-    padding: 1rem 0.75rem;
-    font-size: 16px; /* Base mobile */
-  }
-  /* --- CORREÇÃO AQUI --- */
-  .verse {
-    margin-bottom: 2rem; /* Aumenta o espaço entre os versículos */
-  }
-  .verse-actions {
-    margin-left: 1.25rem;
-  }
-  .rt-btn {
-    padding: 0.4rem 0.5rem;
-  }
-  .rt-book-name {
-    display: none; /* Esconde nome do livro no botão */
-  }
-  .chapter-title-top h1 {
-    font-size: 1rem;
-  }
-  .footer-nav {
-    font-size: 0.9rem;
-    padding: 0.6rem 0.75rem;
-  }
-  .footer-title {
-    display: none; /* Esconde "Topo" em mobile */
+    padding-top: 63px;
+    padding-bottom: 75px;
   }
 }
 
-/* ---
---- TEMAS DE LEITURA (Overrides) 
---- */
+/* -----------------------------------------------------
+   TEMAS
+------------------------------------------------------ */
 
-/* Tema Claro */
 .chapter-wrapper.theme-light {
-  --background: #F9F9F9;
-  --borders: #E5E5E5;
-  --highlight: #EFEFEF;
-  --text-primary: #1A1A1A;
-  --text-secondary: #555555;
-  --card-bg: #FFFFFF;
-  --header-bg: rgba(255, 255, 255, 0.65);
-  --header-border: rgba(0, 0, 0, 0.08);
-  --header-text: #1A1A1A;
-  --header-icon-hover-bg: rgba(0, 0, 0, 0.05);
+  --background: #f9f9f9;
+  --borders: #e5e5e5;
+  --highlight: #efefef;
+  --text-primary: #1a1a1a;
+  --text-secondary: #555;
+  --card-bg: #ffffff;
+  --header-bg: rgba(255,255,255,0.65);
 }
 
-/* Tema Sépia */
 .chapter-wrapper.theme-sepia {
-  --background: #FBF3E8;
-  --borders: #EAE0D2;
-  --highlight: #F3EADC;
-  --text-primary: #5B4636;
-  --text-secondary: #7A6453;
-  --card-bg: #FDF9F3;
-  --header-bg: rgba(245, 235, 220, 0.65);
-  --header-border: rgba(91, 70, 54, 0.1);
-  --header-text: #5B4636;
-  --header-icon-hover-bg: rgba(91, 70, 54, 0.05);
+  --background: #fbf3e8;
+  --borders: #eae0d2;
+  --highlight: #f3eadc;
+  --text-primary: #5b4636;
 }
 
-/* Tema Escuro (Usa o :root global, mas podemos forçar se necessário) */
 .chapter-wrapper.theme-dark {
-  --background: #0D0D0D;
-  --borders: #1A1A1A;
-  --highlight: #333333;
-  --text-primary: #FFFFFF;
-  --text-secondary: #B3B3B3;
-  --card-bg: #141A1A;
-  --header-bg: rgba(0, 0, 0, 0.45);
-  --header-border: rgba(255, 255, 255, 0.08);
-  --header-text: #FFFFFF;
-  --header-icon-hover-bg: rgba(255, 255, 255, 0.08);
+  --background: #0d0d0d;
+  --text-primary: #fff;
 }
-

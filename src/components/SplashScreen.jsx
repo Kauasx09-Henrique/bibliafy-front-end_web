@@ -2,14 +2,14 @@ import React, { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import Lottie from "lottie-react";
-import bibleAnimation from "../../public/Book Animation.json";
+import bibleAnimation from "../../public/Biblia.json";
 import "./SplashScreen.css";
 
 function SplashScreen() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const timer = setTimeout(() => navigate("/home"), 4200);
+    const timer = setTimeout(() => navigate("/home"), 4300);
     return () => clearTimeout(timer);
   }, [navigate]);
 
@@ -18,22 +18,22 @@ function SplashScreen() {
       <motion.div
         className="splash-white"
         initial={{ opacity: 1 }}
-        exit={{ opacity: 0, transition: { duration: 0.8 } }}
+        exit={{ opacity: 0, transition: { duration: 1 } }}
       >
-        {/* 🔆 Luz de fundo pulsante */}
+
         <motion.div
-          className="light-bg"
-          initial={{ scale: 0.7, opacity: 0.4 }}
-          animate={{ scale: [0.7, 1.2, 1], opacity: [0.4, 0.8, 0.5] }}
-          transition={{ duration: 2.8, ease: "easeInOut", repeat: Infinity }}
+          className="halo-light"
+          initial={{ scale: 0.6, opacity: 0 }}
+          animate={{ scale: [0.6, 1.3, 1], opacity: [0, 0.8, 0.4] }}
+          transition={{ duration: 3, ease: "easeInOut", repeat: Infinity }}
         />
 
-        {/* 📖 Animação da Bíblia */}
+
         <motion.div
-          className="lottie-container"
-          initial={{ scale: 0.9, opacity: 0 }}
+          className="logo-wrapper"
+          initial={{ scale: 0.85, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 1.2, ease: "easeOut" }}
+          transition={{ duration: 1.3, ease: "easeOut" }}
         >
           <Lottie
             animationData={bibleAnimation}
@@ -42,22 +42,21 @@ function SplashScreen() {
           />
         </motion.div>
 
-        {/* ✝️ Texto “Bibliafy” com glow */}
+
         <motion.h1
-          className="splash-title-white"
+          className="logo-text-refined"
           initial={{ y: 25, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 1.4, delay: 1.3, ease: "easeOut" }}
+          transition={{ duration: 1.6, delay: 1.4, ease: "easeOut" }}
         >
           Bibliafy
         </motion.h1>
 
-        {/* 🌤️ Fade branco final */}
         <motion.div
-          className="fade-white-full"
+          className="final-white-fade"
           initial={{ opacity: 0 }}
-          animate={{ opacity: [0, 0, 0.3, 1] }}
-          transition={{ duration: 1.2, delay: 3.3 }}
+          animate={{ opacity: [0, 0, 0.2, 1] }}
+          transition={{ duration: 1.4, delay: 3.4 }}
         />
       </motion.div>
     </AnimatePresence>

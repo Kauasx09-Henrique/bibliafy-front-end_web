@@ -1,70 +1,12 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
-// 1. Importa os ícones
-import {
-  BookOpen,
-  Sparkles,
-  ShieldCheck,
-  Gift,
-  TrendingUp,
-} from "lucide-react";
+import { BookOpen } from "lucide-react";
+import Lottie from "lottie-react";
+import bibleAnimation from "../../public/Loanding.json";
 import api from "../services/api";
 import "./Home.css";
 
-// --- 2. Lista de Tópicos (Sem alterações) ---
-const dailyTopics = [
-  {
-    title: "Esperança",
-    reference: "Jeremias 29:11",
-    bookName: "Jeremias",
-    icon: "Sparkles",
-  },
-  {
-    title: "Ansiedade",
-    reference: "Filipenses 4:6",
-    bookName: "Filipenses",
-    icon: "ShieldCheck",
-  },
-  {
-    title: "Gratidão",
-    reference: "Salmos 107:1",
-    bookName: "Salmos", // A API pode chamar "Salmos"
-    icon: "Gift",
-  },
-  {
-    title: "Força",
-    reference: "Isaías 41:10",
-    bookName: "Isaías",
-    icon: "TrendingUp",
-  },
-];
-
-const topicIcons = {
-  Sparkles: <Sparkles size={22} />,
-  ShieldCheck: <ShieldCheck size={22} />,
-  Gift: <Gift size={22} />,
-  TrendingUp: <TrendingUp size={22} />,
-};
-
-// --- 3. Componente Card de Tópico (Sem alterações) ---
-const TopicCard = React.memo(({ topic, bookId, selectedVersion }) => (
-  <Link
-    to={`/livro/${bookId}?version=${selectedVersion}`}
-    className="topic-link"
-  >
-    <div className="topic-card">
-      <div className="topic-icon">
-        {topicIcons[topic.icon] || <Sparkles size={22} />}
-      </div>
-      <div className="topic-info">
-        <h3>{topic.title}</h3>
-        <p>{topic.reference}</p>
-      </div>
-    </div>
-  </Link>
-));
-
-// --- Card de Livro (Sem alterações) ---
+// --- Card de Livro ---
 const BookCard = React.memo(({ book, selectedVersion }) => (
   <Link
     to={`/livro/${book.id}?version=${selectedVersion}`}
@@ -82,42 +24,48 @@ const BookCard = React.memo(({ book, selectedVersion }) => (
   </Link>
 ));
 
-// --- Componente Home (Atualizado) ---
+// --- Card de Loading com Lottie (aparece no lugar dos livros) ---
+const LoadingBookCard = React.memo(() => (
+  <div className="loading-book-card">
+    <Lottie
+      animationData={bibleAnimation}
+      loop={true}
+      className="loading-book-lottie"
+    />
+  </div>
+));
+
 function Home() {
   const [books, setBooks] = useState([]);
   const [versions, setVersions] = useState([]);
   const [selectedVersion, setSelectedVersion] = useState("");
-  // const [verseOfTheDay, setVerseOfTheDay] = useState(null); // REMOVIDO
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [lastRead, setLastRead] = useState(null); // 4. NOVO: Estado "Continuar Lendo"
+  const [lastRead, setLastRead] = useState(null);
 
-  // Funções fetch (sem alterações)
+  // Carregar versões
   const fetchVersions = useCallback(async () => {
     try {
       const r = await api.get("/api/bible/versions");
       setVersions(r.data || []);
       if (r.data?.length) setSelectedVersion(r.data[0].abbreviation);
-    } catch (err) {
-      console.error("Erro ao carregar versões:", err);
+    } catch {
       setError("Não foi possível carregar as versões.");
     }
   }, []);
 
-  // const fetchVerseOfTheDay = useCallback(async () => { ... }); // REMOVIDO
-
+  // Carregar livros
   const fetchBooks = useCallback(async () => {
     try {
       const r = await api.get("/api/bible/books");
       setBooks(r.data || []);
-    } catch (err) {
-      console.error("Erro ao carregar livros:", err);
+    } catch {
       setError("Não foi possível carregar os livros.");
     }
   }, []);
 
-  // UseEffects
+  // Chamar APIs
   useEffect(() => {
     (async () => {
       setLoading(true);
@@ -127,36 +75,17 @@ function Home() {
     })();
   }, [fetchVersions, fetchBooks]);
 
-  // useEffect(() => { ... }); // useEffect do Versículo do Dia REMOVIDO
-
-  // --- 5. NOVO: Carrega o "Continuar Lendo" do LocalStorage ---
+  // Continuar Lendo
   useEffect(() => {
     try {
-      const savedLocation = localStorage.getItem("bibliafyLastRead");
-      if (savedLocation) {
-        setLastRead(JSON.parse(savedLocation));
-      }
-    } catch (err) {
-      console.error("Erro ao carregar 'Continuar Lendo':", err);
-      setLastRead(null); // Garante que não quebra
+      const saved = localStorage.getItem("bibliafyLastRead");
+      if (saved) setLastRead(JSON.parse(saved));
+    } catch {
+      setLastRead(null);
     }
-  }, []); // Roda só uma vez ao carregar a Home
+  }, []);
 
-  // --- Lógica de Tópicos (Sem alterações) ---
-  const topicsWithBookId = useMemo(() => {
-    if (books.length === 0) return [];
-    return dailyTopics.map((topic) => {
-      const book = books.find(
-        (b) => b.name.toLowerCase() === topic.bookName.toLowerCase()
-      );
-      return {
-        ...topic,
-        bookId: book ? book.id : null,
-      };
-    });
-  }, [books]);
-
-  // Filtros de Livros (sem alterações)
+  // Filtro de busca
   const filteredBooks = useMemo(
     () =>
       books.filter((b) =>
@@ -165,30 +94,20 @@ function Home() {
     [books, searchTerm]
   );
 
-  const oldTestament = useMemo(
-    () => filteredBooks.filter((b) => b.testament_id === 1),
-    [filteredBooks]
-  );
+  const oldTestament = filteredBooks.filter((b) => b.testament_id === 1);
+  const newTestament = filteredBooks.filter((b) => b.testament_id === 2);
 
-  const newTestament = useMemo(
-    () => filteredBooks.filter((b) => b.testament_id === 2),
-    [filteredBooks]
-  );
-
-  // Render Grid (sem alterações)
+  // Renderiza Grid de livros OU Lottie
   const renderGrid = (list) => (
     <div className="books-grid">
-      {list.map((b) => (
-        <BookCard
-          key={b.id}
-          book={b}
-          selectedVersion={selectedVersion}
-        />
-      ))}
+      {loading
+        ? Array.from({ length: 8 }).map((_, i) => <LoadingBookCard key={i} />)
+        : list.map((b) => (
+            <BookCard key={b.id} book={b} selectedVersion={selectedVersion} />
+          ))}
     </div>
   );
 
-  if (loading) return <div className="loading-message">Carregando…</div>;
   if (error) return <div className="error-message">{error}</div>;
 
   return (
@@ -211,7 +130,7 @@ function Home() {
         </div>
       </div>
 
-      {/* --- 6. Bloco "Continuar Lendo" (Substitui o VerseOfTheDay) --- */}
+      {/* Continuar Lendo */}
       {lastRead && (
         <div className="continue-reading-card animate-in">
           <div className="continue-info">
@@ -220,19 +139,31 @@ function Home() {
               {lastRead.bookName}, Capítulo {lastRead.chapter}
             </h3>
           </div>
+
           <Link
-            // ATENÇÃO: O link precisa da versão, que também deve ser salva
-            to={`/livro/${lastRead.bookId}/capitulo/${lastRead.chapter}?version=${lastRead.version || selectedVersion}`}
+            to={`/livro/${lastRead.bookId}/capitulo/${lastRead.chapter}?version=${
+              lastRead.version || selectedVersion
+            }`}
             className="continue-button"
-            aria-label={`Continuar lendo ${lastRead.bookName} capítulo ${lastRead.chapter}`}
           >
-            {/* Ícone de seta "play" ou "direita" */}
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="m9 18 6-6-6-6" />
+            </svg>
           </Link>
         </div>
       )}
-      {/* --- Fim do "Continuar Lendo" --- */}
 
+      {/* Busca */}
       <div className="search-container">
         <input
           type="search"
@@ -243,28 +174,7 @@ function Home() {
         />
       </div>
 
-      {/* --- Seção de Tópicos (Sem alterações) --- */}
-      <section className="topic-section">
-        <h2>
-          Tópicos do Dia
-          <span className="section-accent" />
-        </h2>
-        <div className="topic-grid">
-          {topicsWithBookId.map(
-            (topic) =>
-              topic.bookId && (
-                <TopicCard
-                  key={topic.title}
-                  topic={topic}
-                  bookId={topic.bookId}
-                  selectedVersion={selectedVersion}
-                />
-              )
-          )}
-        </div>
-      </section>
-
-      {/* --- Seções de Livros (Sem alterações) --- */}
+      {/* Velho Testamento */}
       <section className="testament-section">
         <h2>
           Velho Testamento
@@ -273,6 +183,7 @@ function Home() {
         {renderGrid(oldTestament)}
       </section>
 
+      {/* Novo Testamento */}
       <section className="testament-section">
         <h2>
           Novo Testamento
@@ -285,4 +196,3 @@ function Home() {
 }
 
 export default Home;
-
