@@ -206,7 +206,7 @@ function Login() {
           {errors.password && <span className="error-message">⚠️ {errors.password}</span>}
 
           <div className="forgot-password-wrapper">
-            <Link to="/esqueci-senha" className="forgot-password-link">
+            <Link to="/reset-password" className="forgot-password-link">
               Esqueci minha senha
             </Link>
           </div>
