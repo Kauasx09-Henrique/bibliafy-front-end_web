@@ -14,7 +14,7 @@ import Chapter from "./pages/Chapter";
 import Anotacoes from "./pages/Anotacoes";
 import Perfil from "./pages/Perfil";
 import FavoritesPage from "./pages/Favoritos";
-import ForgotPassword from "./pages/ForgotPassword";
+import ForgotPassword from "./pages/ResetPassword";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 import "./App.css";
@@ -110,7 +110,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
 
           <Route path="/login" element={<Login />} />
           <Route path="/registro" element={<Registro />} />
-          <Route path="/esqueci-senha" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ForgotPassword />} />
 
           <Route path="*" element={<Navigate to="/home" replace />} />
         </Routes>

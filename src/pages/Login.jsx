@@ -79,7 +79,7 @@ function Login() {
 
     if (!password.trim()) {
       newErrors.password = "A senha é obrigatória.";
-    } else if (password.length < 6) {
+    } else if (password.length < 4) {
       newErrors.password = "A senha deve ter pelo menos 6 caracteres.";
     }
 
