@@ -9,23 +9,21 @@ import App from "./App";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Registro from "./pages/Registro";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import Book from "./pages/Book";
 import Chapter from "./pages/Chapter";
 import Anotacoes from "./pages/Anotacoes";
 import Perfil from "./pages/Perfil";
 import FavoritesPage from "./pages/Favoritos";
-import ForgotPassword from "./pages/ResetPassword";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 import "./App.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-
     <BrowserRouter>
-
       <AuthProvider>
-
         <Toaster
           position="top-center"
           gutter={10}
@@ -70,7 +68,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         />
 
         <Routes>
-
           <Route element={<App />}>
             <Route path="/home" element={<Home />} />
             <Route path="/livro/:bookId" element={<Book />} />
@@ -110,14 +107,13 @@ ReactDOM.createRoot(document.getElementById("root")).render(
 
           <Route path="/login" element={<Login />} />
           <Route path="/registro" element={<Registro />} />
-          <Route path="/reset-password" element={<ForgotPassword />} />
+
+          <Route path="/esqueci-senha" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
 
           <Route path="*" element={<Navigate to="/home" replace />} />
         </Routes>
-
       </AuthProvider>
-
     </BrowserRouter>
-
   </React.StrictMode>
 );

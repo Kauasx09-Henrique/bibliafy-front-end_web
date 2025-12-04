@@ -1,4 +1,3 @@
-// src/App.jsx
 import React, { useState, useEffect } from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import SplashScreen from "./components/SplashScreen";
@@ -11,7 +10,7 @@ function App() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const authRoutes = ["/login", "/registro", "/esqueci-senha"];
+  const authRoutes = ["/login", "/registro", "/esqueci-senha", "/reset-password"];
   const isAuthPage = authRoutes.includes(location.pathname);
 
   useEffect(() => {
