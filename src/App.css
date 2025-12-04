@@ -3,13 +3,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
-:root {
+/* ROOT THEME */
+.bibliafy-theme {
   --background: #0D0D0D;
   --borders: #1A1A1A;
   --highlight: #333333;
   --text-primary: #FFFFFF;
   --text-secondary: #B3B3B3;
-  --accent: #666666; /* substituído o vermelho por um cinza de destaque */
+  --accent: #666666;
   --card-bg: #141414;
   --shadow: rgba(0, 0, 0, 0.4);
   --shadow-hover: rgba(0, 0, 0, 0.55);
@@ -20,64 +21,66 @@
   --header-icon-hover-bg: rgba(255, 255, 255, 0.08);
 }
 
-
-* {
+.bibliafy-theme * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-body {
+.bibliafy-theme body {
   background-color: var(--background);
   color: var(--text-primary);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-family: 'Inter', sans-serif;
   transition: background 0.35s ease, color 0.35s ease;
   padding-bottom: 60px;
 }
 
 @media (min-width: 768px) {
-  body {
+  .bibliafy-theme body {
     padding-bottom: 0;
   }
 }
 
-a {
+.bibliafy-theme a {
   text-decoration: none;
   color: inherit;
 }
 
-button {
+.bibliafy-theme button {
   cursor: pointer;
   border: none;
   outline: none;
   font-family: inherit;
 }
 
-::-webkit-scrollbar {
+/* SCROLL */
+.bibliafy-theme ::-webkit-scrollbar {
   width: 8px;
 }
 
-::-webkit-scrollbar-track {
+.bibliafy-theme ::-webkit-scrollbar-track {
   background: var(--background);
 }
 
-::-webkit-scrollbar-thumb {
+.bibliafy-theme ::-webkit-scrollbar-thumb {
   background: var(--highlight);
   border-radius: 8px;
 }
 
-::-webkit-scrollbar-thumb:hover {
+.bibliafy-theme ::-webkit-scrollbar-thumb:hover {
   background: var(--text-secondary);
 }
 
-.main-content {
+/* MAIN CONTENT */
+.bibliafy-theme .main-content {
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem 1rem;
 }
 
-.loading-message,
-.error-message {
+/* LOADING + ERROR */
+.bibliafy-theme .loading-message,
+.bibliafy-theme .error-message {
   text-align: center;
   font-size: 1.1rem;
   color: var(--text-secondary);
@@ -90,7 +93,7 @@ button {
   gap: 1.5rem;
 }
 
-.loading-message::before {
+.bibliafy-theme .loading-message::before {
   content: "";
   width: 32px;
   height: 32px;
@@ -110,93 +113,98 @@ button {
   }
 }
 
-.error-message {
+.bibliafy-theme .error-message {
   color: var(--accent);
   font-weight: 700;
 }
 
-.error-message::before {
-  display: none;
+/* ANIMAÇÃO GLOBAL */
+.bibliafy-theme .animate-in {
+  animation: fadeIn 0.5s ease-out;
 }
 
-/* --- Animação de entrada (Global) --- */
 @keyframes fadeIn {
   from {
     opacity: 0;
     transform: translateY(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-.animate-in {
-  animation: fadeIn 0.5s ease-out;
-}/* -----------------------------------------------------
-   🌙 MODAL — OVERLAY
------------------------------------------------------- */
-
-.settings-modal-overlay {
+/* -----------------------------------------
+   MODAL OVERLAY
+----------------------------------------- */
+.bibliafy-theme .settings-modal-overlay {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.55);
   backdrop-filter: blur(6px) brightness(0.8);
-  -webkit-backdrop-filter: blur(6px) brightness(0.8);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 2000;
-
   animation: overlayFadeIn 0.4s ease forwards;
 }
 
 @keyframes overlayFadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
-/* -----------------------------------------------------
-   📦 MODAL — CONTAINER
------------------------------------------------------- */
-
-.settings-modal-content {
+/* -----------------------------------------
+   MODAL CONTENT
+----------------------------------------- */
+.bibliafy-theme .settings-modal-content {
   width: 92%;
   max-width: 460px;
   background: var(--card-bg);
   border: 1px solid var(--borders);
   border-radius: 18px;
   padding: 1.7rem;
-
-  box-shadow: 0 20px 50px rgba(0,0,0,0.45);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
   backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-
   display: flex;
   flex-direction: column;
   gap: 1.6rem;
-
   animation: modalPopIn 0.35s ease forwards;
   transform-origin: center;
 }
 
 @keyframes modalPopIn {
-  0%   { opacity: 0; transform: scale(0.75) translateY(20px); }
-  60%  { opacity: 1; transform: scale(1.04); }
-  100% { transform: scale(1); }
+  0% {
+    opacity: 0;
+    transform: scale(0.75) translateY(20px);
+  }
+
+  60% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
 
-/* -----------------------------------------------------
-   🔝 HEADER
------------------------------------------------------- */
-
-.settings-header {
+/* -----------------------------------------
+   HEADER DO MODAL
+----------------------------------------- */
+.bibliafy-theme .settings-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.settings-header h2 {
+.bibliafy-theme .settings-header h2 {
   font-family: "Lora", serif;
   font-size: 1.45rem;
   font-weight: 600;
@@ -204,197 +212,182 @@ button {
   letter-spacing: 0.3px;
 }
 
-.settings-header .rt-icon {
+.bibliafy-theme .settings-header .rt-icon {
   width: 40px;
   height: 40px;
   border-radius: 10px;
-
   background: var(--highlight);
   color: var(--text-primary);
-
   transition: background 0.25s ease, transform 0.15s ease;
 }
 
-.settings-header .rt-icon:hover {
+.bibliafy-theme .settings-header .rt-icon:hover {
   background: var(--header-icon-hover-bg);
   transform: scale(1.05);
 }
 
-/* -----------------------------------------------------
-   🔧 GRUPOS DO MODAL
------------------------------------------------------- */
-
-.settings-group {
+/* -----------------------------------------
+   GRUPOS
+----------------------------------------- */
+.bibliafy-theme .settings-group {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  animation: fadeIn 0.35s ease;
 }
 
-.settings-group h3 {
+.bibliafy-theme .settings-group h3 {
   font-size: 0.9rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.6px;
-
   color: var(--text-secondary);
 }
 
-/* -----------------------------------------------------
-   🎚️ SELECTS / BOTÕES INTERNOS
------------------------------------------------------- */
-
-.rt-select-modal {
+/* -----------------------------------------
+   SELECTS
+----------------------------------------- */
+.bibliafy-theme .rt-select-modal {
   width: 100%;
   padding: 0.85rem;
   background: var(--highlight);
   color: var(--text-primary);
-
   border: 1px solid var(--borders);
   border-radius: 10px;
-
   font-family: "Inter", sans-serif;
   font-size: 1rem;
-
   transition: transform 0.15s ease, background 0.2s ease;
 }
 
-.rt-select-modal:hover {
+.bibliafy-theme .rt-select-modal:hover {
   background: var(--card-bg);
   transform: translateY(-1px);
 }
 
-/* -----------------------------------------------------
-   🔘 BOTÕES TOGGLE E TEMA
------------------------------------------------------- */
-
-.rt-toggle {
+/* -----------------------------------------
+   TOGGLES
+----------------------------------------- */
+.bibliafy-theme .rt-toggle {
   padding: 0.9rem;
   width: 100%;
   display: flex;
   align-items: center;
   gap: 0.7rem;
-
   background: var(--highlight);
   border: 1px solid var(--borders);
   border-radius: 10px;
-
   color: var(--text-primary);
   font-size: 1rem;
   font-weight: 500;
-
   transition: background 0.25s ease, transform 0.15s ease;
 }
 
-.rt-toggle:hover {
+.bibliafy-theme .rt-toggle:hover {
   background: var(--card-bg);
   transform: translateY(-2px);
 }
 
-.rt-toggle.active {
+.bibliafy-theme .rt-toggle.active {
   background: var(--accent);
   border-color: var(--accent);
   color: #fff;
   transform: translateY(-1px);
 }
 
-/* -----------------------------------------------------
-   🎨 BOTÕES DE SELEÇÃO DE TEMA
------------------------------------------------------- */
-
-.rt-theme-btn {
+/* -----------------------------------------
+   BOTÕES DE TEMA
+----------------------------------------- */
+.bibliafy-theme .rt-theme-btn {
   flex: 1;
   padding: 0.9rem 0.5rem;
-
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.45rem;
-
   border-radius: 12px;
   border: 2px solid transparent;
-
   background: var(--highlight);
   color: var(--text-secondary);
-
   font-size: 0.8rem;
   font-weight: 500;
-
   transition: all 0.25s ease;
 }
 
-.rt-theme-btn:hover {
+.bibliafy-theme .rt-theme-btn:hover {
   background: var(--card-bg);
   transform: translateY(-2px);
 }
 
-.rt-theme-btn.active {
+.bibliafy-theme .rt-theme-btn.active {
   background: var(--background);
   border-color: var(--accent);
   color: var(--accent);
   transform: scale(1.04);
 }
 
-/* -----------------------------------------------------
-   🎚️ CONTROLE DO TAMANHO DA FONTE
------------------------------------------------------- */
-
-.settings-control {
+/* -----------------------------------------
+   CONTROLE DE FONTE
+----------------------------------------- */
+.bibliafy-theme .settings-control {
   background: var(--highlight);
   padding: 0.6rem;
   border-radius: 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   transition: background 0.25s ease;
 }
 
-.settings-control:hover {
+.bibliafy-theme .settings-control:hover {
   background: var(--card-bg);
 }
 
-.rt-fontsize-modal {
+.bibliafy-theme .rt-fontsize-modal {
   font-size: 1.1rem;
   font-weight: 600;
   color: var(--text-primary);
 }
 
-/* Botões + e - */
-.settings-control .rt-icon {
+.bibliafy-theme .settings-control .rt-icon {
   width: 38px;
   height: 38px;
   border-radius: 8px;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   transition: background 0.25s ease, transform 0.15s ease;
 }
 
-.settings-control .rt-icon:hover {
+.bibliafy-theme .settings-control .rt-icon:hover {
   background: var(--header-icon-hover-bg);
   transform: scale(1.05);
 }
 
-.settings-control .rt-icon:active {
+.bibliafy-theme .settings-control .rt-icon:active {
   transform: scale(0.9);
 }
 
-/* -----------------------------------------------------
-   📱 RESPONSIVO
------------------------------------------------------- */
-
+/* -----------------------------------------
+   RESPONSIVO
+----------------------------------------- */
 @media (max-width: 480px) {
-  .settings-modal-content {
+  .bibliafy-theme .settings-modal-content {
     padding: 1.25rem;
     border-radius: 14px;
   }
 
-  .rt-theme-btn {
+  .bibliafy-theme .rt-theme-btn {
     padding: 0.6rem;
   }
 }
-
+/* animação de fade + slide */
+@keyframes toastSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
 

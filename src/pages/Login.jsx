@@ -1,35 +1,37 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import api from '../services/api';
-import Swal from 'sweetalert2';
-import '../pages/Auth.css'; // O CSS P&B que criamos
-import { useAuth } from '../contexts/AuthContext';
+// src/pages/Login.jsx
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Eye, EyeOff } from "lucide-react";
+import toast from "react-hot-toast";
+import api from "../services/api";
+import "../pages/Auth.css";
+import { useAuth } from "../contexts/AuthContext";
 
-/**
- * Hook customizado para gerenciar todo o estado do formulário de login.
- * (Baseado no seu primeiro código, mas agora controla o isLoading também)
- */
 const useLoginForm = () => {
-  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isFocused, setIsFocused] = useState({ email: false, password: false });
+  const [isFocused, setIsFocused] = useState({
+    email: false,
+    password: false,
+  });
 
   const handleChange = (e) => {
     const { id, value } = e.target;
-    setFormData(prev => ({ ...prev, [id]: value }));
+    setFormData((prev) => ({ ...prev, [id]: value }));
+
     if (errors[id]) {
-      setErrors(prev => ({ ...prev, [id]: '' }));
+      setErrors((prev) => ({ ...prev, [id]: "" }));
     }
   };
 
   const handleFocus = (field) => {
-    setIsFocused(prev => ({ ...prev, [field]: true }));
+    setIsFocused((prev) => ({ ...prev, [field]: true }));
   };
 
   const handleBlur = (field) => {
-    setIsFocused(prev => ({ ...prev, [field]: false }));
+    setIsFocused((prev) => ({ ...prev, [field]: false }));
   };
 
   return {
@@ -38,12 +40,12 @@ const useLoginForm = () => {
     showPassword,
     isLoading,
     isFocused,
-    setErrors, // Expondo para o handleSubmit
-    setIsLoading, // Expondo para o handleSubmit
+    setErrors,
+    setIsLoading,
     setShowPassword,
     handleChange,
     handleFocus,
-    handleBlur
+    handleBlur,
   };
 };
 
@@ -59,27 +61,26 @@ function Login() {
     setShowPassword,
     handleChange,
     handleFocus,
-    handleBlur
+    handleBlur,
   } = useLoginForm();
 
   const navigate = useNavigate();
-  const { login } = useAuth(); // 1. Lógica de autenticação do seu NOVO arquivo
+  const { login } = useAuth();
 
-  // Função de validação do seu PRIMEIRO arquivo
   const validateForm = () => {
     const newErrors = {};
     const { email, password } = formData;
 
     if (!email.trim()) {
-      newErrors.email = 'O e-mail é obrigatório.';
+      newErrors.email = "O e-mail é obrigatório.";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      newErrors.email = 'Formato de e-mail inválido.';
+      newErrors.email = "Formato de e-mail inválido.";
     }
 
     if (!password.trim()) {
-      newErrors.password = 'A senha é obrigatória.';
+      newErrors.password = "A senha é obrigatória.";
     } else if (password.length < 6) {
-      newErrors.password = 'A senha deve ter pelo menos 6 caracteres.';
+      newErrors.password = "A senha deve ter pelo menos 6 caracteres.";
     }
 
     setErrors(newErrors);
@@ -89,131 +90,136 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // 2. Validação primeiro
     if (!validateForm()) return;
 
     setIsLoading(true);
 
     try {
-      const response = await api.post('/api/users/login', formData);
+      const { data } = await api.post("/api/users/login", formData);
 
-      // 3. Usa a função de login do AuthContext
-      login(response.data.token);
+      login(data.token);
+      sessionStorage.setItem("noSplash", "true");
 
-      // Usando os alertas temáticos do seu primeiro arquivo
-      await Swal.fire({
-        icon: 'success',
-        title: 'Bem-vindo de volta! 🙏',
-        html: '<p>Que o Senhor abençoe seu tempo conosco!</p>',
-        timer: 2000,
-        showConfirmButton: false,
-        timerProgressBar: true,
-        // Classes para o CSS P&B
-        customClass: {
-          popup: 'swal2-popup',
-          title: 'swal2-title',
-          htmlContainer: 'swal2-html-container',
-        }
+      toast.success("Bem-vindo de volta ao Bibliafy ✨", {
+        duration: 2600,
+        style: {
+          background: "#0d0d0d",
+          border: "1px solid #2a2a2a",
+          color: "#ffffff",
+          fontWeight: "600",
+          padding: "12px 16px",
+          borderRadius: "10px",
+        },
+        iconTheme: {
+          primary: "#ffffff",
+          secondary: "#000000",
+        },
       });
 
-      navigate('/home');
+      setTimeout(() => {
+        navigate("/home", { replace: true });
+      }, 300);
 
     } catch (err) {
-      const errorMessage = err.response?.data?.message ||
-        'Erro ao fazer login. Verifique suas credenciais.';
+      const errorMessage =
+        err.response?.data?.message ||
+        "Erro ao fazer login. Verifique suas credenciais.";
 
-      Swal.fire({
-        icon: 'error',
-        title: 'Credenciais incorretas 😔',
-        text: errorMessage,
-        // Classes para o CSS P&B
-        customClass: {
-          popup: 'swal2-popup',
-          title: 'swal2-title',
-          htmlContainer: 'swal2-html-container',
-        }
+      toast.error(errorMessage, {
+        duration: 2600,
+        style: {
+          background: "#1a0000",
+          border: "1px solid #5a1c1c",
+          color: "#ff7777",
+          fontWeight: "600",
+          padding: "12px 16px",
+          borderRadius: "10px",
+        },
+        iconTheme: {
+          primary: "#ff4444",
+          secondary: "#000000",
+        },
       });
     } finally {
       setIsLoading(false);
     }
   };
 
-  // 4. JSX ESTRUTURADO que o nosso Auth.css espera
   return (
     <div className="auth-container">
       <form className="auth-form" onSubmit={handleSubmit} noValidate>
-
-        {/* Cabeçalho que o CSS espera */}
         <div className="auth-header">
           <div className="logo-wrapper">
-            <div className="logo-icon"></div> {/* Ícone P&B */}
+            <div className="logo-icon" />
             <h2 className="bible-title">Bibliafy</h2>
           </div>
           <p className="welcome-text">Acesse sua conta para continuar</p>
         </div>
 
-        {/* Campo de e-mail que o CSS espera */}
         <div className="input-group">
-          <div className={`input-wrapper ${isFocused.email ? 'focused' : ''} ${errors.email ? 'error' : ''}`}>
+          <div
+            className={`input-wrapper ${isFocused.email ? "focused" : ""} ${errors.email ? "error" : ""
+              }`}
+          >
             <input
               type="email"
               id="email"
               placeholder="E-mail"
               value={formData.email}
               onChange={handleChange}
-              onFocus={() => handleFocus('email')}
-              onBlur={() => handleBlur('email')}
+              onFocus={() => handleFocus("email")}
+              onBlur={() => handleBlur("email")}
               disabled={isLoading}
               required
             />
           </div>
-          {errors.email && (
-            <span className="error-message">
-              ⚠️ {errors.email}
-            </span>
-          )}
+          {errors.email && <span className="error-message">⚠️ {errors.email}</span>}
         </div>
 
-        {/* Campo de senha que o CSS espera */}
         <div className="input-group">
-          <div className={`input-wrapper ${isFocused.password ? 'focused' : ''} ${errors.password ? 'error' : ''}`}>
+          <div
+            className={`input-wrapper ${isFocused.password ? "focused" : ""} ${errors.password ? "error" : ""
+              }`}
+          >
             <input
-              type={showPassword ? 'text' : 'password'}
+              type={showPassword ? "text" : "password"}
               id="password"
               placeholder="Senha"
               value={formData.password}
               onChange={handleChange}
-              onFocus={() => handleFocus('password')}
-              onBlur={() => handleBlur('password')}
+              onFocus={() => handleFocus("password")}
+              onBlur={() => handleBlur("password")}
               disabled={isLoading}
               required
             />
-            {/* Botão de ver senha (opcional, mas o CSS suporta) */}
+
             <button
               type="button"
               className="password-toggle"
               onClick={() => setShowPassword(!showPassword)}
               disabled={isLoading}
             >
-              {showPassword ? '🙈' : '👁️'}
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
           </div>
-          {errors.password && (
-            <span className="error-message">
-              ⚠️ {errors.password}
-            </span>
-          )}
+
+          {errors.password && <span className="error-message">⚠️ {errors.password}</span>}
+
+          <div className="forgot-password-wrapper">
+            <Link to="/esqueci-senha" className="forgot-password-link">
+              Esqueci minha senha
+            </Link>
+          </div>
         </div>
 
-        {/* Botão de login que o CSS espera */}
         <button
           type="submit"
           disabled={isLoading}
-          className={`login-btn ${isLoading ? 'loading' : ''}`}
+          className={`login-btn ${isLoading ? "loading" : ""}`}
         >
           {isLoading ? (
             <>
-              <span className="spinner"></span>
+              <span className="spinner" />
               <span>Entrando...</span>
             </>
           ) : (
@@ -221,14 +227,12 @@ function Login() {
           )}
         </button>
 
-        {/* Rodapé que o CSS espera */}
         <div className="auth-footer">
           <p className="redirect-link">
             Não tem uma conta?
-            <Link to="/registro">Cadastre-se</Link>
+            <Link to="/registro"> Cadastre-se</Link>
           </p>
         </div>
-
       </form>
     </div>
   );

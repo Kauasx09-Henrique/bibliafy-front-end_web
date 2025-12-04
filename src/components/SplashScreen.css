@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&display=swap');
+
 .splash-white {
   position: fixed;
   inset: 0;
@@ -10,73 +12,46 @@
   z-index: 9999;
 }
 
-
-.halo-light {
+/* Pulso atrás do logo */
+.pulse-light {
   position: absolute;
-  width: 420px;
-  height: 420px;
+  width: 360px;
+  height: 360px;
   border-radius: 50%;
-  background: radial-gradient(circle,
-      rgba(240, 240, 240, 1) 0%,
-      rgba(255, 255, 255, 0) 75%);
-  filter: blur(80px);
+  background: radial-gradient(
+    circle,
+    rgba(0, 0, 0, 0.08) 0%,
+    rgba(255, 255, 255, 0) 70%
+  );
+  filter: blur(40px);
   z-index: 1;
 }
 
+/* Logo */
 .logo-wrapper {
-  z-index: 3;
+  z-index: 5;
 }
 
-.logo-text-refined {
-  font-family: "Playfair Display", serif;
-  font-size: 3.2rem;
-  font-weight: 600;
-  color: #1a1a1a;
-  margin-top: 0.4rem;
-  letter-spacing: 6px;
+.logo-title {
+  margin-top: 0.3rem;
+  font-size: 2.8rem;
+  font-family: "Cinzel", serif;
   text-transform: uppercase;
-  z-index: 3;
-
+  color: #1a1a1a;
+  letter-spacing: 4px;
 
   text-shadow:
-    0 0 6px rgba(0, 0, 0, 0.06),
-    0 0 22px rgba(255, 255, 255, 0.8);
-
-  animation: refinedGlow 4s infinite alternate ease-in-out;
+    0 0 6px rgba(0, 0, 0, 0.05),
+    0 0 12px rgba(255, 255, 255, 0.8);
 }
 
-
-@keyframes refinedGlow {
-  from {
-    text-shadow:
-      0 0 4px rgba(0, 0, 0, 0.05),
-      0 0 14px rgba(255, 255, 255, 0.7);
+@media (max-width: 480px) {
+  .logo-title {
+    font-size: 2.2rem;
   }
 
-  to {
-    text-shadow:
-      0 0 14px rgba(0, 0, 0, 0.08),
-      0 0 28px rgba(255, 255, 255, 1);
-  }
-}
-
-.final-white-fade {
-  position: absolute;
-  inset: 0;
-  background: #ffffff;
-  z-index: 6;
-  pointer-events: none;
-}
-
-@media (max-width: 768px) {
-  .logo-text-refined {
-    font-size: 2.4rem;
-    letter-spacing: 4px;
-  }
-
-  .halo-light {
-    width: 300px;
-    height: 300px;
-    filter: blur(50px);
+  .pulse-light {
+    width: 260px;
+    height: 260px;
   }
 }

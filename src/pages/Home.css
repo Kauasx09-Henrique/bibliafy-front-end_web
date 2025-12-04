@@ -1,451 +1,397 @@
-/* --- Wrapper Principal --- */
-.home-wrapper {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 1rem;
+body {
+  margin: 0;
+  background: #000;
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
 }
 
-/* --- Cabeçalho (Título + Versão) --- */
-.home-top {
+.home-page {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  padding: 16px 16px 80px;
+  color: #fff;
+}
+
+/* HEADER */
+
+.home-header {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.home-header-row {
+  display: flex;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 1.5rem;
-  margin-bottom: 2rem;
+  justify-content: space-between;
+}
+
+.home-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.home-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #fff;
 }
 
 .home-title {
-  font-family: 'Cinzel', serif;
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: var(--text-primary);
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -0.05em;
 }
 
-.version-selector {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+/* Versão */
+
+.home-version-wrapper {
+  position: relative;
 }
 
-.version-selector label {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--text-secondary);
-  padding-left: 0.25rem;
-}
-
-.version-selector select {
-  background-color: var(--highlight);
-  color: var(--text-primary);
-  border: 1px solid var(--borders);
-  border-radius: 8px;
-  padding: 0.6rem 0.8rem;
-  font-size: 1rem;
-  font-family: 'Inter', sans-serif;
-  cursor: pointer;
+.home-version-select {
   appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23B3B3B3' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708 .708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 0.7rem center;
-  background-size: 16px;
-  padding-right: 2.5rem;
-  /* Espaço para a seta */
-}
-
-.version-selector select:focus {
+  background: #111;
+  color: #fff;
+  border: 1px solid #1e1e1e;
+  padding: 6px 26px 6px 10px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
   outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.3);
 }
 
-/* --- Pesquisa --- */
-.search-container {
-  margin: 2rem 0;
-}
-
-.search-bar {
-  width: 100%;
-  padding: 0.9rem 1.2rem;
-  font-size: 1.1rem;
-  background-color: var(--card-bg);
-  color: var(--text-primary);
-  border: 1px solid var(--borders);
-  border-radius: 12px;
-  box-shadow: 0 2px 8px var(--shadow);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.search-bar::placeholder {
-  color: var(--text-secondary);
+.home-version-arrow {
+  position: absolute;
+  right: 9px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
   opacity: 0.8;
 }
 
-.search-bar:focus {
-  outline: none;
-  border-color: var(--highlight);
-  box-shadow: 0 4px 12px var(--shadow-hover);
-}
+/* Search compacta */
 
-/* --- Seção de Tópicos --- */
-.topic-section {
-  margin-top: 2rem;
-  margin-bottom: 2rem;
-}
-
-.topic-section h2 {
-  font-family: 'Lora', serif;
-  font-size: 1.75rem;
-  font-weight: 600;
-  margin-bottom: 1.5rem;
-  position: relative;
-  padding-bottom: 0.5rem;
-}
-
-.topic-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  /* 4 colunas no desktop */
-  gap: 1.25rem;
-}
-
-.topic-link {
-  text-decoration: none;
-}
-
-.topic-card {
-  background-color: var(--card-bg);
-  border: 1px solid var(--borders);
-  border-radius: 12px;
-  padding: 1rem;
+.home-search-row {
   display: flex;
-  align-items: center;
-  gap: 1rem;
-  box-shadow: 0 4px 10px var(--shadow);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  justify-content: flex-end;
 }
 
-.topic-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 15px var(--shadow-hover);
-  border-color: var(--highlight);
-}
-
-.topic-icon {
-  flex-shrink: 0;
-  width: 44px;
-  height: 44px;
-  background-color: var(--highlight);
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--accent);
-  /* Destaque no ícone */
-}
-
-.topic-info h3 {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: 0.2rem;
-}
-
-.topic-info p {
-  font-size: 0.875rem;
-  color: var(--text-secondary);
-  font-family: 'Inter', sans-serif;
-}
-
-/* --- Seções (Testamentos) --- */
-.testament-section {
-  margin-top: 3rem;
-}
-
-.testament-section h2 {
-  font-family: 'Lora', serif;
-  font-size: 1.75rem;
-  font-weight: 600;
-  margin-bottom: 1.5rem;
+.home-search-wrapper {
   position: relative;
-  padding-bottom: 0.5rem;
+  width: 34px;
+  transition: width 0.35s ease;
 }
 
-.section-accent {
+.home-search-wrapper:focus-within {
+  width: 100%;
+}
+
+.home-search-icon {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 50px;
-  height: 3px;
-  background-color: var(--accent);
-  border-radius: 2px;
+  left: 9px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #aaaaaa;
+  pointer-events: none;
+  z-index: 1;
 }
 
-/* --- Grid de Livros (Desktop) --- */
-.books-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.5rem;
+.home-search-input {
+  width: 100%;
+  padding: 10px 10px 10px 32px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #fff;
+  font-size: 0.9rem;
+  outline: none;
+  opacity: 0;
+  cursor: text;
 }
 
-/* --- Card de Livro --- */
-.book-link {
-  text-decoration: none;
+.home-search-wrapper:focus-within .home-search-input {
+  background: #111;
+  border-color: #2b2b2b;
+  opacity: 1;
 }
 
-.book-card {
-  background-color: var(--card-bg);
-  border: 1px solid var(--borders);
-  border-radius: 12px;
-  padding: 1.25rem;
+.home-search-wrapper:not(:focus-within) .home-search-input {
+  background: transparent;
+  border-color: transparent;
+}
+
+/* CONTINUAR LENDO */
+
+.home-continue {
+  margin-top: 8px;
+  margin-bottom: 28px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: #101010;
+  border: 1px solid #151515;
   display: flex;
   align-items: center;
-  gap: 1.25rem;
-  box-shadow: 0 4px 10px var(--shadow);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  justify-content: space-between;
 }
 
-.book-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 15px var(--shadow-hover);
-  border-color: var(--highlight);
+.home-continue-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #8d8d8d;
+  margin: 0 0 4px 0;
 }
 
-.book-icon {
-  flex-shrink: 0;
-  width: 48px;
-  height: 48px;
-  background-color: var(--highlight);
-  border-radius: 50%;
+.home-continue-book {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.home-continue-book span {
+  opacity: 0.6;
+}
+
+.home-continue-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #000;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-primary);
-  transition: width 0.2s ease, height 0.2s ease;
+  text-decoration: none;
+  transition: transform 0.15s ease;
 }
 
-.book-info h3 {
-  font-family: 'Lora', serif;
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: 0.25rem;
-  transition: font-size 0.2s ease;
+.home-continue-btn:active {
+  transform: scale(0.92);
 }
 
-.book-info p {
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-  transition: font-size 0.2s ease;
-}
+/* MAIN */
 
-/* --- 💡 MELHORIA MOBILE (Responsividade) 💡 --- */
-@media (max-width: 768px) {
-  .home-wrapper {
-    padding: 0.75rem;
-  }
-
-  .home-title {
-    font-size: 2rem;
-  }
-
-  .home-top {
-    gap: 1rem;
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .version-selector select {
-    width: 100%;
-  }
-
-  .search-bar {
-    font-size: 1rem;
-    padding: 0.8rem 1rem;
-  }
-
-  .testament-section h2,
-  .topic-section h2 {
-    font-size: 1.5rem;
-  }
-
-  /* --- Responsividade dos Tópicos (Scroll Horizontal) --- */
-  .topic-grid {
-    grid-template-columns: none;
-    display: flex;
-    overflow-x: auto;
-    gap: 0.75rem;
-    padding-bottom: 1rem;
-    padding-left: 0.25rem;
-    padding-right: 0.25rem;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-
-  .topic-grid::-webkit-scrollbar {
-    display: none;
-  }
-
-  .topic-card {
-    width: 160px;
-    flex-shrink: 0;
-  }
-
-  /* --- Responsividade dos Livros (2 colunas) --- */
-  .books-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 0.75rem;
-  }
-
-  .book-card {
-    flex-direction: column;
-    padding: 0.75rem;
-    gap: 0.5rem;
-    text-align: center;
-    border-radius: 10px;
-  }
-
-  .book-icon {
-    width: 40px;
-    height: 40px;
-  }
-
-  .book-info h3 {
-    font-size: 1rem;
-    margin-bottom: 0.1rem;
-  }
-
-  .book-info p {
-    font-size: 0.8rem;
-  }
-}
-
-@media (max-width: 380px) {
-  .books-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .book-card {
-    flex-direction: row;
-    text-align: left;
-    padding: 1rem;
-  }
-
-  .book-info h3 {
-    font-size: 1.1rem;
-  }
-}
-
-/* --- 7. NOVOS ESTILOS "CONTINUAR LENDO" --- */
-.continue-reading-card {
-  background: var(--card-bg);
-  border: 1px solid var(--borders);
-  border-radius: 12px;
-  padding: 1.25rem 1.5rem;
-  margin-bottom: 2rem;
+.home-main {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.home-testament {
+  width: 100%;
+}
+
+.home-testament-header {
+  display: flex;
   align-items: center;
-  box-shadow: 0 4px 10px var(--shadow);
-  transition: box-shadow 0.2s ease;
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
-.continue-reading-card:hover {
-  box-shadow: 0 6px 15px var(--shadow-hover);
-}
-
-.continue-info {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  padding-right: 1rem;
-}
-
-.continue-title {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--accent);
+.home-testament-header h2 {
+  margin: 0;
+  font-size: 0.9rem;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 0.25rem;
+  letter-spacing: 0.16em;
 }
 
-.continue-book {
+.home-testament-line {
+  flex: 1;
+  height: 1px;
+  background: #191919;
+}
 
-    font-family: 'Lora', serif;
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--text-primary);
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+/* GRID & CARDS */
+
+.home-books-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+@media (min-width: 600px) {
+  .home-books-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
+}
 
-  .continue-button {
-    flex-shrink: 0;
-    width: 44px;
-    height: 44px;
-    background: var(--highlight);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-primary);
-    transition: background-color 0.2s ease, transform 0.2s ease;
+.home-book-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.home-book-card {
+  padding: 12px;
+  border-radius: 12px;
+  background: #101010;
+  border: 1px solid #181818;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 64px;
+  transition: background 0.15s ease, border-color 0.15s ease,
+    transform 0.08s ease;
+}
+
+.home-book-card:active {
+  background: #161616;
+  border-color: #222;
+  transform: scale(0.98);
+}
+
+.home-book-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.home-book-info h3 {
+  margin: 0 0 2px 0;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.home-book-info p {
+  margin: 0;
+  font-size: 0.72rem;
+  color: #8a8a8a;
+}
+
+/* LOADING */
+
+.home-loading-card {
+  height: 64px;
+  border-radius: 12px;
+  background: #101010;
+  border: 1px solid #181818;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.home-loading-lottie {
+  width: 36px;
+  opacity: 0.45;
+}
+
+/* ================================
+   BANNER DE DEFINIÇÃO DE NICKNAME
+   Premium Black & White Style
+================================ */
+
+.home-nickname-banner {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  padding: 18px 20px;
+  border-radius: 14px;
+  margin-bottom: 22px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+
+  animation: nicknameFadeIn 0.45s ease-out forwards;
+  box-shadow: 0 4px 22px rgba(0, 0, 0, 0.35);
+}
+
+/* Texto */
+.home-nickname-text span {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.home-nickname-text p {
+  margin: 4px 0 0;
+  font-size: 0.85rem;
+  color: #b3b3b3;
+  line-height: 1.4;
+}
+
+/* Input + Botão */
+.home-nickname-actions {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  align-items: center;
+}
+
+.home-nickname-input {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 10px;
+
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+
+  color: #fff;
+  font-size: 0.95rem;
+  outline: none;
+
+  transition: all 0.25s ease;
+}
+
+.home-nickname-input::placeholder {
+  color: #7b7b7b;
+}
+
+.home-nickname-input:focus {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12);
+}
+
+/* Botão salvar */
+.home-nickname-btn {
+  padding: 10px 18px;
+  border-radius: 10px;
+
+  background: #ffffff;
+  color: #000;
+  border: none;
+
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.home-nickname-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+}
+
+.home-nickname-btn:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.home-nickname-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Animação */
+@keyframes nicknameFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
   }
-
-  .continue-button:hover {
-    background-color: var(--accent);
-    transform: scale(1.05);
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-
-  /* Responsividade para o card "Continuar Lendo" */
-  @media (max-width: 768px) {
-    .continue-reading-card {
-      padding: 1rem 1.25rem;
-    }
-
-    .continue-book {
-      font-size: 1.1rem;
-    }
-
-    .continue-button {
-      width: 40px;
-      height: 40px;
-    }
-  }
-
-  /* ====== LOTTIE LOADING NOS LIVROS ====== */
-
-  .loading-book-card {
-    background-color: var(--card-bg);
-    border: 1px solid var(--borders);
-    border-radius: 12px;
-    padding: 1.25rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 10px var(--shadow);
-    animation: loadingFade 0.6s ease-in-out infinite alternate;
-  }
-
-  .loading-book-lottie {
-    width: 72px;
-    height: 72px;
-    opacity: 0.95;
-  }
-
-  /* leve "respiração" nos placeholders */
-  @keyframes loadingFade {
-    from {
-      transform: translateY(0);
-      opacity: 0.7;
-    }
-
-    to {
-      transform: translateY(-4px);
-      opacity: 1;
-    }
-  }
+}

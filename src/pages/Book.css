@@ -1,153 +1,114 @@
-/* 1. Wrapper e Animação */
+/* Container principal */
 .book-wrapper {
-  max-width: 900px; /* Um pouco mais estreito, ideal para leitura */
-  margin: 0 auto;
-  padding: 1rem;
-  box-sizing: border-box;
+  padding: 1.2rem;
+  animation: fadeIn .2s ease;
 }
 
-/* 2. Toolbar (Voltar e Versão) */
+/* Toolbar */
 .book-toolbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.4rem;
 }
 
+/* Botão voltar */
 .back-btn {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 0.25rem;
-  padding: 0.5rem 0.75rem;
-  border-radius: 6px;
-  background-color: var(--card-bg);
+  gap: 4px;
+  font-size: 0.95rem;
   color: var(--text-primary);
-  border: 1px solid var(--borders);
-  text-decoration: none;
-  font-size: 0.9rem;
-  font-weight: 500;
-  box-shadow: var(--shadow);
-  transition: all 0.2s ease;
 }
 
-.back-btn:hover {
-  background-color: var(--background);
-  border-color: var(--highlight);
-  box-shadow: var(--shadow-hover);
-}
-
-.version-selector-book label {
-  font-size: 0.8rem;
-  color: var(--text-secondary);
-  margin-right: 0.5rem;
-  display: none; /* Oculta no mobile para economizar espaço */
-}
-
-.version-selector-book select {
-  background-color: var(--card-bg);
-  border: 1px solid var(--borders);
-  border-radius: 6px;
-  padding: 0.5rem 0.75rem;
-  font-size: 0.9rem;
+/* Selecionar versão - estilo pílula */
+.version-pill {
+  background: #1c1c1c;
+  border: 1px solid #303030;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-weight: 600;
   color: var(--text-primary);
-  box-shadow: var(--shadow);
   cursor: pointer;
+  appearance: none;
+  outline: none;
 }
 
-/* 3. Cabeçalho do Livro */
+.version-pill:focus {
+  border-color: var(--primary);
+}
+
+/* Header */
 .book-header {
   text-align: center;
-  margin-bottom: 2rem;
-  border-bottom: 1px solid var(--borders);
-  padding-bottom: 1.5rem;
+  margin-bottom: 1.2rem;
 }
 
 .book-title {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.75rem;
-  color: var(--text-primary);
+  gap: 6px;
 }
 
 .book-title h1 {
-  font-size: clamp(1.75rem, 5vw, 2.25rem);
-  font-weight: 700;
+  font-size: 1.6rem;
   margin: 0;
 }
 
 .book-subtitle {
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   color: var(--text-secondary);
-  margin: 0.5rem 0 0;
 }
 
-/* 4. Grid de Capítulos */
-.chapters-carousel {
-  display: none; /* Remove totalmente o carrossel */
-}
-
+/* Grid de capítulos */
 .chapters-grid {
   display: grid;
-  /* Cria colunas automáticas.
-     Elas terão no mínimo 60px.
-     O 'auto-fill' garante que o grid ocupe todo o espaço.
-     O '1fr' faz com que se ajustem igualmente.
-  */
-  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 12px;
-  padding: 0 0.5rem;
 }
 
-/* 5. Pílula do Capítulo */
 .chapter-pill {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  
-  /* Faz ser um círculo perfeito */
-  aspect-ratio: 1 / 1; 
-  width: 100%; /* Ocupa o espaço do grid */
-  border-radius: 50%;
-
-  background-color: var(--card-bg);
-  border: 1px solid var(--borders);
-  box-shadow: var(--shadow);
-  
-  color: var(--text-primary);
-  text-decoration: none;
-  font-weight: 600;
+  width: 100%;
+  padding: 14px 0;
+  background: #121212;
+  border: 1px solid #242424;
+  border-radius: 12px;
+  text-align: center;
   font-size: 1rem;
-  
-  transition: all 0.2s ease-out;
+  color: var(--text-primary);
+  transition: background .2s, transform .15s;
 }
 
 .chapter-pill:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-hover);
-  border-color: var(--highlight);
-  color: var(--text-primary);
+  background: #1b1b1b;
+  transform: scale(1.03);
 }
 
-.chapter-pill:focus-visible {
-  outline: none;
-  border-color: var(--text-primary);
-  box-shadow: 0 0 0 3px rgba(var(--text-primary-rgb), 0.2);
+/* Loading */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 50px;
 }
 
-/* 6. Media Query (Ajuste fino) */
-@media (min-width: 768px) {
-  .book-wrapper {
-    padding: 1.5rem 2rem;
-  }
+.spin {
+  animation: spin 1s linear infinite;
+}
 
-  .version-selector-book label {
-    display: inline; /* Mostra o "Versão:" no desktop */
-  }
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
-  .chapters-grid {
-    /* Aumenta o tamanho mínimo no desktop */
-    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
-    gap: 16px;
-  }
+.fade-in {
+  animation: fadeIn .3s ease;
+}
+
+@keyframes spin {
+  from { transform: rotate(0); }
+  to { transform: rotate(360deg); }
 }

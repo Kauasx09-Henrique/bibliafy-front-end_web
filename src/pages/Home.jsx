@@ -1,142 +1,284 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { BookOpen } from "lucide-react";
+import { BookOpen, Search, ArrowRight, ChevronDown } from "lucide-react";
 import Lottie from "lottie-react";
-import bibleAnimation from "../../public/Loanding.json";
+import toast from "react-hot-toast";
+
+import { useAuth } from "../contexts/AuthContext";
 import api from "../services/api";
+import bibleAnimation from "../../public/Loanding.json";
+
 import "./Home.css";
 
-// --- Card de Livro ---
-const BookCard = React.memo(({ book, selectedVersion }) => (
+const BookCard = ({ book, selectedVersion }) => (
   <Link
     to={`/livro/${book.id}?version=${selectedVersion}`}
-    className="book-link"
+    className="home-book-link"
   >
-    <div className="book-card">
-      <div className="book-icon">
-        <BookOpen size={24} />
+    <div className="home-book-card">
+      <div className="home-book-icon">
+        <BookOpen size={18} color="#fff" strokeWidth={1.6} />
       </div>
-      <div className="book-info">
+
+      <div className="home-book-info">
         <h3>{book.name}</h3>
-        <p>{book.total_chapters} capítulos</p>
+        <p>{book.total_chapters} caps</p>
       </div>
     </div>
   </Link>
-));
+);
 
-// --- Card de Loading com Lottie (aparece no lugar dos livros) ---
-const LoadingBookCard = React.memo(() => (
-  <div className="loading-book-card">
+const LoadingBookCard = () => (
+  <div className="home-loading-card">
     <Lottie
       animationData={bibleAnimation}
-      loop={true}
-      className="loading-book-lottie"
+      loop
+      className="home-loading-lottie"
     />
   </div>
-));
+);
 
-function Home() {
+export default function Home() {
+  const { user, token } = useAuth();
+
   const [books, setBooks] = useState([]);
   const [versions, setVersions] = useState([]);
   const [selectedVersion, setSelectedVersion] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
   const [lastRead, setLastRead] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Carregar versões
+  const [needsNickname, setNeedsNickname] = useState(false);
+  const [nicknameInput, setNicknameInput] = useState("");
+  const [savingNickname, setSavingNickname] = useState(false);
+
+  useEffect(() => {
+    if (!user) return;
+    const alreadyWelcomed = sessionStorage.getItem("bibliafyWelcomed");
+    const name = user.displayName || user.nickname || user.name || "bem-vindo(a) de volta";
+    if (!alreadyWelcomed) {
+      setTimeout(() => {
+        toast.success(`Bem-vindo(a), ${name}! ✨`, {
+          duration: 3800,
+        });
+      }, 400);
+      sessionStorage.setItem("bibliafyWelcomed", "1");
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (!user) return;
+
+    const checkAndNotify = () => {
+      const now = new Date();
+      const hours = now.getHours();
+      const minutes = now.getMinutes();
+      const todayKey = now.toISOString().slice(0, 10);
+      const lastNotified = localStorage.getItem("bibliafyDaily8amNotified");
+
+      if (hours === 8 && minutes === 0 && lastNotified !== todayKey) {
+        toast("Olá, vamos meditar na Palavra hoje? 📖✨", {
+          icon: "🙏",
+          duration: 6000,
+        });
+        localStorage.setItem("bibliafyDaily8amNotified", todayKey);
+      }
+    };
+
+    checkAndNotify();
+    const interval = setInterval(checkAndNotify, 60000);
+    return () => clearInterval(interval);
+  }, [user]);
+
+  useEffect(() => {
+    if (!token) return;
+
+    const checkNickname = async () => {
+      try {
+        const { data } = await api.get("/api/users/check-nickname", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (!data.hasNickname) {
+          setNeedsNickname(true);
+          setNicknameInput(data.suggestedNickname || "");
+          toast("Escolha como você quer ser chamado no Bibliafy ✨", {
+            icon: "👤",
+            duration: 5500,
+          });
+        }
+      } catch (err) {
+        console.error("Erro ao checar nickname:", err);
+      }
+    };
+
+    checkNickname();
+  }, [token]);
+
+  const handleSaveNickname = async (e) => {
+    e.preventDefault();
+    const nick = nicknameInput.trim();
+    if (!nick) {
+      toast.error("Digite um apelido para continuar.");
+      return;
+    }
+
+    try {
+      setSavingNickname(true);
+      await api.put(
+        "/api/users/profile",
+        { nickname: nick },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      toast.success("Apelido salvo com sucesso! 🙌");
+      setNeedsNickname(false);
+
+      if (user && (user.id || user.email)) {
+        const key = `bibliafyNicknameSet:${user.id || user.email}`;
+        localStorage.setItem(key, "1");
+      }
+    } catch (err) {
+      toast.error("Não foi possível atualizar seu apelido.");
+    } finally {
+      setSavingNickname(false);
+    }
+  };
+
   const fetchVersions = useCallback(async () => {
     try {
-      const r = await api.get("/api/bible/versions");
-      setVersions(r.data || []);
-      if (r.data?.length) setSelectedVersion(r.data[0].abbreviation);
+      const response = await api.get("/api/bible/versions");
+      const data = response.data || [];
+      setVersions(data);
+      if (!selectedVersion && data.length > 0) {
+        setSelectedVersion(data[0].abbreviation);
+      }
     } catch {
-      setError("Não foi possível carregar as versões.");
+      toast.error("Erro ao carregar versões");
     }
-  }, []);
+  }, [selectedVersion]);
 
-  // Carregar livros
   const fetchBooks = useCallback(async () => {
     try {
-      const r = await api.get("/api/bible/books");
-      setBooks(r.data || []);
+      const response = await api.get("/api/bible/books");
+      setBooks(response.data || []);
     } catch {
-      setError("Não foi possível carregar os livros.");
+      toast.error("Erro ao carregar livros");
     }
   }, []);
 
-  // Chamar APIs
   useEffect(() => {
     (async () => {
       setLoading(true);
-      await fetchVersions();
-      await fetchBooks();
+      await Promise.all([fetchVersions(), fetchBooks()]);
       setLoading(false);
     })();
   }, [fetchVersions, fetchBooks]);
 
-  // Continuar Lendo
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem("bibliafyLastRead");
-      if (saved) setLastRead(JSON.parse(saved));
-    } catch {
-      setLastRead(null);
+    const saved = localStorage.getItem("bibliafyLastRead");
+    if (saved) {
+      setLastRead(JSON.parse(saved));
     }
   }, []);
 
-  // Filtro de busca
-  const filteredBooks = useMemo(
-    () =>
-      books.filter((b) =>
-        b.name.toLowerCase().includes(searchTerm.toLowerCase())
-      ),
-    [books, searchTerm]
-  );
+  const filteredBooks = useMemo(() => {
+    return books.filter((b) =>
+      b.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [books, searchTerm]);
 
   const oldTestament = filteredBooks.filter((b) => b.testament_id === 1);
   const newTestament = filteredBooks.filter((b) => b.testament_id === 2);
 
-  // Renderiza Grid de livros OU Lottie
   const renderGrid = (list) => (
-    <div className="books-grid">
+    <div className="home-books-grid">
       {loading
-        ? Array.from({ length: 8 }).map((_, i) => <LoadingBookCard key={i} />)
-        : list.map((b) => (
-            <BookCard key={b.id} book={b} selectedVersion={selectedVersion} />
+        ? Array.from({ length: 6 }).map((_, i) => <LoadingBookCard key={i} />)
+        : list.map((book) => (
+            <BookCard
+              key={book.id}
+              book={book}
+              selectedVersion={selectedVersion}
+            />
           ))}
     </div>
   );
 
-  if (error) return <div className="error-message">{error}</div>;
-
   return (
-    <div className="home-wrapper">
-      <div className="home-top animate-in">
-        <h1 className="home-title">Bibliafy</h1>
-        <div className="version-selector">
-          <label htmlFor="version">Versão</label>
-          <select
-            id="version"
-            value={selectedVersion}
-            onChange={(e) => setSelectedVersion(e.target.value)}
-          >
-            {versions.map((v) => (
-              <option key={v.id} value={v.abbreviation}>
-                {v.name} ({v.abbreviation})
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
+    <div className="home-page">
+      {needsNickname && (
+        <form className="home-nickname-banner" onSubmit={handleSaveNickname}>
+          <div className="home-nickname-text">
+            <span>Como você quer ser chamado?</span>
+            <p>Defina um apelido para personalizar sua experiência no Bibliafy.</p>
+          </div>
 
-      {/* Continuar Lendo */}
+          <div className="home-nickname-actions">
+            <input
+              type="text"
+              value={nicknameInput}
+              onChange={(e) => setNicknameInput(e.target.value)}
+              placeholder="Ex: Kauã, K. Henrique..."
+              className="home-nickname-input"
+            />
+            <button
+              type="submit"
+              className="home-nickname-btn"
+              disabled={savingNickname}
+            >
+              {savingNickname ? "Salvando..." : "Salvar"}
+            </button>
+          </div>
+        </form>
+      )}
+
+      <header className="home-header">
+        <div className="home-header-row">
+          <div className="home-brand">
+            <span className="home-dot" />
+            <h1 className="home-title">Bibliafy</h1>
+          </div>
+
+          <div className="home-version-wrapper">
+            <select
+              value={selectedVersion}
+              onChange={(e) => setSelectedVersion(e.target.value)}
+              className="home-version-select"
+            >
+              {versions.map((v) => (
+                <option key={v.id} value={v.abbreviation}>
+                  {v.abbreviation.toUpperCase()}
+                </option>
+              ))}
+            </select>
+
+            <ChevronDown size={14} className="home-version-arrow" />
+          </div>
+        </div>
+
+        <div className="home-search-row">
+          <div className="home-search-wrapper">
+            <Search className="home-search-icon" size={18} />
+            <input
+              type="text"
+              placeholder="Buscar..."
+              className="home-search-input"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+        </div>
+      </header>
+
       {lastRead && (
-        <div className="continue-reading-card animate-in">
-          <div className="continue-info">
-            <p className="continue-title">Continuar Lendo</p>
-            <h3 className="continue-book">
-              {lastRead.bookName}, Capítulo {lastRead.chapter}
+        <div className="home-continue">
+          <div>
+            <p className="home-continue-label">CONTINUAR LENDO</p>
+            <h3 className="home-continue-book">
+              {lastRead.bookName} <span>|</span> Cap {lastRead.chapter}
             </h3>
           </div>
 
@@ -144,55 +286,30 @@ function Home() {
             to={`/livro/${lastRead.bookId}/capitulo/${lastRead.chapter}?version=${
               lastRead.version || selectedVersion
             }`}
-            className="continue-button"
+            className="home-continue-btn"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="m9 18 6-6-6-6" />
-            </svg>
+            <ArrowRight size={18} />
           </Link>
         </div>
       )}
 
-      {/* Busca */}
-      <div className="search-container">
-        <input
-          type="search"
-          className="search-bar"
-          placeholder="Pesquisar livro…"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </div>
+      <main className="home-main">
+        <section className="home-testament">
+          <div className="home-testament-header">
+            <h2>Velho Testamento</h2>
+            <div className="home-testament-line" />
+          </div>
+          {renderGrid(oldTestament)}
+        </section>
 
-      {/* Velho Testamento */}
-      <section className="testament-section">
-        <h2>
-          Velho Testamento
-          <span className="section-accent" />
-        </h2>
-        {renderGrid(oldTestament)}
-      </section>
-
-      {/* Novo Testamento */}
-      <section className="testament-section">
-        <h2>
-          Novo Testamento
-          <span className="section-accent" />
-        </h2>
-        {renderGrid(newTestament)}
-      </section>
+        <section className="home-testament">
+          <div className="home-testament-header">
+            <h2>Novo Testamento</h2>
+            <div className="home-testament-line" />
+          </div>
+          {renderGrid(newTestament)}
+        </section>
+      </main>
     </div>
   );
 }
-
-export default Home;

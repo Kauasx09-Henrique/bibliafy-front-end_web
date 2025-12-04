@@ -1,120 +1,266 @@
-.anotacoes-container {
-  max-width: 1100px;
+/* =========================================
+   ANOTAÇÕES – LAYOUT GERAL
+========================================= */
+
+.notes-page {
+  max-width: 980px;
   margin: 0 auto;
-  padding: 2rem 1rem;
+  padding: 28px 16px 80px;
+  color: var(--text-primary, #f5f5f5);
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-.anotacoes-container h1 {
-  text-align: center;
-  font-family: 'Cinzel', serif;
-  font-size: 2rem;
-  margin-bottom: 1.5rem;
-  color: var(--text-primary);
-}
+/* =========================================
+   HEADER
+========================================= */
 
-.search-bar-container {
+.notes-header {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 1.5rem;
-  background-color: var(--card-bg);
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px var(--shadow);
+  gap: 10px;
+  margin-bottom: 18px;
 }
 
-.search-bar-container input {
-  flex: 1;
-  border: none;
-  outline: none;
-  background: transparent;
-  color: var(--text-primary);
-  font-size: 1rem;
+.notes-header h1 {
+  font-size: 1.6rem;
+  font-weight: 600;
 }
+
+.header-icon {
+  padding: 8px;
+  border-radius: 12px;
+  background: radial-gradient(circle at 0 0, #5ac8fa 0, transparent 55%),
+    radial-gradient(circle at 100% 100%, #ffc857 0, transparent 55%);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
+  animation: floatHeaderIcon 3s ease-in-out infinite;
+}
+
+@keyframes floatHeaderIcon {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+/* =========================================
+   BARRA DE BUSCA
+========================================= */
+
+.notes-search-box {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.notes-search-box input {
+  width: 100%;
+  padding: 10px 12px 10px 38px;
+  border-radius: 999px;
+  border: 1px solid var(--borders, rgba(255, 255, 255, 0.15));
+  background: var(--highlight, #1b1b1b);
+  color: var(--text-primary, #f5f5f5);
+  outline: none;
+  font-size: 0.95rem;
+  transition: border 0.2s ease, box-shadow 0.2s ease, background 0.2s ease,
+    transform 0.12s ease;
+}
+
+.notes-search-box input::placeholder {
+  color: var(--text-secondary, #999);
+}
+
+.notes-search-box input:focus {
+  border-color: #5ac8fa;
+  box-shadow: 0 0 0 1px rgba(90, 200, 250, 0.4);
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.7;
+}
+
+/* =========================================
+   LISTA / ESTADOS
+========================================= */
 
 .notes-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.loading-state,
+.empty-state {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.95rem;
+  opacity: 0.85;
+}
+
+.loading-icon {
+  animation: spinLoading 1s linear infinite;
+}
+
+@keyframes spinLoading {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =========================================
+   CARD DE NOTA – GLASS
+========================================= */
+
+.glass-card {
+  background: rgba(10, 10, 10, 0.88);
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55);
 }
 
 .note-card {
-  background: var(--card-bg);
-  border-radius: 12px;
-  padding: 1rem;
-  box-shadow: 0 6px 15px var(--shadow);
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  padding: 14px 14px 16px;
+  transition: transform 0.16s ease, box-shadow 0.16s ease,
+    border-color 0.16s ease;
 }
 
 .note-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px var(--shadow-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.65);
+  border-color: rgba(90, 200, 250, 0.4);
 }
 
-.note-header {
+/* HEADER DO CARD */
+
+.note-card-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.5rem;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 8px;
 }
 
-.note-title {
-  font-family: 'Cinzel', serif;
-  font-size: 1.1rem;
+.note-card-header h3 {
+  font-size: 1rem;
   font-weight: 600;
-  color: var(--accent);
+}
+
+/* AÇÕES */
+
+.note-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .note-actions button {
-  background: none;
+  background: transparent;
   border: none;
+  padding: 4px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  color: var(--text-secondary);
-  margin-left: 0.5rem;
-  transition: color 0.2s ease;
+  transition: transform 0.16s ease, background 0.16s ease, color 0.16s ease;
+  color: var(--text-secondary, #b3b3b3);
 }
 
-.note-actions button:hover {
-  color: var(--accent);
+/* editar */
+
+.btn-edit:hover {
+  background: rgba(76, 217, 100, 0.15);
+  color: #9af58f;
+  transform: translateY(-1px) scale(1.05);
 }
 
-.note-content {
-  color: var(--text-primary);
-  font-family: 'Inter', sans-serif;
-  font-size: 0.95rem;
-  margin-bottom: 0.7rem;
+/* excluir */
+
+.btn-delete:hover {
+  background: rgba(255, 89, 94, 0.18);
+  color: #ff5b61;
+  transform: translateY(-1px) scale(1.05);
 }
 
-.verse-quote {
-  font-family: 'Lora', serif;
-  font-size: 0.85rem;
-  color: var(--text-secondary);
+/* TEXTO DA NOTA */
+
+.note-text {
+  font-size: 0.93rem;
+  line-height: 1.55;
+  margin-bottom: 10px;
+  color: var(--text-primary, #f5f5f5);
+}
+
+/* VERSO RELACIONADO */
+
+.note-verse {
+  margin-top: 4px;
+  padding-top: 6px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.12);
   display: flex;
   flex-direction: column;
+  gap: 3px;
 }
 
-.verse-quote-text {
+.v-text {
+  font-size: 0.9rem;
   font-style: italic;
+  opacity: 0.92;
 }
 
-.verse-quote-ref {
-  text-align: right;
-  color: var(--accent);
+.v-ref {
+  font-size: 0.78rem;
+  opacity: 0.7;
 }
 
-.loading-message,
-.empty-state {
-  text-align: center;
-  font-size: 1rem;
-  color: var(--accent);
-  margin-top: 2rem;
-}
+/* =========================================
+   RESPONSIVIDADE
+========================================= */
 
-/* Responsivo */
-@media (max-width: 768px) {
-  .notes-list {
-    grid-template-columns: 1fr;
+@media (min-width: 720px) {
+  .note-card {
+    padding: 16px 18px 18px;
   }
+
+  .notes-page {
+    padding-top: 36px;
+  }
+
+  .notes-header h1 {
+    font-size: 1.8rem;
+  }
+}
+
+@media (max-width: 500px) {
+  .note-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .note-actions {
+    margin-top: 4px;
+  }
+}
+
+/* =========================================
+   SWEETALERT 2 (opcional, mas deixa bonito)
+========================================= */
+
+.swal2-popup {
+  background: #151515 !important;
+  color: #f5f5f5 !important;
+  border-radius: 18px !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.8) !important;
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif !important;
 }

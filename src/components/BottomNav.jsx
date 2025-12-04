@@ -3,36 +3,32 @@ import { Link, useLocation } from "react-router-dom";
 import { Home, Star, BookMarked, User } from "lucide-react";
 import "./BottomNav.css";
 
-function BottomNav() {
+const tabs = [
+  { path: "/home", label: "Início", icon: Home },
+  { path: "/favoritos", label: "Favoritos", icon: Star },
+  { path: "/anotacoes", label: "Notas", icon: BookMarked },
+  { path: "/perfil", label: "Perfil", icon: User },
+];
+
+export default function BottomNav() {
   const location = useLocation();
 
-  // Função para verificar rota ativa
-  // Sua função está ótima, sem necessidade de mudança
   const isActive = (path) => location.pathname.startsWith(path);
 
   return (
     <nav className="bottom-nav">
-      <Link to="/home" className={`nav-item ${isActive("/home") ? "active" : ""}`}>
-        <Home size={24} />
-        <span className="nav-label">Início</span>
-      </Link>
+      {tabs.map(({ path, label, icon: Icon }) => {
+        const active = isActive(path);
 
-      <Link to="/favoritos" className={`nav-item ${isActive("/favoritos") ? "active" : ""}`}>
-        <Star size={24} />
-        <span className="nav-label">Favoritos</span>
-      </Link>
-
-      <Link to="/anotacoes" className={`nav-item ${isActive("/anotacoes") ? "active" : ""}`}>
-        <BookMarked size={24} />
-        <span className="nav-label">Notas</span>
-      </Link>
-
-      <Link to="/perfil" className={`nav-item ${isActive("/perfil") ? "active" : ""}`}>
-        <User size={24} />
-        <span className="nav-label">Perfil</span>
-      </Link>
+        return (
+          <Link key={path} to={path} className={`nav-item ${active ? "active" : ""}`}>
+            <div className={`icon-wrapper ${active ? "icon-active" : ""}`}>
+              <Icon size={22} strokeWidth={active ? 2.3 : 1.7} />
+            </div>
+            <span className="nav-label">{label}</span>
+          </Link>
+        );
+      })}
     </nav>
   );
 }
-
-export default BottomNav;
