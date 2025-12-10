@@ -1,7 +1,12 @@
+// --------------------------------------------------
+// CHAPTER.jsx • BIBLIAFY
+// --------------------------------------------------
+
 import React, { useState, useEffect, useMemo } from "react";
 import { useParams, Link, useNavigate, useSearchParams } from "react-router-dom";
 import api from "../services/api";
 import { useAuth } from "../contexts/AuthContext";
+
 import {
   ChevronLeft,
   ChevronRight,
@@ -12,8 +17,13 @@ import {
   RotateCw,
   Settings,
 } from "lucide-react";
-import NoteModal from "../components/NoteModal"; // Importe o componente aqui
+
+import NoteModal from "../components/NoteModal";
 import "./Chapter.css";
+
+// --------------------------------------------------
+// LOCALSTORAGE SETTINGS
+// --------------------------------------------------
 
 const SETTINGS_KEY = "bibliafyReadingSettings";
 
@@ -22,6 +32,7 @@ const loadSettings = () => {
     const saved = localStorage.getItem(SETTINGS_KEY);
     if (saved) return JSON.parse(saved);
   } catch { }
+
   return {
     fontSize: 18,
     fontFace: "font-inter",
@@ -29,6 +40,10 @@ const loadSettings = () => {
     readingTheme: "theme-dark",
   };
 };
+
+// --------------------------------------------------
+// MODAL DE CONFIGURAÇÕES
+// --------------------------------------------------
 
 const SettingsModal = ({
   isOpen,
@@ -51,77 +66,107 @@ const SettingsModal = ({
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className={`modal-content ${theme}`} onClick={(e) => e.stopPropagation()}>
+      <div
+        className={`modal-content ${theme}`}
+        onClick={(e) => e.stopPropagation()}
+      >
         <header className="modal-header">
           <h2>Configurações</h2>
-          <button className="close-button" onClick={onClose}>×</button>
+          <button className="close-button" onClick={onClose}>
+            ×
+          </button>
         </header>
 
-        <div className="modal-body">
-          <div className="modal-section">
-            <h3>Tema</h3>
-            <div className="theme-options">
-              <button
-                className={`theme-btn ${readingTheme === "theme-dark" ? "active" : ""}`}
-                onClick={() => setReadingTheme("theme-dark")}
-              >
-                🌙 Escuro
-              </button>
-              <button
-                className={`theme-btn ${readingTheme === "theme-sepia" ? "active" : ""}`}
-                onClick={() => setReadingTheme("theme-sepia")}
-              >
-                📜 Sépia
-              </button>
-              <button
-                className={`theme-btn ${readingTheme === "theme-light" ? "active" : ""}`}
-                onClick={() => setReadingTheme("theme-light")}
-              >
-                ☀️ Claro
-              </button>
-            </div>
-          </div>
-
-          <div className="modal-section">
-            <h3>Tamanho da Fonte</h3>
-            <div className="font-controls">
-              <button className="font-btn" onClick={decFont}>A-</button>
-              <span className="font-size-display">{fontSize}px</span>
-              <button className="font-btn" onClick={incFont}>A+</button>
-            </div>
-          </div>
-
-          <div className="modal-section">
-            <h3>Fonte</h3>
-            <select className="select-glass" value={fontFace} onChange={(e) => setFontFace(e.target.value)}>
-              <option value="font-inter">Inter</option>
-              <option value="font-lora">Lora</option>
-              <option value="font-garamond">Garamond</option>
-            </select>
-          </div>
-
-          <div className="modal-section">
-            <h3>Versão</h3>
-            <select className="select-glass" value={selectedVersion} onChange={handleVersionChange}>
-              {versions.map((v) => (
-                <option key={v.id} value={v.abbreviation}>
-                  {v.name} ({v.abbreviation})
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="modal-section">
-            <h3>Modo de Leitura</h3>
-            <button className="toggle-mode-btn" onClick={() => setCompactMode((s) => !s)}>
-              {compactMode ? "Modo Compacto" : "Modo Padrão"}
+        {/* Tema */}
+        <div className="modal-section">
+          <h3>Tema</h3>
+          <div className="theme-options">
+            <button
+              className={`theme-btn ${readingTheme === "theme-dark" ? "active" : ""
+                }`}
+              onClick={() => setReadingTheme("theme-dark")}
+            >
+              🌙 Escuro
+            </button>
+            <button
+              className={`theme-btn ${readingTheme === "theme-sepia" ? "active" : ""
+                }`}
+              onClick={() => setReadingTheme("theme-sepia")}
+            >
+              📜 Sépia
+            </button>
+            <button
+              className={`theme-btn ${readingTheme === "theme-light" ? "active" : ""
+                }`}
+              onClick={() => setReadingTheme("theme-light")}
+            >
+              ☀️ Claro
             </button>
           </div>
+        </div>
+
+        {/* Tamanho da fonte */}
+        <div className="modal-section">
+          <h3>Tamanho da Fonte</h3>
+          <div className="font-controls">
+            <button className="font-btn" onClick={decFont}>
+              A-
+            </button>
+            <span className="font-size-display">{fontSize}px</span>
+            <button className="font-btn" onClick={incFont}>
+              A+
+            </button>
+          </div>
+        </div>
+
+        {/* Fonte */}
+        <div className="modal-section">
+          <h3>Fonte</h3>
+          <select
+            className="select-glass"
+            value={fontFace}
+            onChange={(e) => setFontFace(e.target.value)}
+          >
+            <option value="font-inter">Inter</option>
+            <option value="font-lora">Lora</option>
+            <option value="font-garamond">Garamond</option>
+          </select>
+        </div>
+
+        {/* Versão */}
+        <div className="modal-section">
+          <h3>Versão</h3>
+          <select
+            className="select-glass"
+            value={selectedVersion}
+            onChange={handleVersionChange}
+          >
+            {versions.map((v) => (
+              <option key={v.id} value={v.abbreviation}>
+                {v.name} ({v.abbreviation})
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Modo compactado */}
+        <div className="modal-section">
+          <h3>Modo de Leitura</h3>
+          <button
+            className="toggle-mode-btn"
+            onClick={() => setCompactMode((s) => !s)}
+          >
+            {compactMode ? "Modo Compacto" : "Modo Padrão"}
+          </button>
         </div>
       </div>
     </div>
   );
 };
+
+// --------------------------------------------------
+// TOOLBAR SUPERIOR
+// --------------------------------------------------
 
 const ReadingToolbar = ({
   bookId,
@@ -131,7 +176,10 @@ const ReadingToolbar = ({
   onOpenSettings,
 }) => (
   <div className="toolbar-glass">
-    <Link to={`/livro/${bookId}?version=${selectedVersion}`} className="back-btn-glass">
+    <Link
+      to={`/livro/${bookId}?version=${selectedVersion}`}
+      className="back-btn-glass"
+    >
       <ChevronLeft size={20} />
       {bookName}
     </Link>
@@ -144,20 +192,12 @@ const ReadingToolbar = ({
   </div>
 );
 
+// --------------------------------------------------
+// CARD DO VERSÍCULO
+// --------------------------------------------------
+
 const VerseItem = ({ verse, isFav, onToggleFavorite, onNoteClick }) => {
   const [copied, setCopied] = useState(false);
-  const [rotating, setRotating] = useState(false);
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(`${verse.text} (Cap. ${verse.chapter}:${verse.verse})`);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  const handleRefresh = () => {
-    setRotating(true);
-    setTimeout(() => setRotating(false), 1000);
-  };
 
   return (
     <article className="verse-card">
@@ -165,37 +205,40 @@ const VerseItem = ({ verse, isFav, onToggleFavorite, onNoteClick }) => {
       <p className="verse-text">{verse.text}</p>
 
       <div className="verse-actions">
+        {/* Favoritar */}
         <button
           className={`va va-star ${isFav ? "active" : ""}`}
           onClick={() => onToggleFavorite(verse.id)}
-          title="Favoritar"
         >
           <Star size={20} />
         </button>
 
-        <button
-          className="va va-note"
-          onClick={() => onNoteClick(verse)}
-          title="Criar Nota"
-        >
+        {/* Nota */}
+        <button className="va va-note" onClick={() => onNoteClick(verse)}>
           <StickyNote size={20} />
         </button>
 
-        <button className="va va-copy" onClick={handleCopy} title="Copiar">
-          {copied ? <Check size={20} color="#4ade80" /> : <Copy size={20} />}
-        </button>
-
+        {/* Copiar */}
         <button
-          className={`va va-rotate ${rotating ? "spinning" : ""}`}
-          onClick={handleRefresh}
-          title="Atualizar"
+          className="va va-copy"
+          onClick={() => {
+            navigator.clipboard.writeText(
+              `${verse.text} (Cap. ${verse.chapter}:${verse.verse})`
+            );
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+          }}
         >
-          <RotateCw size={20} />
+          {copied ? <Check size={20} color="#4ade80" /> : <Copy size={20} />}
         </button>
       </div>
     </article>
   );
 };
+
+// --------------------------------------------------
+// FOOTER NAVEGAÇÃO
+// --------------------------------------------------
 
 const ReadingFooter = ({ onPrev, onNext, onTop, hasPrev, hasNext }) => (
   <footer className="footer-glass">
@@ -204,7 +247,8 @@ const ReadingFooter = ({ onPrev, onNext, onTop, hasPrev, hasNext }) => (
     </button>
 
     <button className="f-btn" onClick={onTop}>
-      <ChevronRight size={18} style={{ transform: 'rotate(-90deg)' }} /> Topo
+      <ChevronRight size={18} style={{ transform: "rotate(-90deg)" }} />
+      Topo
     </button>
 
     <button className="f-btn" disabled={!hasNext} onClick={onNext}>
@@ -212,6 +256,10 @@ const ReadingFooter = ({ onPrev, onNext, onTop, hasPrev, hasNext }) => (
     </button>
   </footer>
 );
+
+// --------------------------------------------------
+// COMPONENTE PRINCIPAL
+// --------------------------------------------------
 
 export default function Chapter() {
   const { bookId, chapterNum } = useParams();
@@ -228,7 +276,6 @@ export default function Chapter() {
   const [favorites, setFavorites] = useState(new Set());
   const [loading, setLoading] = useState(true);
 
-  // Estados para o NoteModal
   const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
   const [selectedVerseForNote, setSelectedVerseForNote] = useState(null);
 
@@ -236,39 +283,66 @@ export default function Chapter() {
   const [fontSize, setFontSize] = useState(initialSettings.fontSize);
   const [fontFace, setFontFace] = useState(initialSettings.fontFace);
   const [compactMode, setCompactMode] = useState(initialSettings.compactMode);
-  const [readingTheme, setReadingTheme] = useState(initialSettings.readingTheme);
+  const [readingTheme, setReadingTheme] = useState(
+    initialSettings.readingTheme
+  );
 
   const [settingsModalOpen, setSettingsModalOpen] = useState(false);
 
   const currentChapter = parseInt(chapterNum, 10);
 
+  // --------------------------------------------------
+  // APLICA O TEMA NO BODY
+  // --------------------------------------------------
+
   useEffect(() => {
-    localStorage.setItem(SETTINGS_KEY, JSON.stringify({
-      fontSize,
-      fontFace,
-      compactMode,
-      readingTheme
-    }));
+    document.body.classList.remove("theme-dark", "theme-light", "theme-sepia");
+    document.body.classList.add(readingTheme);
+  }, [readingTheme]);
+
+  // --------------------------------------------------
+  // SALVA CONFIGURAÇÕES
+  // --------------------------------------------------
+
+  useEffect(() => {
+    localStorage.setItem(
+      SETTINGS_KEY,
+      JSON.stringify({
+        fontSize,
+        fontFace,
+        compactMode,
+        readingTheme,
+      })
+    );
   }, [fontSize, fontFace, compactMode, readingTheme]);
+
+  // --------------------------------------------------
+  // CARREGAR TEXTO BÍBLICO
+  // --------------------------------------------------
 
   useEffect(() => {
     const load = async () => {
       try {
-        const [versesRes, booksRes, chaptersRes, versionsRes] = await Promise.all([
-          api.get(`/api/bible/books/${bookId}/chapters/${chapterNum}?version=${selectedVersion}`),
-          api.get("/api/bible/books"),
-          api.get(`/api/bible/books/${bookId}/chapters`),
-          api.get("/api/bible/versions"),
-        ]);
+        const [versesRes, booksRes, chaptersRes, versionsRes] =
+          await Promise.all([
+            api.get(
+              `/api/bible/books/${bookId}/chapters/${chapterNum}?version=${selectedVersion}`
+            ),
+            api.get("/api/bible/books"),
+            api.get(`/api/bible/books/${bookId}/chapters`),
+            api.get("/api/bible/versions"),
+          ]);
 
         setVerses(versesRes.data || []);
         setVersions(versionsRes.data || []);
 
-        const b = booksRes.data.find((x) => x.id == bookId);
-        setBookName(b?.name || "Livro");
+        const book = booksRes.data.find((b) => b.id == bookId);
+        setBookName(book?.name || "Livro");
 
         setTotalChapters((chaptersRes.data || []).length);
-      } catch { }
+      } catch (err) {
+        console.error("ERRO AO BUSCAR CAPÍTULO:", err);
+      }
 
       setLoading(false);
     };
@@ -276,17 +350,20 @@ export default function Chapter() {
     load();
   }, [bookId, chapterNum, selectedVersion]);
 
+  // --------------------------------------------------
+  // NAVEGAR ENTRE CAPÍTULOS
+  // --------------------------------------------------
+
   const navigateToChapter = (n) => {
-    if (!n) return;
     navigate(`/livro/${bookId}/capitulo/${n}?version=${selectedVersion}`);
     window.scrollTo({ top: 0, behavior: "instant" });
   };
 
   const toggleFavorite = (id) => {
     setFavorites((prev) => {
-      const copy = new Set(prev);
-      copy.has(id) ? copy.delete(id) : copy.add(id);
-      return copy;
+      const newSet = new Set(prev);
+      newSet.has(id) ? newSet.delete(id) : newSet.add(id);
+      return newSet;
     });
   };
 
@@ -295,23 +372,13 @@ export default function Chapter() {
     setIsNoteModalOpen(true);
   };
 
-  const handleSaveNote = async (noteData) => {
-    try {
-      console.log("Salvando nota:", noteData);
-      // Aqui você fará a chamada real para a API:
-      // await api.post('/api/notes', noteData);
-
-      // Simulação de delay
-      await new Promise(resolve => setTimeout(resolve, 800));
-    } catch (error) {
-      console.error("Erro ao salvar nota", error);
-    }
-  };
-
   if (loading) return <div className="loading">Carregando…</div>;
 
   return (
-    <div className={`chapter-wrapper ${readingTheme} ${fontFace} ${compactMode ? 'compact' : ''}`}>
+    <div
+      className={`chapter-wrapper ${readingTheme} ${fontFace} ${compactMode ? "compact" : ""
+        }`}
+    >
       <ReadingToolbar
         bookId={bookId}
         selectedVersion={selectedVersion}
@@ -340,6 +407,7 @@ export default function Chapter() {
         onTop={() => window.scrollTo({ top: 0, behavior: "smooth" })}
       />
 
+      {/* Modal de Configurações */}
       <SettingsModal
         isOpen={settingsModalOpen}
         onClose={() => setSettingsModalOpen(false)}
@@ -358,13 +426,14 @@ export default function Chapter() {
         theme={readingTheme}
       />
 
+      {/* Modal de Notas */}
       <NoteModal
         isOpen={isNoteModalOpen}
         verse={selectedVerseForNote}
         bookName={bookName}
         chapterNum={currentChapter}
         onClose={() => setIsNoteModalOpen(false)}
-        onSave={handleSaveNote}
+        onSave={() => { }}
       />
     </div>
   );
