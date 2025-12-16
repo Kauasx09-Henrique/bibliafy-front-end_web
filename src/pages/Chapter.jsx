@@ -11,7 +11,7 @@ import toast, { Toaster } from "react-hot-toast";
 import api from "../services/api";
 import { useAuth } from "../contexts/AuthContext";
 import NoteModal from "../components/NoteModal";
-import "./chapter.css"; 
+import "./Chapter.css"; 
 
 export default function Chapter() {
   const { bookId, chapterId } = useParams();
