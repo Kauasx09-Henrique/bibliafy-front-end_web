@@ -1,357 +1,349 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { useParams, Link, useNavigate, useSearchParams } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { 
+  ChevronLeft, Settings, Heart, Share2, 
+  Copy, Type, Moon, Sun, 
+  ArrowLeft, ArrowRight, X, BookOpen, Layers,
+  NotebookPen 
+} from "lucide-react";
+import toast, { Toaster } from "react-hot-toast";
+
 import api from "../services/api";
 import { useAuth } from "../contexts/AuthContext";
-import {
-  ChevronLeft,
-  ChevronRight,
-  Star,
-  StickyNote,
-  Copy,
-  Check,
-  Settings,
-  X
-} from "lucide-react";
 import NoteModal from "../components/NoteModal";
-import "./Chapter.css";
-
-const SETTINGS_KEY = "bibliafyReadingSettings";
-
-const loadSettings = () => {
-  try {
-    const saved = localStorage.getItem(SETTINGS_KEY);
-    if (saved) return JSON.parse(saved);
-  } catch { }
-  return {
-    fontSize: 18,
-    fontFace: "font-inter",
-    compactMode: false,
-    readingTheme: "theme-dark",
-  };
-};
-
-const SettingsModal = ({
-  isOpen,
-  onClose,
-  fontSize,
-  incFont,
-  decFont,
-  fontFace,
-  setFontFace,
-  selectedVersion,
-  handleVersionChange,
-  versions,
-  compactMode,
-  setCompactMode,
-  readingTheme,
-  setReadingTheme,
-}) => {
-  if (!isOpen) return null;
-
-  return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div
-        className="modal-content"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <header className="modal-header">
-          <h2>Aparência</h2>
-          <button className="close-button" onClick={onClose}>
-            <X size={24} />
-          </button>
-        </header>
-
-        <div className="modal-section">
-          <h3>Versão da Bíblia</h3>
-          <select
-            className="select-glass"
-            value={selectedVersion}
-            onChange={handleVersionChange}
-          >
-            {versions.map((v) => (
-              <option key={v.id} value={v.abbreviation}>
-                {v.abbreviation.toUpperCase()} - {v.name}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="modal-section">
-          <h3>Tema</h3>
-          <div className="theme-options">
-            <button
-              className={`theme-btn ${readingTheme === "theme-dark" ? "active" : ""}`}
-              onClick={() => setReadingTheme("theme-dark")}
-            >
-              Escuro
-            </button>
-            <button
-              className={`theme-btn ${readingTheme === "theme-sepia" ? "active" : ""}`}
-              onClick={() => setReadingTheme("theme-sepia")}
-            >
-              Sépia
-            </button>
-            <button
-              className={`theme-btn ${readingTheme === "theme-light" ? "active" : ""}`}
-              onClick={() => setReadingTheme("theme-light")}
-            >
-              Claro
-            </button>
-          </div>
-        </div>
-
-        <div className="modal-section">
-          <h3>Tamanho da Fonte</h3>
-          <div className="font-controls">
-            <button className="font-btn" onClick={decFont}>A-</button>
-            <span className="font-size-display">{fontSize}px</span>
-            <button className="font-btn" onClick={incFont}>A+</button>
-          </div>
-        </div>
-
-        <div className="modal-section">
-          <h3>Tipo de Fonte</h3>
-          <div className="font-family-options">
-            <button
-              className={`font-fam-btn font-inter ${fontFace === "font-inter" ? "active" : ""}`}
-              onClick={() => setFontFace("font-inter")}
-            >
-              Sans
-            </button>
-            <button
-              className={`font-fam-btn font-lora ${fontFace === "font-lora" ? "active" : ""}`}
-              onClick={() => setFontFace("font-lora")}
-            >
-              Serif
-            </button>
-            <button
-              className={`font-fam-btn font-garamond ${fontFace === "font-garamond" ? "active" : ""}`}
-              onClick={() => setFontFace("font-garamond")}
-            >
-              Classic
-            </button>
-          </div>
-        </div>
-
-        <div className="modal-section">
-          <button
-            className={`toggle-mode-btn ${compactMode ? "active" : ""}`}
-            onClick={() => setCompactMode((s) => !s)}
-          >
-            {compactMode ? "Modo Compacto: ATIVADO" : "Modo Compacto: DESATIVADO"}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const ReadingToolbar = ({
-  bookId,
-  bookName,
-  chapterNum,
-  onOpenSettings,
-}) => (
-  <div className="toolbar-glass">
-    <Link to={`/livro/${bookId}`} className="back-btn-glass">
-      <ChevronLeft size={20} />
-      <span>{bookName}</span>
-    </Link>
-
-    <div className="chapter-label">Cap. {chapterNum}</div>
-
-    <button className="settings-btn-glass" onClick={onOpenSettings}>
-      <Settings size={22} className="icon-settings-animated" />
-    </button>
-  </div>
-);
-
-const VerseItem = ({ verse, isFav, onToggleFavorite, onNoteClick }) => {
-  const [copied, setCopied] = useState(false);
-
-  return (
-    <article className="verse-card">
-      <div className="verse-header">
-        <span className="verse-index">{verse.verse}</span>
-      </div>
-      <p className="verse-text">{verse.text}</p>
-
-      <div className="verse-actions">
-        <button
-          className={`va va-star ${isFav ? "active" : ""}`}
-          onClick={() => onToggleFavorite(verse.id)}
-        >
-          <Star size={18} />
-        </button>
-
-        <button className="va va-note" onClick={() => onNoteClick(verse)}>
-          <StickyNote size={18} />
-        </button>
-
-        <button
-          className="va va-copy"
-          onClick={() => {
-            navigator.clipboard.writeText(`${verse.text} (${verse.book_name} ${verse.chapter}:${verse.verse})`);
-            setCopied(true);
-            setTimeout(() => setCopied(false), 2000);
-          }}
-        >
-          {copied ? <Check size={18} color="#4ade80" /> : <Copy size={18} />}
-        </button>
-      </div>
-    </article>
-  );
-};
-
-const ReadingFooter = ({ onPrev, onNext, onTop, hasPrev, hasNext }) => (
-  <footer className="footer-glass">
-    <button className="f-btn" disabled={!hasPrev} onClick={onPrev}>
-      <ChevronLeft size={18} /> Anterior
-    </button>
-
-    <button className="f-btn center-btn" onClick={onTop}>
-      Topo
-    </button>
-
-    <button className="f-btn" disabled={!hasNext} onClick={onNext}>
-      Próximo <ChevronRight size={18} />
-    </button>
-  </footer>
-);
+import "./chapter.css"; 
 
 export default function Chapter() {
-  const { bookId, chapterNum } = useParams();
+  const { bookId, chapterId } = useParams();
   const navigate = useNavigate();
   const { token } = useAuth();
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const selectedVersion = searchParams.get("version") || "acf";
-
+  
   const [verses, setVerses] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [bookName, setBookName] = useState("");
   const [totalChapters, setTotalChapters] = useState(0);
-  const [versions, setVersions] = useState([]);
-  const [favorites, setFavorites] = useState(new Set());
-  const [loading, setLoading] = useState(true);
 
-  const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [compareOpen, setCompareOpen] = useState(false);
+  const [selectedVerseForCompare, setSelectedVerseForCompare] = useState(null);
+  
+  const [noteModalOpen, setNoteModalOpen] = useState(false);
   const [selectedVerseForNote, setSelectedVerseForNote] = useState(null);
 
-  const initialSettings = useMemo(() => loadSettings(), []);
-  const [fontSize, setFontSize] = useState(initialSettings.fontSize);
-  const [fontFace, setFontFace] = useState(initialSettings.fontFace);
-  const [compactMode, setCompactMode] = useState(initialSettings.compactMode);
-  const [readingTheme, setReadingTheme] = useState(initialSettings.readingTheme);
-  const [settingsModalOpen, setSettingsModalOpen] = useState(false);
+  const [theme, setTheme] = useState(localStorage.getItem("reader-theme") || "dark");
+  const [fontSize, setFontSize] = useState(Number(localStorage.getItem("reader-fontsize")) || 18);
+  const [fontFamily, setFontFamily] = useState(localStorage.getItem("reader-font") || "inter");
+  const [compactMode, setCompactMode] = useState(localStorage.getItem("reader-compact") === "true");
 
-  const currentChapter = parseInt(chapterNum, 10);
+  const [favorites, setFavorites] = useState([]);
+  const [versions, setVersions] = useState([]);
+  const [comparisonResult, setComparisonResult] = useState(null);
+  const [comparingVersion, setComparingVersion] = useState(null);
+  const [loadingComparison, setLoadingComparison] = useState(false);
+
+  // --- NOVO: Força a cor do BODY para não ter conflito com a Home ---
+  useEffect(() => {
+    // Define as cores de fundo baseadas no tema
+    const bgColors = {
+      light: "#f4f4f5", // Cinza claro
+      sepia: "#f3e9d2", // Bege
+      dark: "#050505",  // Preto
+    };
+
+    // Aplica no body do navegador
+    document.body.style.backgroundColor = bgColors[theme] || "#050505";
+
+    // Limpeza: quando sair da página, volta pro preto padrão (da Home)
+    return () => {
+      document.body.style.backgroundColor = "#000000";
+    };
+  }, [theme]);
+  // ----------------------------------------------------------------
 
   useEffect(() => {
-    document.body.className = "";
-    document.body.classList.add(readingTheme);
-  }, [readingTheme]);
+    localStorage.setItem("reader-theme", theme);
+    localStorage.setItem("reader-fontsize", fontSize);
+    localStorage.setItem("reader-font", fontFamily);
+    localStorage.setItem("reader-compact", compactMode);
+  }, [theme, fontSize, fontFamily, compactMode]);
 
   useEffect(() => {
-    localStorage.setItem(
-      SETTINGS_KEY,
-      JSON.stringify({ fontSize, fontFace, compactMode, readingTheme })
-    );
-  }, [fontSize, fontFace, compactMode, readingTheme]);
+    if (!bookId || !chapterId || chapterId === "undefined" || chapterId === "null") return;
 
-  useEffect(() => {
-    const load = async () => {
+    async function loadChapter() {
       setLoading(true);
       try {
-        const [versesRes, booksRes, chaptersRes, versionsRes] = await Promise.all([
-          api.get(`/api/bible/books/${bookId}/chapters/${chapterNum}?version=${selectedVersion}`),
-          api.get("/api/bible/books"),
-          api.get(`/api/bible/books/${bookId}/chapters`),
-          api.get("/api/bible/versions"),
+        const urlParams = new URLSearchParams(window.location.search);
+        const version = urlParams.get("version") || "nvi";
+
+        const [resChapter, resBook] = await Promise.all([
+          api.get(`/api/bible/books/${bookId}/chapters/${chapterId}?version=${version}`),
+          api.get(`/api/bible/books/${bookId}`)
         ]);
 
-        setVerses(versesRes.data || []);
-        setVersions(versionsRes.data || []);
-        const book = booksRes.data.find((b) => String(b.id) === String(bookId) || b.abbrev === bookId);
-        setBookName(book?.name || "Bíblia");
-        setTotalChapters((chaptersRes.data || []).length);
+        setVerses(resChapter.data);
+        setBookName(resBook.data.name);
+        setTotalChapters(resBook.data.total_chapters);
+
+        if (token) {
+          try {
+            const resFavs = await api.get("/api/favorites", { 
+              headers: { Authorization: `Bearer ${token}` } 
+            });
+            if (Array.isArray(resFavs.data)) {
+              setFavorites(resFavs.data.map(f => f.verse_id));
+            }
+          } catch (e) { console.log("Erro favoritos", e); }
+        }
+
+        const resVersions = await api.get("/api/bible/versions");
+        setVersions(resVersions.data);
+
+        localStorage.setItem("bibliafyLastRead", JSON.stringify({
+          bookId, bookName: resBook.data.name, chapter: chapterId, version
+        }));
+
       } catch (err) {
         console.error(err);
+        if (err.response && err.response.status === 404) {
+           toast.error("Capítulo não encontrado");
+        }
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
-    };
-    load();
-  }, [bookId, chapterNum, selectedVersion]);
+    }
+    loadChapter();
+  }, [bookId, chapterId, token]);
 
-  const navigateToChapter = (n) => {
-    navigate(`/livro/${bookId}/capitulo/${n}?version=${selectedVersion}`);
-    window.scrollTo({ top: 0, behavior: "instant" });
+  const toggleFavorite = async (verse) => {
+    if (!token) return toast("Faça login para favoritar", { icon: "🔒" });
+
+    const isFav = favorites.includes(verse.id);
+    try {
+      if (isFav) {
+        await api.delete(`/api/favorites/${verse.id}`, { headers: { Authorization: `Bearer ${token}` } });
+        setFavorites(prev => prev.filter(id => id !== verse.id));
+        toast.success("Removido dos favoritos");
+      } else {
+        await api.post("/api/favorites", { verse_id: verse.id }, { headers: { Authorization: `Bearer ${token}` } });
+        setFavorites(prev => [...prev, verse.id]);
+        toast.success("Salvo nos favoritos");
+      }
+    } catch {
+      toast.error("Erro ao atualizar favorito");
+    }
   };
 
-  const toggleFavorite = (id) => {
-    setFavorites((prev) => {
-      const newSet = new Set(prev);
-      newSet.has(id) ? newSet.delete(id) : newSet.add(id);
-      return newSet;
-    });
+  const handleCompare = async (version) => {
+    if (!selectedVerseForCompare) return;
+    setComparingVersion(version.abbreviation);
+    setLoadingComparison(true);
+    try {
+      const res = await api.get(`/api/bible/verses/${selectedVerseForCompare.id}/compare?targetVersion=${version.abbreviation}`);
+      setComparisonResult(res.data);
+    } catch {
+      toast.error("Erro ao comparar");
+    } finally {
+      setLoadingComparison(false);
+    }
   };
 
-  if (loading) return <div className="loading-screen">Carregando Capítulo...</div>;
+  const handleSaveNote = async (data) => {
+    if (!token) return toast("Faça login para criar anotações", { icon: "🔒" });
+    try {
+      await api.post("/api/notes", {
+        verse_id: data.verse_id,
+        title: data.title,
+        content: data.content,
+        book_name: bookName,
+        chapter: chapterId,
+        verse: selectedVerseForNote.verse,
+        verse_text: selectedVerseForNote.text
+      }, { headers: { Authorization: `Bearer ${token}` } });
+      toast.success("Anotação salva!");
+      setNoteModalOpen(false);
+    } catch (error) {
+      toast.error("Erro ao salvar anotação.");
+    }
+  };
+
+  const copyVerse = (text, ref) => {
+    navigator.clipboard.writeText(`"${text}" - ${ref}`);
+    toast.success("Copiado!");
+  };
+
+  if (loading) return <div className="loading-screen">Carregando leitura...</div>;
 
   return (
-    <div className={`chapter-wrapper ${readingTheme} ${fontFace} ${compactMode ? "compact" : ""}`}>
-      <ReadingToolbar
-        bookId={bookId}
-        bookName={bookName}
-        chapterNum={currentChapter}
-        onOpenSettings={() => setSettingsModalOpen(true)}
-      />
+    <div className={`chapter-wrapper theme-${theme} font-${fontFamily} ${compactMode ? 'compact' : ''}`}>
+      <Toaster position="top-center" toastOptions={{ style: { background: '#333', color: '#fff' } }}/>
 
-      <main className="verse-list" style={{ fontSize: `${fontSize}px` }}>
-        {verses.map((v) => (
-          <VerseItem
-            key={v.id}
-            verse={v}
-            isFav={favorites.has(v.id)}
-            onToggleFavorite={toggleFavorite}
-            onNoteClick={(verse) => {
-              setSelectedVerseForNote(verse);
-              setIsNoteModalOpen(true);
-            }}
-          />
+      <header className="toolbar-glass">
+        <Link to="/home" className="back-btn-glass">
+          <ChevronLeft size={24} />
+          <span>Voltar</span>
+        </Link>
+        <span className="chapter-label">{bookName} {chapterId}</span>
+        <button className="settings-btn-glass" onClick={() => setSettingsOpen(true)}>
+          <Settings size={22} className="icon-settings-animated" />
+        </button>
+      </header>
+
+      <main className="verse-list">
+        {verses.map((verse) => (
+          <div key={verse.id} className="verse-card">
+            <div className="verse-header">
+              <span className="verse-index">{verse.verse}</span>
+              <div className="verse-actions-top">
+                <button 
+                  className={`va-icon ${favorites.includes(verse.id) ? 'active-fav' : ''}`}
+                  onClick={() => toggleFavorite(verse)}
+                >
+                  <Heart size={18} fill={favorites.includes(verse.id) ? "currentColor" : "none"} />
+                </button>
+              </div>
+            </div>
+
+            <p className="verse-text" style={{ fontSize: `${fontSize}px` }}>
+              {verse.text}
+            </p>
+
+            <div className="verse-actions-bar">
+              <button className="action-chip" onClick={() => copyVerse(verse.text, `${bookName} ${chapterId}:${verse.verse}`)}>
+                <Copy size={14} /> <span>Copiar</span>
+              </button>
+              
+              <button className="action-chip" onClick={() => {
+                setSelectedVerseForCompare(verse);
+                setCompareOpen(true);
+                setComparisonResult(null);
+                setComparingVersion(null);
+              }}>
+                <Layers size={14} /> <span>Comparar</span>
+              </button>
+
+              <button className="action-chip" onClick={() => {
+                setSelectedVerseForNote(verse);
+                setNoteModalOpen(true);
+              }}>
+                <NotebookPen size={14} /> <span>Anotar</span>
+              </button>
+              
+              <button className="action-chip" onClick={() => {
+                 if (navigator.share) navigator.share({ title: 'Bibliafy', text: `"${verse.text}" - ${bookName} ${chapterId}:${verse.verse}` });
+                 else toast.error("Compartilhar não suportado");
+              }}>
+                <Share2 size={14} /> <span>Enviar</span>
+              </button>
+            </div>
+          </div>
         ))}
       </main>
 
-      <ReadingFooter
-        hasPrev={currentChapter > 1}
-        hasNext={currentChapter < totalChapters}
-        onPrev={() => navigateToChapter(currentChapter - 1)}
-        onNext={() => navigateToChapter(currentChapter + 1)}
-        onTop={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-      />
+      <footer className="footer-glass">
+        <button 
+          className="f-btn" 
+          disabled={Number(chapterId) <= 1}
+          onClick={() => navigate(`/livro/${bookId}/capitulo/${Number(chapterId) - 1}${window.location.search}`)}
+        >
+          <ArrowLeft size={18} /> Anterior
+        </button>
+        <span className="center-btn">{chapterId} / {totalChapters}</span>
+        <button 
+          className="f-btn" 
+          disabled={Number(chapterId) >= totalChapters}
+          onClick={() => navigate(`/livro/${bookId}/capitulo/${Number(chapterId) + 1}${window.location.search}`)}
+        >
+          Próximo <ArrowRight size={18} />
+        </button>
+      </footer>
 
-      <SettingsModal
-        isOpen={settingsModalOpen}
-        onClose={() => setSettingsModalOpen(false)}
-        fontSize={fontSize}
-        incFont={() => setFontSize((v) => v + 2)}
-        decFont={() => setFontSize((v) => Math.max(12, v - 2))}
-        fontFace={fontFace}
-        setFontFace={setFontFace}
-        selectedVersion={selectedVersion}
-        handleVersionChange={(e) => setSearchParams({ version: e.target.value })}
-        versions={versions}
-        compactMode={compactMode}
-        setCompactMode={setCompactMode}
-        readingTheme={readingTheme}
-        setReadingTheme={setReadingTheme}
-      />
+      {noteModalOpen && selectedVerseForNote && (
+        <NoteModal
+          isOpen={noteModalOpen}
+          verse={selectedVerseForNote}
+          bookName={bookName}
+          chapterNum={chapterId}
+          onClose={() => setNoteModalOpen(false)}
+          onSave={handleSaveNote}
+        />
+      )}
 
-      <NoteModal
-        isOpen={isNoteModalOpen}
-        verse={selectedVerseForNote}
-        onClose={() => setIsNoteModalOpen(false)}
-        onSave={() => { }}
-      />
+      {/* ... MODAIS DE CONFIG E COMPARAR (IGUAIS AO ANTERIOR) ... */}
+      {settingsOpen && (
+        <div className="modal-overlay" onClick={(e) => { if(e.target === e.currentTarget) setSettingsOpen(false) }}>
+          <div className="modal-content">
+            <div className="modal-header">
+              <h2>Aparência</h2>
+              <button className="close-button" onClick={() => setSettingsOpen(false)}><X size={24}/></button>
+            </div>
+            <div className="modal-section">
+              <h3>Tema</h3>
+              <div className="theme-options">
+                <button className={`theme-btn ${theme === 'light' ? 'active' : ''}`} onClick={() => setTheme('light')}><Sun size={20}/> Claro</button>
+                <button className={`theme-btn ${theme === 'sepia' ? 'active' : ''}`} onClick={() => setTheme('sepia')}><BookOpen size={20}/> Sépia</button>
+                <button className={`theme-btn ${theme === 'dark' ? 'active' : ''}`} onClick={() => setTheme('dark')}><Moon size={20}/> Escuro</button>
+              </div>
+            </div>
+            <div className="modal-section">
+              <h3>Tamanho</h3>
+              <div className="font-controls">
+                <button className="font-btn" onClick={() => setFontSize(s => Math.max(12, s - 2))}>A-</button>
+                <div className="font-size-display">{fontSize}</div>
+                <button className="font-btn" onClick={() => setFontSize(s => Math.min(32, s + 2))}>A+</button>
+              </div>
+            </div>
+            <div className="modal-section">
+              <h3>Fonte</h3>
+              <div className="font-family-options">
+                <button className={`font-fam-btn font-inter ${fontFamily === 'inter' ? 'active' : ''}`} onClick={() => setFontFamily('inter')}>Inter</button>
+                <button className={`font-fam-btn font-lora ${fontFamily === 'lora' ? 'active' : ''}`} onClick={() => setFontFamily('lora')}>Lora</button>
+                <button className={`font-fam-btn font-garamond ${fontFamily === 'garamond' ? 'active' : ''}`} onClick={() => setFontFamily('garamond')}>Serif</button>
+              </div>
+            </div>
+            <div className="modal-section">
+              <h3>Layout</h3>
+              <button className={`toggle-mode-btn ${compactMode ? 'active' : ''}`} onClick={() => setCompactMode(!compactMode)}>
+                {compactMode ? "Modo Compacto: ON" : "Modo Compacto: OFF"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {compareOpen && selectedVerseForCompare && (
+        <div className="modal-overlay" onClick={(e) => { if(e.target === e.currentTarget) setCompareOpen(false) }}>
+          <div className="modal-content">
+            <div className="modal-header">
+              <div>
+                <h2>Comparar</h2>
+                <p className="subtitle">{bookName} {chapterId}:{selectedVerseForCompare.verse}</p>
+              </div>
+              <button className="close-button" onClick={() => setCompareOpen(false)}><X size={24}/></button>
+            </div>
+            <div className="compare-body">
+              <div className="current-verse-text font-lora">{selectedVerseForCompare.text}</div>
+              <div className="compare-list">
+                <h3>Escolha uma versão:</h3>
+                <div className="versions-grid">
+                  {versions.map(v => (
+                    <button key={v.id} className={`version-compare-btn ${comparingVersion === v.abbreviation ? 'active' : ''}`} onClick={() => handleCompare(v)}>
+                      {v.abbreviation.toUpperCase()}
+                    </button>
+                  ))}
+                </div>
+                {loadingComparison && <div className="comparison-result loading">Carregando...</div>}
+                {comparisonResult && !loadingComparison && (
+                  <div className="comparison-result">
+                     <strong>{comparisonResult.version.toUpperCase()}:</strong>
+                     <p style={{marginTop: 8}}>{comparisonResult.text}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

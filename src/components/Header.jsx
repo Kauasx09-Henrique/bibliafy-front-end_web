@@ -1,54 +1,65 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import { LogOut } from "lucide-react";
+import { LogOut, User } from "lucide-react"; // Importei o User para caso de fallback
 import toast from "react-hot-toast";
 
 import "./Header.css";
 
 function Header() {
-  const { isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
+  const [avatar, setAvatar] = useState(null);
+
+  useEffect(() => {
+    if (user) {
+      if (user.logo_url) {
+        setAvatar(user.logo_url);
+      } else {
+        const nameToUse = user.nickname || user.name || "Visitante";
+        const generatedUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(nameToUse)}&background=random&color=fff&size=128&font-size=0.4`;
+        setAvatar(generatedUrl);
+      }
+    }
+  }, [user]);
 
   const handleLogout = () => {
     logout();
-
-    toast.success("Sessão encerrada. Até logo! 👋", {
-      duration: 2800,
+    toast.success("Até logo! 👋", {
+      duration: 3000,
       style: {
-        background: "rgba(255,255,255,0.06)",
-        border: "1px solid rgba(255,255,255,0.12)",
-        backdropFilter: "blur(10px)",
-        color: "#fff",
-        borderRadius: "14px",
-      },
-      iconTheme: {
-        primary: "#5AC8FA",
-        secondary: "#000",
-      },
+        background: '#151515',
+        color: '#fff',
+        border: '1px solid #333',
+        borderRadius: '10px'
+      }
     });
-
-    setTimeout(() => navigate("/login", { replace: true }), 350);
+    // Pequeno delay para o usuário ver o toast antes de mudar de rota
+    setTimeout(() => navigate("/login", { replace: true }), 100);
   };
 
+  if (!isAuthenticated) return null;
+
   return (
-    <header className="bib-header">
+    <header className="bib-header glass-effect">
       <div className="bib-header-content">
 
-        <Link to="/home" className="bib-logo">
-          <img src="/Logo_Bibliafy.jpg" alt="Bibliafy" />
+        <Link to="/home" className="bib-brand">
+          <span className="bib-dot" />
+          <h1 className="bib-title">Bibliafy</h1>
         </Link>
 
         <div className="bib-header-actions">
-          {isAuthenticated && (
-            <button
-              className="logout-btn"
-              onClick={handleLogout}
-              aria-label="Sair da conta"
-            >
-              <LogOut size={20} strokeWidth={1.7} />
-            </button>
-          )}
+          
+
+          <button
+            className="header-logout-btn"
+            onClick={handleLogout}
+            aria-label="Sair"
+            title="Sair"
+          >
+            <LogOut size={20} /> 
+          </button>
         </div>
       </div>
     </header>

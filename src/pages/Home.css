@@ -13,8 +13,6 @@ body {
   color: #fff;
 }
 
-/* HEADER */
-
 .home-header {
   display: flex;
   flex-direction: column;
@@ -48,8 +46,6 @@ body {
   letter-spacing: -0.05em;
 }
 
-/* Versão */
-
 .home-version-wrapper {
   position: relative;
 }
@@ -74,8 +70,6 @@ body {
   pointer-events: none;
   opacity: 0.8;
 }
-
-/* Search compacta */
 
 .home-search-row {
   display: flex;
@@ -126,56 +120,76 @@ body {
   border-color: transparent;
 }
 
-/* CONTINUAR LENDO */
-
 .home-continue {
-  margin-top: 8px;
-  margin-bottom: 28px;
-  padding: 14px 16px;
-  border-radius: 14px;
-  background: #101010;
-  border: 1px solid #151515;
+  background: #0f0f0f;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 16px 20px;
+  margin: 0 0 24px 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.home-continue:active {
+  transform: scale(0.98);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.home-continue-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .home-continue-label {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
+  color: #666;
+  font-weight: 600;
+  letter-spacing: 1px;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: #8d8d8d;
-  margin: 0 0 4px 0;
+  margin: 0;
 }
 
 .home-continue-book {
-  margin: 0;
-  font-size: 1rem;
+  font-size: 1.1rem;
+  color: #fff;
   font-weight: 600;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .home-continue-book span {
-  opacity: 0.6;
+  opacity: 1;
 }
 
-.home-continue-btn {
-  width: 34px;
-  height: 34px;
-  border-radius: 999px;
-  background: #ffffff;
-  color: #000;
+.home-continue-divider {
+  color: #333;
+  font-weight: 300;
+  font-size: 1.2rem;
+}
+
+.home-continue-arrow-btn {
+  color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  transition: transform 0.15s ease;
+  opacity: 0.8;
+  transition: opacity 0.2s, transform 0.2s;
+  background: transparent;
+  border: none;
+  width: auto;
+  height: auto;
 }
 
-.home-continue-btn:active {
-  transform: scale(0.92);
+.home-continue-arrow-btn:hover {
+  opacity: 1;
+  transform: translateX(4px);
 }
-
-/* MAIN */
 
 .home-main {
   display: flex;
@@ -206,8 +220,6 @@ body {
   height: 1px;
   background: #191919;
 }
-
-/* GRID & CARDS */
 
 .home-books-grid {
   display: grid;
@@ -267,8 +279,6 @@ body {
   color: #8a8a8a;
 }
 
-/* LOADING */
-
 .home-loading-card {
   height: 64px;
   border-radius: 12px;
@@ -284,30 +294,21 @@ body {
   opacity: 0.45;
 }
 
-/* ================================
-   BANNER DE DEFINIÇÃO DE NICKNAME
-   Premium Black & White Style
-================================ */
-
 .home-nickname-banner {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-
   padding: 18px 20px;
   border-radius: 14px;
   margin-bottom: 22px;
-
   display: flex;
   flex-direction: column;
   gap: 14px;
-
   animation: nicknameFadeIn 0.45s ease-out forwards;
   box-shadow: 0 4px 22px rgba(0, 0, 0, 0.35);
 }
 
-/* Texto */
 .home-nickname-text span {
   font-size: 1rem;
   font-weight: 600;
@@ -321,7 +322,6 @@ body {
   line-height: 1.4;
 }
 
-/* Input + Botão */
 .home-nickname-actions {
   display: flex;
   gap: 10px;
@@ -333,19 +333,12 @@ body {
   flex: 1;
   padding: 10px 14px;
   border-radius: 10px;
-
   background: rgba(0, 0, 0, 0.55);
   border: 1px solid rgba(255, 255, 255, 0.18);
-
   color: #fff;
   font-size: 0.95rem;
   outline: none;
-
   transition: all 0.25s ease;
-}
-
-.home-nickname-input::placeholder {
-  color: #7b7b7b;
 }
 
 .home-nickname-input:focus {
@@ -354,19 +347,15 @@ body {
   box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12);
 }
 
-/* Botão salvar */
 .home-nickname-btn {
   padding: 10px 18px;
   border-radius: 10px;
-
   background: #ffffff;
   color: #000;
   border: none;
-
   font-weight: 600;
   font-size: 0.9rem;
   cursor: pointer;
-
   transition: transform 0.15s ease, box-shadow 0.2s ease;
 }
 
@@ -384,14 +373,105 @@ body {
   cursor: not-allowed;
 }
 
-/* Animação */
 @keyframes nicknameFadeIn {
   from {
     opacity: 0;
     transform: translateY(-6px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+#toast-welcome-id {
+  position: fixed;
+  top: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2147483647;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 8px 6px 6px;
+  border-radius: 999px;
+
+  background-color: #151515 !important;
+  background: rgba(20, 20, 20, 0.85) !important;
+  color: #ffffff !important;
+
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6) !important;
+
+  animation: slideDownToast 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+
+  width: max-content;
+  max-width: 90%;
+}
+
+#toast-welcome-id .welcome-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+#toast-welcome-id .welcome-avatar {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.9) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+#toast-welcome-id .welcome-text {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.9) !important;
+  white-space: nowrap;
+}
+
+#toast-welcome-id strong {
+  font-weight: 600;
+  color: #ffffff !important;
+}
+
+#toast-welcome-id .welcome-divider {
+  width: 1px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.2) !important;
+}
+
+#toast-welcome-id .welcome-close {
+  background: transparent !important;
+  border: none !important;
+  color: rgba(255, 255, 255, 0.7) !important;
+  cursor: pointer;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: -4px;
+}
+
+#toast-welcome-id .welcome-close:hover {
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-radius: 50%;
+}
+
+@keyframes slideDownToast {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -30px) scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
   }
 }

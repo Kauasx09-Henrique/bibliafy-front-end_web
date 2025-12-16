@@ -1,240 +1,314 @@
-/* ===============================
-   PERFIL - BIBLIAFY
-   Preto & Branco / Minimalista
-================================ */
+/* Layout da Página */
+.perfil-page {
+  min-height: 100vh;
+  padding: 80px 16px 40px; /* Padding top para não colar no header */
+  background: transparent; /* Assume o fundo do body */
+  display: flex;
+  justify-content: center;
+}
 
 .perfil-container {
   width: 100%;
-  max-width: 480px;
-  margin: 0 auto;
-  padding: 20px;
-  color: #fff;
-  font-family: "Inter", sans-serif;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
 }
 
-/* CARD PRINCIPAL */
+/* Efeito de Vidro Genérico */
+.glass-effect {
+  background: rgba(20, 20, 20, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* Cartão de Perfil */
 .perfil-card {
-  background: #101010;
-  border: 1px solid #1a1a1a;
-  padding: 24px;
-  border-radius: 16px;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
-  margin-bottom: 28px;
-  animation: fadeIn 0.4s ease;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 24px;
 }
 
-/* AVATAR */
-.perfil-avatar {
+.perfil-header-bg {
+  width: 100%;
+  height: 100px;
+  background: linear-gradient(135deg, #333 0%, #000 100%);
+  opacity: 0.5;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+}
+
+.perfil-content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  padding: 0 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 40px; /* Empurra o conteúdo pra baixo do header bg */
+}
+
+/* Avatar */
+.avatar-wrapper {
+  margin-bottom: 16px;
+}
+
+.avatar-circle {
   width: 110px;
   height: 110px;
-  margin: 0 auto;
+  border-radius: 50%;
+  border: 4px solid #1a1a1a; /* Cor do fundo para "recortar" */
   position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
 }
 
-.perfil-avatar img {
+.avatar-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 999px;
-  border: 3px solid #fff;
-  background: #000;
-  transition: 0.3s ease;
+  background: #222;
 }
 
-.perfil-avatar:hover img {
-  transform: scale(1.03);
-  border-color: #e4e4e4;
-}
-
-/* BOTÃO DA CÂMERA */
-.camera-icon {
+.avatar-edit-overlay {
   position: absolute;
-  bottom: 0;
-  right: 0;
-  background: #fff;
-  color: #000;
-  width: 34px;
-  height: 34px;
-  border-radius: 999px;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  opacity: 0;
+  transition: opacity 0.2s;
   cursor: pointer;
-  border: 2px solid #000;
-  transition: 0.2s ease;
 }
 
-.camera-icon:hover {
-  background: #eaeaea;
+.avatar-circle:hover .avatar-edit-overlay {
+  opacity: 1;
 }
 
-/* INFO DO USUÁRIO */
-.perfil-info {
+/* Info Estática */
+.perfil-static-info {
   text-align: center;
-  margin-top: 18px;
-}
-
-.perfil-info h2 {
-  margin: 0;
-  font-size: 1.4rem;
-  font-weight: 700;
-}
-
-.perfil-info p {
-  margin: 4px 0 14px;
-  color: #a9a9a9;
-}
-
-/* BOTÕES */
-.edit-btn,
-.logout-btn {
   width: 100%;
-  padding: 12px;
-  margin-top: 10px;
-  border-radius: 10px;
-  border: none;
-  font-weight: 600;
+}
+
+.perfil-static-info h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.email-text {
+  color: #888;
+  font-size: 0.9rem;
+  margin: 4px 0 20px;
+}
+
+.perfil-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+/* Botões */
+button {
   cursor: pointer;
-  transition: 0.25s ease;
+  border: none;
+  font-family: inherit;
+  transition: transform 0.1s, opacity 0.2s;
+}
+
+button:active {
+  transform: scale(0.96);
+}
+
+.btn-primary {
+  background: #fff;
+  color: #000;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: 600;
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 6px;
+  gap: 8px;
 }
 
-/* EDITAR */
-.edit-btn {
-  background: #fff;
-  color: #000;
-}
-
-.edit-btn:hover {
-  background: #e3e3e3;
-}
-
-/* SAIR */
-.logout-btn {
+.btn-outline-danger {
   background: transparent;
-  border: 1px solid #444;
-  color: #fff;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.logout-btn:hover {
-  background: #1f1f1f;
+.btn-outline-danger:hover {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: #ef4444;
 }
 
-/* FORM DE EDIÇÃO */
-.edit-form {
-  margin-top: 20px;
+/* Formulário de Edição */
+.perfil-edit-form {
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.edit-form input {
-  padding: 12px;
+.input-group-dark {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 10px;
-  border: 1px solid #323232;
-  background: #000;
-  color: #fff;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  transition: border-color 0.2s;
 }
 
-.edit-form button {
-  padding: 12px;
+.input-group-dark:focus-within {
+  border-color: #fff;
+}
+
+.input-icon, .input-at {
+  color: #666;
+  margin-right: 8px;
+}
+
+.input-at {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.input-group-dark input {
+  background: transparent;
+  border: none;
+  width: 100%;
+  padding: 12px 0;
+  color: #fff;
+  outline: none;
+  font-size: 0.95rem;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.btn-save {
+  flex: 1;
   background: #fff;
   color: #000;
-  font-weight: 600;
+  padding: 12px;
   border-radius: 10px;
-  border: none;
-  cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
 }
 
-.edit-form button:hover {
-  background: #e4e4e4;
+.btn-cancel {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 600;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
 }
 
-/* ===============================
-   FAVORITOS
-================================ */
-
-.favoritos-card {
-  background: #101010;
-  border: 1px solid #1a1a1a;
-  padding: 20px;
-  border-radius: 16px;
-  animation: fadeIn 0.5s ease;
+/* Favoritos */
+.section-title {
+  color: #888;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+  padding-left: 4px;
 }
 
-.favoritos-card h3 {
-  margin-top: 0;
-  font-size: 1.1rem;
-  margin-bottom: 16px;
-  letter-spacing: 0.5px;
-}
-
-.favoritos-list {
+.favorites-grid {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
-/* ITEM */
-.favorito-item {
-  background: #151515;
-  border: 1px solid #222;
-  padding: 14px;
-  border-radius: 12px;
+.favorite-card {
+  padding: 16px;
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  gap: 12px;
+  align-items: center;
+  gap: 16px;
+  transition: background 0.2s;
 }
 
-.favorito-texto p {
-  margin: 0;
+.favorite-card:hover {
+  background: rgba(30, 30, 30, 0.7);
+}
+
+.fav-content {
+  flex: 1;
+}
+
+.fav-text {
+  margin: 0 0 4px 0;
   font-size: 0.95rem;
-  color: #ddd;
-  line-height: 1.4;
+  color: #e5e5e5;
+  font-style: italic;
 }
 
-.favorito-texto span {
+.fav-ref {
   font-size: 0.75rem;
   color: #888;
+  font-weight: 600;
+  text-transform: uppercase;
 }
 
-/* BOTÃO REMOVER */
-.remove-fav-btn {
+.fav-delete-btn {
   background: transparent;
-  color: #ff5c5c;
-  border: none;
-  cursor: pointer;
-  padding: 6px;
+  color: #666;
+  padding: 8px;
   border-radius: 8px;
-  transition: 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.remove-fav-btn:hover {
-  background: rgba(255, 80, 80, 0.1);
+.fav-delete-btn:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
 }
 
-/* ESTADOS */
-.empty-state,
-.loading-text {
+.empty-state {
   text-align: center;
-  color: #777;
+  padding: 40px 0;
+  color: #555;
   font-size: 0.9rem;
-  padding: 12px 0;
 }
 
-/* Animação */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.loading-state {
+  text-align: center;
+  color: #666;
+  padding: 20px;
 }

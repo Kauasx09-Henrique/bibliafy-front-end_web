@@ -6,14 +6,17 @@ import "./BottomNav.css";
 const tabs = [
   { path: "/home", label: "Início", icon: Home },
   { path: "/favoritos", label: "Favoritos", icon: Star },
-  { path: "/anotacoes", label: "Notas", icon: BookMarked },
+  { path: "/anotacoes", label: "Anotações", icon: BookMarked },
   { path: "/perfil", label: "Perfil", icon: User },
 ];
 
 export default function BottomNav() {
   const location = useLocation();
 
-  const isActive = (path) => location.pathname.startsWith(path);
+  const isActive = (path) => {
+    if (path === "/home" && location.pathname === "/") return true;
+    return location.pathname.startsWith(path);
+  };
 
   return (
     <nav className="bottom-nav">
@@ -21,9 +24,18 @@ export default function BottomNav() {
         const active = isActive(path);
 
         return (
-          <Link key={path} to={path} className={`nav-item ${active ? "active" : ""}`}>
-            <div className={`icon-wrapper ${active ? "icon-active" : ""}`}>
-              <Icon size={22} strokeWidth={active ? 2.3 : 1.7} />
+          <Link
+            key={path}
+            to={path}
+            className={`nav-item ${active ? "active" : ""}`}
+          >
+            {active && <div className="active-light" />}
+
+            <div className="icon-box">
+              <Icon
+                size={24}
+                strokeWidth={active ? 2.5 : 2}
+              />
             </div>
             <span className="nav-label">{label}</span>
           </Link>

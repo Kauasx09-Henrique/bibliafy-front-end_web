@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { BookOpen, Search, ArrowRight, ChevronDown } from "lucide-react";
+import { BookOpen, Search, ArrowRight, ChevronDown, X } from "lucide-react";
 import Lottie from "lottie-react";
-import toast from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 
 import { useAuth } from "../contexts/AuthContext";
 import api from "../services/api";
@@ -51,24 +51,32 @@ export default function Home() {
   const [needsNickname, setNeedsNickname] = useState(false);
   const [nicknameInput, setNicknameInput] = useState("");
   const [savingNickname, setSavingNickname] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(false);
 
+  // --- ESTADOS PARA DADOS ATUALIZADOS (Foto e Nome) ---
+  const [avatarUrl, setAvatarUrl] = useState(user?.logo_url || null);
+  // Começa com o que tem no login, mas atualiza depois
+  const [displayName, setDisplayName] = useState(user?.nickname || user?.name || "Visitante");
+
+  // Função para garantir URL válida do avatar
+  const getSafeAvatar = () => {
+    if (avatarUrl) return avatarUrl;
+
+    // Fallback usando o nome atualizado
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=random&color=fff&size=128`;
+  };
+
+  // --- ALERTA DE BEM-VINDO ---
   useEffect(() => {
     if (!user) return;
-    const alreadyWelcomed = sessionStorage.getItem("bibliafyWelcomed");
-    const name = user.displayName || user.nickname || user.name || "bem-vindo(a) de volta";
-    if (!alreadyWelcomed) {
-      setTimeout(() => {
-        toast.success(`Bem-vindo(a), ${name}! ✨`, {
-          duration: 3800,
-        });
-      }, 400);
-      sessionStorage.setItem("bibliafyWelcomed", "1");
-    }
+    const timerShow = setTimeout(() => setShowWelcome(true), 500);
+    const timerHide = setTimeout(() => setShowWelcome(false), 6000);
+    return () => { clearTimeout(timerShow); clearTimeout(timerHide); };
   }, [user]);
 
+  // --- NOTIFICAÇÃO DIÁRIA ---
   useEffect(() => {
     if (!user) return;
-
     const checkAndNotify = () => {
       const now = new Date();
       const hours = now.getHours();
@@ -77,71 +85,66 @@ export default function Home() {
       const lastNotified = localStorage.getItem("bibliafyDaily8amNotified");
 
       if (hours === 8 && minutes === 0 && lastNotified !== todayKey) {
-        toast("Olá, vamos meditar na Palavra hoje? 📖✨", {
-          icon: "🙏",
-          duration: 6000,
-        });
+        toast("Olá, vamos meditar na Palavra hoje? 📖✨", { icon: "🙏", duration: 6000 });
         localStorage.setItem("bibliafyDaily8amNotified", todayKey);
       }
     };
-
     checkAndNotify();
     const interval = setInterval(checkAndNotify, 60000);
     return () => clearInterval(interval);
   }, [user]);
 
+  // --- CHECAR DADOS REAIS DO BANCO (Foto e Nickname) ---
   useEffect(() => {
     if (!token) return;
-
-    const checkNickname = async () => {
+    const checkUserData = async () => {
       try {
+        // Pega os dados frescos do banco
         const { data } = await api.get("/api/users/check-nickname", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
+        // 1. Atualiza FOTO
+        if (data.logo_url) {
+          setAvatarUrl(data.logo_url);
+        }
+
+        // 2. Atualiza NICKNAME (Correção do problema)
+        if (data.nickname) {
+          setDisplayName(data.nickname);
+        }
+
+        // 3. Se não tiver nickname, pede para criar
         if (!data.hasNickname) {
           setNeedsNickname(true);
           setNicknameInput(data.suggestedNickname || "");
-          toast("Escolha como você quer ser chamado no Bibliafy ✨", {
-            icon: "👤",
-            duration: 5500,
-          });
         }
       } catch (err) {
-        console.error("Erro ao checar nickname:", err);
+        console.error("Erro ao atualizar dados do usuário:", err);
       }
     };
-
-    checkNickname();
+    checkUserData();
   }, [token]);
 
   const handleSaveNickname = async (e) => {
     e.preventDefault();
-    const nick = nicknameInput.trim();
-    if (!nick) {
-      toast.error("Digite um apelido para continuar.");
-      return;
-    }
-
+    if (!nicknameInput.trim()) return toast.error("Digite um apelido.");
     try {
       setSavingNickname(true);
       await api.put(
         "/api/users/profile",
-        { nickname: nick },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        { nickname: nicknameInput.trim() },
+        { headers: { Authorization: `Bearer ${token}` } }
       );
+      toast.success("Apelido salvo!");
 
-      toast.success("Apelido salvo com sucesso! 🙌");
+      // Atualiza na hora na tela
+      setDisplayName(nicknameInput.trim());
       setNeedsNickname(false);
 
-      if (user && (user.id || user.email)) {
-        const key = `bibliafyNicknameSet:${user.id || user.email}`;
-        localStorage.setItem(key, "1");
-      }
-    } catch (err) {
-      toast.error("Não foi possível atualizar seu apelido.");
+      if (user) user.nickname = nicknameInput.trim();
+    } catch {
+      toast.error("Erro ao atualizar.");
     } finally {
       setSavingNickname(false);
     }
@@ -150,23 +153,16 @@ export default function Home() {
   const fetchVersions = useCallback(async () => {
     try {
       const response = await api.get("/api/bible/versions");
-      const data = response.data || [];
-      setVersions(data);
-      if (!selectedVersion && data.length > 0) {
-        setSelectedVersion(data[0].abbreviation);
-      }
-    } catch {
-      toast.error("Erro ao carregar versões");
-    }
+      setVersions(response.data || []);
+      if (!selectedVersion && response.data?.length > 0) setSelectedVersion(response.data[0].abbreviation);
+    } catch { toast.error("Erro ao carregar versões"); }
   }, [selectedVersion]);
 
   const fetchBooks = useCallback(async () => {
     try {
       const response = await api.get("/api/bible/books");
       setBooks(response.data || []);
-    } catch {
-      toast.error("Erro ao carregar livros");
-    }
+    } catch { toast.error("Erro ao carregar livros"); }
   }, []);
 
   useEffect(() => {
@@ -179,15 +175,11 @@ export default function Home() {
 
   useEffect(() => {
     const saved = localStorage.getItem("bibliafyLastRead");
-    if (saved) {
-      setLastRead(JSON.parse(saved));
-    }
+    if (saved) setLastRead(JSON.parse(saved));
   }, []);
 
   const filteredBooks = useMemo(() => {
-    return books.filter((b) =>
-      b.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    return books.filter((b) => b.name.toLowerCase().includes(searchTerm.toLowerCase()));
   }, [books, searchTerm]);
 
   const oldTestament = filteredBooks.filter((b) => b.testament_id === 1);
@@ -198,37 +190,81 @@ export default function Home() {
       {loading
         ? Array.from({ length: 6 }).map((_, i) => <LoadingBookCard key={i} />)
         : list.map((book) => (
-            <BookCard
-              key={book.id}
-              book={book}
-              selectedVersion={selectedVersion}
-            />
-          ))}
+          <BookCard
+            key={book.id}
+            book={book}
+            selectedVersion={selectedVersion}
+          />
+        ))}
     </div>
   );
 
   return (
     <div className="home-page">
+      <Toaster position="top-center" toastOptions={{ style: { background: '#151515', color: '#fff', border: '1px solid #333' } }} />
+
+      {/* --- ALERTA PERSONALIZADO --- */}
+      {showWelcome && user && (
+        <div style={{
+          position: 'fixed',
+          top: '90px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          zIndex: 9999999,
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+          padding: '6px 8px 6px 6px',
+          borderRadius: '999px',
+          backgroundColor: '#050505',
+          background: 'rgba(5, 5, 5, 0.9)',
+          backdropFilter: 'blur(16px)',
+          WebkitBackdropFilter: 'blur(16px)',
+          border: '1px solid rgba(255, 255, 255, 0.15)',
+          boxShadow: '0 10px 40px rgba(0,0,0,0.6)',
+          width: 'max-content',
+          maxWidth: '90vw',
+          animation: 'fadeInSlide 0.5s ease-out forwards'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            {/* FOTO */}
+            <img
+              src={getSafeAvatar()}
+              alt="Avatar"
+              style={{
+                width: '34px', height: '34px', borderRadius: '50%', objectFit: 'cover',
+                border: '2px solid rgba(255,255,255,0.9)', display: 'block', background: '#333'
+              }}
+            />
+            {/* NOME/APELIDO ATUALIZADO */}
+            <span style={{ fontSize: '0.9rem', color: '#e5e5e5', fontFamily: 'sans-serif', whiteSpace: 'nowrap' }}>
+              Olá, <strong style={{ color: '#ffffff' }}>{displayName}</strong>
+            </span>
+          </div>
+
+          <div style={{ width: '1px', height: '18px', background: 'rgba(255,255,255,0.2)', margin: '0 2px' }}></div>
+
+          <button onClick={() => setShowWelcome(false)} style={{ background: 'transparent', border: 'none', color: 'rgba(255,255,255,0.6)', cursor: 'pointer', padding: '4px', display: 'flex', alignItems: 'center' }}>
+            <X size={16} />
+          </button>
+        </div>
+      )}
+
       {needsNickname && (
         <form className="home-nickname-banner" onSubmit={handleSaveNickname}>
           <div className="home-nickname-text">
             <span>Como você quer ser chamado?</span>
-            <p>Defina um apelido para personalizar sua experiência no Bibliafy.</p>
+            <p>Defina um apelido para personalizar sua experiência.</p>
           </div>
-
           <div className="home-nickname-actions">
             <input
               type="text"
               value={nicknameInput}
               onChange={(e) => setNicknameInput(e.target.value)}
-              placeholder="Ex: Kauã, K. Henrique..."
+              placeholder="Ex: Kauã..."
               className="home-nickname-input"
             />
-            <button
-              type="submit"
-              className="home-nickname-btn"
-              disabled={savingNickname}
-            >
+            <button type="submit" className="home-nickname-btn" disabled={savingNickname}>
               {savingNickname ? "Salvando..." : "Salvar"}
             </button>
           </div>
@@ -254,7 +290,6 @@ export default function Home() {
                 </option>
               ))}
             </select>
-
             <ChevronDown size={14} className="home-version-arrow" />
           </div>
         </div>
@@ -275,41 +310,40 @@ export default function Home() {
 
       {lastRead && (
         <div className="home-continue">
-          <div>
+          <div className="home-continue-content">
             <p className="home-continue-label">CONTINUAR LENDO</p>
             <h3 className="home-continue-book">
-              {lastRead.bookName} <span>|</span> Cap {lastRead.chapter}
+              {lastRead.bookName} <span className="home-continue-divider">|</span> Cap {lastRead.chapter}
             </h3>
           </div>
 
           <Link
-            to={`/livro/${lastRead.bookId}/capitulo/${lastRead.chapter}?version=${
-              lastRead.version || selectedVersion
-            }`}
-            className="home-continue-btn"
+            to={`/livro/${lastRead.bookId}/capitulo/${lastRead.chapter}?version=${lastRead.version || selectedVersion}`}
+            className="home-continue-arrow-btn"
           >
-            <ArrowRight size={18} />
+            <ArrowRight size={20} />
           </Link>
         </div>
       )}
 
       <main className="home-main">
         <section className="home-testament">
-          <div className="home-testament-header">
-            <h2>Velho Testamento</h2>
-            <div className="home-testament-line" />
-          </div>
+          <div className="home-testament-header"><h2>Velho Testamento</h2><div className="home-testament-line" /></div>
           {renderGrid(oldTestament)}
         </section>
 
         <section className="home-testament">
-          <div className="home-testament-header">
-            <h2>Novo Testamento</h2>
-            <div className="home-testament-line" />
-          </div>
+          <div className="home-testament-header"><h2>Novo Testamento</h2><div className="home-testament-line" /></div>
           {renderGrid(newTestament)}
         </section>
       </main>
+
+      <style>{`
+        @keyframes fadeInSlide {
+          from { opacity: 0; transform: translate(-50%, -20px); }
+          to { opacity: 1; transform: translate(-50%, 0); }
+        }
+      `}</style>
     </div>
   );
 }

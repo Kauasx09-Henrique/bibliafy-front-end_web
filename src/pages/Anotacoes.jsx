@@ -1,4 +1,3 @@
-// src/pages/Anotacoes.jsx
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import api from "../services/api";
@@ -11,11 +10,11 @@ import {
   Search,
   NotebookPen,
   Sparkles,
+  BookOpen
 } from "lucide-react";
 
 import "./Anotacoes.css";
 
-// Debounce
 function useDebounce(value, delay) {
   const [debouncedValue, setDebouncedValue] = useState(value);
   useEffect(() => {
@@ -35,7 +34,6 @@ function Anotacoes() {
 
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
-  // Busca Notas
   const fetchNotes = useCallback(async () => {
     if (!token) return;
     setLoading(true);
@@ -53,12 +51,7 @@ function Anotacoes() {
         )
       );
     } catch {
-      Swal.fire({
-        icon: "error",
-        title: "Erro",
-        text: "Não foi possível carregar suas anotações.",
-        customClass: { popup: "swal2-popup" },
-      });
+      // Erro silencioso ou toast
     } finally {
       setLoading(false);
     }
@@ -68,19 +61,33 @@ function Anotacoes() {
     fetchNotes();
   }, [fetchNotes]);
 
-  // Deletar
   const handleDeleteNote = async (id, ref) => {
-    const confirmation = await Swal.fire({
-      title: "Excluir Anotação?",
-      html: `Tem certeza que deseja apagar a anotação do verso <b>${ref}</b>?`,
+    const result = await Swal.fire({
+      title: "Excluir anotação?",
+      html: `
+        <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
+          <p style="opacity: 0.8; font-size: 0.95rem; margin: 0;">Você está prestes a apagar sua nota em:</p>
+          <strong style="color: #ff5b61; font-size: 1.1rem;">${ref}</strong>
+          <p style="opacity: 0.6; font-size: 0.8rem; margin-top: 4px;">Essa ação não pode ser desfeita.</p>
+        </div>
+      `,
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Excluir",
+      confirmButtonText: "Sim, excluir",
       cancelButtonText: "Cancelar",
-      customClass: { popup: "swal2-popup" },
+      background: "rgba(15, 15, 15, 0.95)",
+      color: "#f5f5f5",
+      backdrop: `rgba(0,0,0,0.6) backdrop-filter: blur(4px)`,
+      customClass: {
+        popup: "glass-popup",
+        confirmButton: "btn-confirm-delete",
+        cancelButton: "btn-cancel-delete",
+        title: "popup-title"
+      },
+      buttonsStyling: false
     });
 
-    if (confirmation.isConfirmed) {
+    if (result.isConfirmed) {
       try {
         await api.delete(`/api/notes/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
@@ -90,21 +97,24 @@ function Anotacoes() {
 
         Swal.fire({
           icon: "success",
-          title: "Anotação removida",
-          timer: 1200,
+          title: "Excluído!",
+          timer: 1500,
           showConfirmButton: false,
+          background: "rgba(15, 15, 15, 0.95)",
+          color: "#fff",
+          customClass: { popup: "glass-popup" }
         });
       } catch {
         Swal.fire({
           icon: "error",
-          title: "Erro",
-          text: "Não foi possível excluir.",
+          title: "Erro ao excluir",
+          background: "#151515",
+          color: "#fff"
         });
       }
     }
   };
 
-  // Atualizar nota
   const handleUpdateNote = async (data) => {
     if (!editingNote) return;
 
@@ -120,31 +130,23 @@ function Anotacoes() {
 
       Swal.fire({
         icon: "success",
-        title: "Atualizada com sucesso!",
-        timer: 1200,
+        title: "Nota atualizada!",
+        timer: 1500,
         showConfirmButton: false,
+        background: "rgba(15, 15, 15, 0.95)",
+        color: "#fff",
+        customClass: { popup: "glass-popup" }
       });
     } catch {
-      Swal.fire({
-        icon: "error",
-        title: "Erro ao atualizar",
-      });
+      // erro
     }
   };
 
-  // Filtro otimizado
   const filteredNotes = useMemo(() => {
     if (!debouncedSearchTerm) return notes;
-
     const s = debouncedSearchTerm.toLowerCase();
-
     return notes.filter((n) =>
-      [
-        n.title,
-        n.content,
-        n.verse_text,
-        `${n.book_name} ${n.chapter}:${n.verse}`,
-      ]
+      [n.title, n.content, n.verse_text, `${n.book_name} ${n.chapter}:${n.verse}`]
         .filter(Boolean)
         .some((field) => field.toLowerCase().includes(s))
     );
@@ -152,85 +154,91 @@ function Anotacoes() {
 
   return (
     <div className="notes-page">
-      {/* HEADER */}
-      <div className="notes-header">
-        <NotebookPen size={34} className="header-icon" />
-        <h1>Minhas Anotações</h1>
+      <div className="notes-header-container">
+        <div className="notes-header">
+          <div className="header-icon-box">
+            <NotebookPen size={28} color="#fff" />
+          </div>
+          <div className="header-text">
+            <h1>Anotações</h1>
+            <p>{notes.length} notas salvas</p>
+          </div>
+        </div>
       </div>
 
-      {/* BUSCA */}
       <div className="notes-search-box">
         <Search size={20} className="search-icon" />
         <input
           type="text"
-          placeholder="Buscar por título, conteúdo ou versículo..."
+          placeholder="Pesquisar em suas notas..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
 
-      {/* LOADING */}
       {loading ? (
         <div className="loading-state">
-          <Sparkles size={26} className="loading-icon" />
-          Carregando suas anotações...
+          <Sparkles size={24} className="loading-spinner" />
+          <span>Sincronizando...</span>
         </div>
       ) : (
-        <div className="notes-list">
+        <div className="notes-grid">
           {filteredNotes.length > 0 ? (
             filteredNotes.map((n) => (
-              <div className="note-card glass-card" key={n.id}>
-                <div className="note-card-header">
-                  <h3>{n.title || "Sem Título"}</h3>
-
+              <div className="note-card glass-card fade-in" key={n.id}>
+                <div className="note-card-top">
+                  <div className="note-info">
+                    <h3>{n.title || "Sem Título"}</h3>
+                    <span className="note-date">
+                      {new Date(n.updated_at || n.created_at).toLocaleDateString('pt-BR')}
+                    </span>
+                  </div>
+                  
                   <div className="note-actions">
                     <button
-                      className="btn-edit"
+                      className="action-btn edit"
                       onClick={() => setEditingNote(n)}
+                      title="Editar"
                     >
                       <Edit3 size={18} />
                     </button>
-
                     <button
-                      className="btn-delete"
-                      onClick={() =>
-                        handleDeleteNote(
-                          n.id,
-                          `${n.book_name} ${n.chapter}:${n.verse}`
-                        )
-                      }
+                      className="action-btn delete"
+                      onClick={() => handleDeleteNote(n.id, `${n.book_name} ${n.chapter}:${n.verse}`)}
+                      title="Excluir"
                     >
                       <Trash2 size={18} />
                     </button>
                   </div>
                 </div>
 
-                {n.content && (
-                  <p className="note-text">{n.content}</p>
+                {n.verse_text && (
+                  <div className="note-verse-badge">
+                    <BookOpen size={14} />
+                    <span>{n.book_name} {n.chapter}:{n.verse}</span>
+                  </div>
                 )}
 
-                {n.verse_text && (
-                  <div className="note-verse">
-                    <span className="v-text">"{n.verse_text}"</span>
-                    <span className="v-ref">
-                      {n.book_name} {n.chapter}:{n.verse}
-                    </span>
-                  </div>
+                {n.content && (
+                  <p className="note-preview">
+                    {n.content.length > 120 ? n.content.substring(0, 120) + "..." : n.content}
+                  </p>
                 )}
               </div>
             ))
           ) : (
             <div className="empty-state">
-              <Sparkles size={20} />
-              {searchTerm
-                ? "Nenhuma anotação corresponde à sua busca."
-                : "Você ainda não criou nenhuma anotação."}
+              <NotebookPen size={48} style={{ opacity: 0.2 }} />
+              <p>
+                {searchTerm
+                  ? "Nenhuma nota encontrada para essa busca."
+                  : "Suas anotações aparecerão aqui."}
+              </p>
             </div>
           )}
         </div>
       )}
 
-      {/* MODAL */}
       {editingNote && (
         <NoteModal
           verse={{

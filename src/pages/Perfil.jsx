@@ -2,9 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../services/api';
 import Swal from 'sweetalert2';
+import { LogOut, Edit2, Save, X, Trash2, Camera, User, Lock, Mail } from 'lucide-react';
 import './Perfil.css';
-
-import { LogOut, Edit, Trash2, Camera } from 'lucide-react';
 
 function Perfil() {
   const { user, token, logout } = useAuth();
@@ -15,19 +14,32 @@ function Perfil() {
   const [isEditing, setIsEditing] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
 
-  // Campos que podem ser editados
+  // Estados do formulário
   const [editName, setEditName] = useState(user?.name || "");
   const [editNickname, setEditNickname] = useState(user?.nickname || "");
   const [editPassword, setEditPassword] = useState("");
 
-  // Avatar salvo no localStorage
-  const [avatar, setAvatar] = useState(
-    localStorage.getItem("avatar") || "/avatar-default.png"
-  );
+  // Lógica da Foto: Prioriza banco > localStorage > Gerador automático
+  const getInitialAvatar = () => {
+    if (user?.logo_url) return user.logo_url;
+    const stored = localStorage.getItem("avatar"); // Fallback legado
+    if (stored) return stored;
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || "User")}&background=random&color=fff&size=256`;
+  };
+
+  const [avatar, setAvatar] = useState(getInitialAvatar());
+
+  // Atualiza estados quando o user carregar
+  useEffect(() => {
+    if (user) {
+      setEditName(user.name || "");
+      setEditNickname(user.nickname || "");
+      if (user.logo_url) setAvatar(user.logo_url);
+    }
+  }, [user]);
 
   const fetchFavorites = useCallback(async () => {
     if (!token) return;
-
     try {
       const response = await api.get("/api/favorites", {
         headers: { Authorization: `Bearer ${token}` },
@@ -44,68 +56,86 @@ function Perfil() {
     fetchFavorites();
   }, [fetchFavorites]);
 
-  // Mudar avatar local
-const handleAvatarChange = (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
+  // Converter imagem para Base64
+  const handleAvatarChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
 
-  const reader = new FileReader();
+    // Limite de tamanho (ex: 2MB)
+    if (file.size > 2 * 1024 * 1024) {
+      Swal.fire("Erro", "A imagem deve ter no máximo 2MB", "error");
+      return;
+    }
 
-  reader.onloadend = () => {
-    const base64 = reader.result;
-    setAvatar(base64);
-    localStorage.setItem("avatar", base64);
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setAvatar(reader.result);
+    };
+    reader.readAsDataURL(file);
   };
 
-  reader.readAsDataURL(file);
-};
-
-
-  // Salvar alterações de perfil
+  // SALVAR NO BANCO DE DADOS
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
     setIsUpdating(true);
 
     try {
+      // Aqui enviamos a 'logo_url' (que é o avatar em base64) para o banco
       await api.put(
         "/api/users/profile",
         {
           name: editName,
           nickname: editNickname,
-          password: editPassword || undefined,
+          password: editPassword || undefined, // Só envia se tiver digitado algo
+          logo_url: avatar // <--- O PULO DO GATO: Salvando a imagem no banco!
         },
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
 
+      // Atualiza o localStorage se necessário para fallback imediato
+      localStorage.setItem("avatar", avatar);
+
       await Swal.fire({
         icon: "success",
         title: "Perfil atualizado!",
-        text: "Faça login novamente para ver as alterações.",
+        text: "Suas alterações foram salvas com sucesso.",
+        background: '#151515',
+        color: '#fff',
+        confirmButtonColor: '#fff'
       });
 
-      logout();
+      // Opcional: Recarregar a página para atualizar o contexto global
+      window.location.reload(); 
+      
     } catch (err) {
+      const msg = err.response?.data?.message || "Não foi possível atualizar o perfil.";
       Swal.fire({
         icon: "error",
         title: "Erro",
-        text: "Não foi possível atualizar o perfil.",
+        text: msg,
+        background: '#151515',
+        color: '#fff'
       });
     } finally {
       setIsUpdating(false);
+      setIsEditing(false);
     }
   };
 
-  // Remover favorito
   const handleRemoveFavorite = async (verseId, ref) => {
     const result = await Swal.fire({
       title: "Remover favorito?",
-      html: `Deseja remover <strong>${ref}</strong>?`,
+      text: `Deseja remover ${ref}?`,
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Sim",
+      confirmButtonText: "Sim, remover",
       cancelButtonText: "Cancelar",
+      background: '#151515',
+      color: '#fff',
+      confirmButtonColor: '#ef4444',
+      cancelButtonColor: '#333'
     });
 
     if (!result.isConfirmed) return;
@@ -114,120 +144,144 @@ const handleAvatarChange = (e) => {
       await api.delete(`/api/favorites/${verseId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-
       setFavorites((prev) => prev.filter((f) => f.verse_id !== verseId));
-
-      Swal.fire("Removido!", "", "success");
+      Swal.fire({
+        title: "Removido!",
+        icon: "success",
+        timer: 1500,
+        showConfirmButton: false,
+        background: '#151515',
+        color: '#fff'
+      });
     } catch {
       Swal.fire("Erro", "Não foi possível remover.", "error");
     }
   };
 
   return (
-    <div className="perfil-container">
-      <div className="perfil-card">
+    <div className="perfil-page">
+      <div className="perfil-container">
         
-        {/* Avatar */}
-        <div className="perfil-avatar">
-          <img src={avatar} alt="Avatar do usuário" />
-          <label htmlFor="avatar-upload" className="camera-icon">
-            <Camera size={20} />
-          </label>
-          <input
-            id="avatar-upload"
-            type="file"
-            accept="image/*"
-            onChange={handleAvatarChange}
-            style={{ display: "none" }}
-          />
-        </div>
+        {/* CARTÃO DE PERFIL */}
+        <div className="perfil-card glass-effect">
+          <div className="perfil-header-bg"></div>
+          
+          <div className="perfil-content">
+            {/* Avatar Section */}
+            <div className="avatar-wrapper">
+              <div className="avatar-circle">
+                <img src={avatar} alt="Avatar" className="avatar-img" />
+                
+                {isEditing && (
+                  <label htmlFor="avatar-upload" className="avatar-edit-overlay">
+                    <Camera size={24} color="#fff" />
+                    <span>Alterar</span>
+                  </label>
+                )}
+              </div>
+              
+              <input
+                id="avatar-upload"
+                type="file"
+                accept="image/*"
+                onChange={handleAvatarChange}
+                disabled={!isEditing}
+                style={{ display: "none" }}
+              />
+            </div>
 
-        {/* Dados do usuário */}
-        <div className="perfil-info">
-          <h2>{user?.nickname || user?.name}</h2>
-          <p>{user?.email}</p>
-
-          <button
-            onClick={() => setIsEditing(!isEditing)}
-            className="edit-btn"
-          >
-            <Edit size={18} /> {isEditing ? "Cancelar" : "Editar Perfil"}
-          </button>
-
-          <button onClick={logout} className="logout-btn">
-            <LogOut size={18} /> Sair
-          </button>
-        </div>
-
-        {/* Formulário de edição */}
-        {isEditing && (
-          <form onSubmit={handleUpdateProfile} className="edit-form">
-
-            <input
-              type="text"
-              value={editName}
-              onChange={(e) => setEditName(e.target.value)}
-              placeholder="Nome completo"
-            />
-
-            <input
-              type="text"
-              value={editNickname}
-              onChange={(e) => setEditNickname(e.target.value)}
-              placeholder="Apelido"
-            />
-
-            <input
-              type="password"
-              value={editPassword}
-              onChange={(e) => setEditPassword(e.target.value)}
-              placeholder="Nova senha"
-            />
-
-            <button type="submit" disabled={isUpdating}>
-              {isUpdating ? "Salvando..." : "Salvar alterações"}
-            </button>
-
-          </form>
-        )}
-      </div>
-
-      {/* Favoritos */}
-      <div className="favoritos-card">
-        <h3>📖 Meus Favoritos</h3>
-
-        {loadingFavorites ? (
-          <p className="loading-text">Carregando...</p>
-        ) : favorites.length > 0 ? (
-          <div className="favoritos-list">
-            {favorites.map((fav) => (
-              <div key={fav.verse_id} className="favorito-item">
-                <div className="favorito-texto">
-                  <p>"{fav.verse_text}"</p>
-                  <span>
-                    {fav.book_name} {fav.chapter}:{fav.verse}
-                  </span>
+            {/* Info or Edit Form */}
+            {!isEditing ? (
+              <div className="perfil-static-info">
+                <h2>{user?.nickname || user?.name}</h2>
+                <p className="email-text">{user?.email}</p>
+                
+                <div className="perfil-actions">
+                  <button onClick={() => setIsEditing(true)} className="btn-primary">
+                    <Edit2 size={16} /> Editar Perfil
+                  </button>
+                  <button onClick={logout} className="btn-outline-danger">
+                    <LogOut size={16} /> Sair
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <form onSubmit={handleUpdateProfile} className="perfil-edit-form">
+                <div className="input-group-dark">
+                  <User size={18} className="input-icon" />
+                  <input
+                    type="text"
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
+                    placeholder="Nome completo"
+                  />
                 </div>
 
-                <button
-                  className="remove-fav-btn"
-                  onClick={() =>
-                    handleRemoveFavorite(
-                      fav.verse_id,
-                      `${fav.book_name} ${fav.chapter}:${fav.verse}`
-                    )
-                  }
-                >
-                  <Trash2 size={18} />
-                </button>
-              </div>
-            ))}
+                <div className="input-group-dark">
+                  <span className="input-at">@</span>
+                  <input
+                    type="text"
+                    value={editNickname}
+                    onChange={(e) => setEditNickname(e.target.value)}
+                    placeholder="Apelido"
+                  />
+                </div>
+
+                <div className="input-group-dark">
+                  <Lock size={18} className="input-icon" />
+                  <input
+                    type="password"
+                    value={editPassword}
+                    onChange={(e) => setEditPassword(e.target.value)}
+                    placeholder="Nova senha (opcional)"
+                  />
+                </div>
+
+                <div className="form-actions">
+                  <button type="button" onClick={() => setIsEditing(false)} className="btn-cancel">
+                    <X size={18} /> Cancelar
+                  </button>
+                  <button type="submit" disabled={isUpdating} className="btn-save">
+                    {isUpdating ? "Salvando..." : <><Save size={18} /> Salvar</>}
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
-        ) : (
-          <p className="empty-state">
-            Você ainda não favoritou nenhum versículo.
-          </p>
-        )}
+        </div>
+
+        {/* FAVORITOS SECTION */}
+        <div className="favorites-section">
+          <h3 className="section-title">Meus Favoritos</h3>
+          
+          {loadingFavorites ? (
+            <div className="loading-state">Carregando versículos...</div>
+          ) : favorites.length > 0 ? (
+            <div className="favorites-grid">
+              {favorites.map((fav) => (
+                <div key={fav.verse_id} className="favorite-card glass-effect">
+                  <div className="fav-content">
+                    <p className="fav-text">"{fav.verse_text}"</p>
+                    <span className="fav-ref">
+                      {fav.book_name} {fav.chapter}:{fav.verse}
+                    </span>
+                  </div>
+                  <button
+                    className="fav-delete-btn"
+                    onClick={() => handleRemoveFavorite(fav.verse_id, `${fav.book_name} ${fav.chapter}:${fav.verse}`)}
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="empty-state">
+              <p>Você ainda não favoritou nenhum versículo.</p>
+            </div>
+          )}
+        </div>
+
       </div>
     </div>
   );

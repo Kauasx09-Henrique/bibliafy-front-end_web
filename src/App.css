@@ -21,6 +21,11 @@
   --header-icon-hover-bg: rgba(255, 255, 255, 0.08);
 }
 
+#root {
+  padding-top: 80px !important;
+  /* 70px do header + 10px de respiro */
+}
+
 .bibliafy-theme * {
   margin: 0;
   padding: 0;
@@ -379,15 +384,16 @@
     padding: 0.6rem;
   }
 }
+
 /* animação de fade + slide */
 @keyframes toastSlideUp {
   from {
     opacity: 0;
     transform: translateY(-10px) scale(0.96);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
   }
 }
-

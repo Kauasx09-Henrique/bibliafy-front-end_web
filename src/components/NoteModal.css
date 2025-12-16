@@ -1,35 +1,47 @@
+/* Fundo escuro transparente */
 .note-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.65);
+  background: rgba(0, 0, 0, 0.7);
   backdrop-filter: blur(8px);
+  z-index: 9999;
   display: flex;
-  justify-content: center;
   align-items: center;
-  z-index: 99999;
-  animation: fadeInOverlay 0.2s ease-out;
+  justify-content: center;
+  padding: 16px;
+  animation: fadeIn 0.3s ease-out;
 }
 
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Conteúdo do Modal */
 .note-modal-content {
-  background: #111;
-  width: 90%;
+  width: 100%;
   max-width: 500px;
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  background: #18181b; /* Cinza bem escuro, quase preto */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.75);
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-  animation: scaleInModal 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  gap: 20px;
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Cabeçalho */
 .note-modal-header {
-  padding: 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgba(255, 255, 255, 0.02);
 }
 
 .header-title {
@@ -41,23 +53,25 @@
 
 .header-title h3 {
   margin: 0;
-  font-size: 1.1rem;
+  font-size: 1.25rem;
   font-weight: 600;
 }
 
 .header-icon {
-  color: #60a5fa;
+  color: #fbbf24; /* Amarelo ouro */
 }
 
 .note-close-btn {
   background: transparent;
   border: none;
-  color: #888;
+  color: #71717a;
   cursor: pointer;
-  padding: 4px;
+  padding: 6px;
   border-radius: 50%;
   transition: all 0.2s;
   display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .note-close-btn:hover {
@@ -65,38 +79,34 @@
   color: #fff;
 }
 
+/* Preview do Versículo */
 .verse-preview-card {
-  margin: 20px 20px 0;
+  background: rgba(251, 191, 36, 0.05); /* Fundo amarelo muito sutil */
+  border-left: 3px solid #fbbf24;
   padding: 16px;
-  background: rgba(96, 165, 250, 0.08);
-  border-left: 3px solid #60a5fa;
   border-radius: 8px;
 }
 
 .verse-ref {
   display: block;
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   font-weight: 700;
-  color: #60a5fa;
-  margin-bottom: 6px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  color: #fbbf24;
+  margin-bottom: 6px;
+  letter-spacing: 0.05em;
 }
 
 .verse-preview-card p {
   margin: 0;
-  font-size: 0.95rem;
+  color: #d4d4d8;
   font-style: italic;
-  color: #e5e5e5;
+  font-size: 0.95rem;
   line-height: 1.5;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 
+/* Formulário */
 .note-form {
-  padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -110,102 +120,87 @@
 
 .form-group label {
   font-size: 0.85rem;
-  color: #a1a1a1;
   font-weight: 500;
-  margin-left: 2px;
+  color: #a1a1aa;
 }
 
-.note-form input,
-.note-form textarea {
-  background: #1a1a1a;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  padding: 12px;
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  background: #09090b;
+  border: 1px solid #27272a;
   color: #fff;
+  padding: 12px;
+  border-radius: 10px;
   font-family: inherit;
   font-size: 0.95rem;
-  transition: all 0.2s;
-}
-
-.note-form input:focus,
-.note-form textarea:focus {
   outline: none;
-  border-color: #60a5fa;
-  background: #202020;
-  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.note-form textarea {
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: #fbbf24;
+  box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.1);
+}
+
+.form-group textarea {
   resize: vertical;
-  min-height: 100px;
+  min-height: 120px;
+  line-height: 1.5;
 }
 
+/* Botões de Ação */
 .note-actions {
   display: flex;
   justify-content: flex-end;
   gap: 12px;
-  margin-top: 10px;
+  margin-top: 8px;
 }
 
 .cancel-btn {
-  padding: 10px 18px;
-  border-radius: 8px;
   background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #aaa;
+  border: 1px solid #3f3f46;
+  color: #e4e4e7;
+  padding: 10px 18px;
+  border-radius: 10px;
   font-weight: 500;
-  cursor: pointer;
+  font-size: 0.9rem;
   transition: all 0.2s;
 }
 
 .cancel-btn:hover {
   background: rgba(255, 255, 255, 0.05);
-  color: #fff;
+  border-color: #52525b;
 }
 
 .save-btn {
-  padding: 10px 20px;
-  border-radius: 8px;
-  background: #60a5fa;
+  background: #fbbf24;
+  color: #18181b; /* Texto escuro no botão amarelo */
   border: none;
-  color: #000;
+  padding: 10px 24px;
+  border-radius: 10px;
   font-weight: 600;
-  cursor: pointer;
+  font-size: 0.9rem;
   display: flex;
   align-items: center;
   gap: 8px;
   transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(251, 191, 36, 0.2);
 }
 
-.save-btn:hover {
-  background: #3b82f6;
+.save-btn:hover:not(:disabled) {
+  background: #f59e0b;
   transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(251, 191, 36, 0.3);
+}
+
+.save-btn:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .save-btn:disabled {
-  opacity: 0.7;
+  opacity: 0.6;
   cursor: not-allowed;
-  transform: none;
-}
-
-@keyframes fadeInOverlay {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes scaleInModal {
-  from {
-    transform: scale(0.95);
-    opacity: 0;
-  }
-
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
+  filter: grayscale(0.5);
 }

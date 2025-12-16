@@ -3,26 +3,25 @@
 
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/jpeg" href="./public/logo.jpg" />
+  <link rel="icon" type="image/jpeg" href="/public/Logo_Nova.jpg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <meta http-equiv="Content-Security-Policy" content="
-        default-src 'self'; 
-        img-src 'self' data: https://source.unsplash.com; 
-        connect-src 'self' https://bibliafy-api.onrender.com;
-        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-        font-src 'self' https://fonts.gstatic.com;
-      ">
+      default-src 'self';
+      script-src 'self' 'unsafe-inline' 'unsafe-eval';
+      img-src 'self' data: https://source.unsplash.com https://ui-avatars.com;
+      connect-src 'self' https://bibliafy-api.onrender.com http://localhost:*;
+      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+      font-src 'self' https://fonts.gstatic.com;
+  ">
+
   <link
     href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap"
     rel="stylesheet">
-
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bibliafy</title>
 </head>
 
 <body class="bibliafy-theme">
-
   <div id="root"></div>
   <script type="module" src="/src/main.jsx"></script>
 </body>

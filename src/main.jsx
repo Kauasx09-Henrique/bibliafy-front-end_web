@@ -29,19 +29,36 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <BrowserRouter>
       <AuthProvider>
-        <Toaster position="top-center" />
+
+        <Toaster
+          position="top-center"
+          toastOptions={{
+            style: {
+              background: '#151515',
+              color: '#fff',
+              border: '1px solid #333',
+              borderRadius: '10px',
+            },
+            success: {
+              iconTheme: {
+                primary: '#4ade80',
+                secondary: '#151515',
+              },
+            },
+            error: {
+              iconTheme: {
+                primary: '#ef4444',
+                secondary: '#151515',
+              },
+            },
+          }}
+        />
 
         <Routes>
           <Route element={<App />}>
-
             <Route path="/home" element={<Home />} />
             <Route path="/livro/:bookId" element={<Book />} />
-
-            <Route
-              path="/livro/:bookId/capitulo/:chapterNum"
-              element={<Chapter />}
-            />
-
+            <Route path="/livro/:bookId/capitulo/:chapterId" element={<Chapter />} />
             <Route
               path="/anotacoes"
               element={
@@ -68,7 +85,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                 </ProtectedRoute>
               }
             />
-
           </Route>
 
           <Route path="/login" element={<Login />} />

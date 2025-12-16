@@ -1,64 +1,69 @@
-import React from 'react';
-import './CompareModal.css';
-import { X } from 'lucide-react';
-
-function CompareModal({
-  verse,
-  comparisonData,
-  isLoading,
+const CompareModal = ({
+  isOpen,
   onClose,
-  currentVersion,
-  theme
-}) {
-  if (!verse) return null;
+  verse,
+  versions,
+  onSelectVersionToCompare,
+  bookName,
+  chapterNum,
+  comparisonResult,
+  isComparing
+}) => {
+  if (!isOpen || !verse) return null;
 
   return (
-    <div className="cmp-overlay" onClick={onClose}>
-      <div
-        className={`cmp-modal ${theme}`}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <header className="cmp-header">
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <header className="modal-header">
           <div>
-            <h2>Comparar Versículo</h2>
-            <p className="cmp-ref">
-              {verse.bookName} {verse.chapter}:{verse.verse}
-            </p>
+            <h2>Comparar Versões</h2>
+            <p className="subtitle">{bookName} {chapterNum}:{verse.verse}</p>
           </div>
-
-          <button className="cmp-close" onClick={onClose} aria-label="Fechar">
-            <X size={22} />
+          <button className="close-button" onClick={onClose}>
+            <X size={24} />
           </button>
         </header>
 
-        <div className="cmp-body">
-          {isLoading ? (
-            <p className="cmp-loading">Carregando versões...</p>
-          ) : (
-            <>
-              <div className="cmp-card highlight">
-                <span className="cmp-tag">{currentVersion}</span>
-                <p>{verse.text}</p>
-              </div>
+        <div className="modal-body">
+          <div className="current-verse-text">
+            <span style={{ fontSize: "0.85rem", opacity: 0.7, textTransform: "uppercase", display: "block", marginBottom: "4px" }}>
+              Versão Atual
+            </span>
+            {verse.text}
+          </div>
 
-              {comparisonData.length > 0 ? (
-                comparisonData.map((v, i) => (
-                  <div key={i} className="cmp-card">
-                    <span className="cmp-tag">{v.version}</span>
-                    <p>{v.text}</p>
-                  </div>
-                ))
-              ) : (
-                <p className="cmp-empty">
-                  Nenhuma outra versão disponível para comparação.
-                </p>
-              )}
-            </>
+          {isComparing && (
+            <div className="comparison-result loading">
+              <div className="spinner"></div> Buscando versículo...
+            </div>
           )}
+
+          {!isComparing && comparisonResult && (
+            <div className="comparison-result">
+              <span style={{ fontSize: "0.85rem", color: "#fbbf24", textTransform: "uppercase", fontWeight: "bold", display: "block", marginBottom: "4px" }}>
+                {comparisonResult.version.toUpperCase()}
+              </span>
+              {comparisonResult.text}
+            </div>
+          )}
+
+          <div className="compare-list" style={{ marginTop: "24px" }}>
+            <h3>Escolha uma versão para comparar:</h3>
+            <div className="versions-grid">
+              {versions.map((v) => (
+                <button
+                  key={v.id}
+                  className={`version-compare-btn ${comparisonResult?.version === v.abbreviation ? "active" : ""}`}
+                  onClick={() => onSelectVersionToCompare(v.abbreviation)}
+                  disabled={isComparing}
+                >
+                  {v.abbreviation.toUpperCase()}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
-}
-
-export default CompareModal;
+};

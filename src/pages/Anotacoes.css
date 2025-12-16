@@ -1,266 +1,264 @@
-/* =========================================
-   ANOTAÇÕES – LAYOUT GERAL
-========================================= */
-
 .notes-page {
-  max-width: 980px;
+  max-width: 1000px;
   margin: 0 auto;
-  padding: 28px 16px 80px;
-  color: var(--text-primary, #f5f5f5);
-  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  padding: 24px 16px 100px; /* Padding bottom extra p/ nav mobile */
+  color: #f5f5f5;
+  font-family: "Inter", sans-serif;
 }
 
-/* =========================================
-   HEADER
-========================================= */
+/* HEADER */
+.notes-header-container {
+  margin-bottom: 24px;
+}
 
 .notes-header {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 18px;
+  gap: 16px;
 }
 
-.notes-header h1 {
-  font-size: 1.6rem;
-  font-weight: 600;
+.header-icon-box {
+  background: linear-gradient(135deg, #5ac8fa 0%, #007aff 100%);
+  padding: 12px;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 122, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.header-icon {
-  padding: 8px;
-  border-radius: 12px;
-  background: radial-gradient(circle at 0 0, #5ac8fa 0, transparent 55%),
-    radial-gradient(circle at 100% 100%, #ffc857 0, transparent 55%);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
-  animation: floatHeaderIcon 3s ease-in-out infinite;
+.header-text h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.1;
 }
 
-@keyframes floatHeaderIcon {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-3px);
-  }
+.header-text p {
+  color: #888;
+  font-size: 0.9rem;
+  margin-top: 4px;
 }
 
-/* =========================================
-   BARRA DE BUSCA
-========================================= */
-
+/* SEARCH */
 .notes-search-box {
   position: relative;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 .notes-search-box input {
   width: 100%;
-  padding: 10px 12px 10px 38px;
-  border-radius: 999px;
-  border: 1px solid var(--borders, rgba(255, 255, 255, 0.15));
-  background: var(--highlight, #1b1b1b);
-  color: var(--text-primary, #f5f5f5);
-  outline: none;
-  font-size: 0.95rem;
-  transition: border 0.2s ease, box-shadow 0.2s ease, background 0.2s ease,
-    transform 0.12s ease;
-}
-
-.notes-search-box input::placeholder {
-  color: var(--text-secondary, #999);
+  padding: 14px 14px 14px 44px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(20, 20, 20, 0.6);
+  color: #fff;
+  font-size: 1rem;
+  transition: all 0.2s ease;
 }
 
 .notes-search-box input:focus {
   border-color: #5ac8fa;
-  box-shadow: 0 0 0 1px rgba(90, 200, 250, 0.4);
-  transform: translateY(-1px);
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(30, 30, 30, 0.8);
+  box-shadow: 0 0 0 4px rgba(90, 200, 250, 0.1);
+  outline: none;
 }
 
 .search-icon {
   position: absolute;
-  left: 12px;
+  left: 14px;
   top: 50%;
   transform: translateY(-50%);
-  opacity: 0.7;
+  color: #666;
 }
 
-/* =========================================
-   LISTA / ESTADOS
-========================================= */
-
-.notes-list {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
+/* GRID DE NOTAS */
+.notes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
 }
 
-.loading-state,
-.empty-state {
-  margin-top: 40px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  font-size: 0.95rem;
-  opacity: 0.85;
-}
-
-.loading-icon {
-  animation: spinLoading 1s linear infinite;
-}
-
-@keyframes spinLoading {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* =========================================
-   CARD DE NOTA – GLASS
-========================================= */
-
+/* CARD GLASS */
 .glass-card {
-  background: rgba(10, 10, 10, 0.88);
-  border-radius: 18px;
+  background: rgba(20, 20, 20, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(14px);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55);
+  border-radius: 20px;
+  padding: 20px;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  display: flex;
+  flex-direction: column;
 }
 
-.note-card {
-  padding: 14px 14px 16px;
-  transition: transform 0.16s ease, box-shadow 0.16s ease,
-    border-color 0.16s ease;
+.glass-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+  border-color: rgba(255, 255, 255, 0.15);
 }
 
-.note-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.65);
-  border-color: rgba(90, 200, 250, 0.4);
-}
-
-/* HEADER DO CARD */
-
-.note-card-header {
+.note-card-top {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 8px;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
 
-.note-card-header h3 {
-  font-size: 1rem;
+.note-info h3 {
+  font-size: 1.1rem;
   font-weight: 600;
+  margin-bottom: 4px;
+  color: #fff;
+}
+
+.note-date {
+  font-size: 0.75rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 /* AÇÕES */
-
 .note-actions {
   display: flex;
-  align-items: center;
   gap: 6px;
 }
 
-.note-actions button {
-  background: transparent;
+.action-btn {
+  background: rgba(255, 255, 255, 0.05);
   border: none;
-  padding: 4px;
-  border-radius: 8px;
+  border-radius: 10px;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
+  color: #888;
   cursor: pointer;
-  transition: transform 0.16s ease, background 0.16s ease, color 0.16s ease;
-  color: var(--text-secondary, #b3b3b3);
+  transition: all 0.2s;
 }
 
-/* editar */
-
-.btn-edit:hover {
-  background: rgba(76, 217, 100, 0.15);
-  color: #9af58f;
-  transform: translateY(-1px) scale(1.05);
+.action-btn.edit:hover {
+  background: rgba(90, 200, 250, 0.15);
+  color: #5ac8fa;
 }
 
-/* excluir */
-
-.btn-delete:hover {
-  background: rgba(255, 89, 94, 0.18);
-  color: #ff5b61;
-  transform: translateY(-1px) scale(1.05);
+.action-btn.delete:hover {
+  background: rgba(255, 69, 58, 0.15);
+  color: #ff453a;
 }
 
-/* TEXTO DA NOTA */
-
-.note-text {
-  font-size: 0.93rem;
-  line-height: 1.55;
-  margin-bottom: 10px;
-  color: var(--text-primary, #f5f5f5);
+/* VERSO TAG */
+.note-verse-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 6px 12px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  width: fit-content;
+  color: #ccc;
+  font-size: 0.85rem;
+  font-weight: 500;
 }
 
-/* VERSO RELACIONADO */
+.note-preview {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #bbb;
+  flex: 1;
+}
 
-.note-verse {
-  margin-top: 4px;
-  padding-top: 6px;
-  border-top: 1px dashed rgba(255, 255, 255, 0.12);
+/* EMPTY & LOADING */
+.empty-state, .loading-state {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 0;
+  text-align: center;
+  color: #666;
+  gap: 16px;
 }
 
-.v-text {
-  font-size: 0.9rem;
-  font-style: italic;
-  opacity: 0.92;
+.loading-spinner {
+  animation: spin 1.5s linear infinite;
+  color: #5ac8fa;
 }
 
-.v-ref {
-  font-size: 0.78rem;
-  opacity: 0.7;
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.fade-in { animation: fadeInUp 0.5s ease forwards; }
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-/* =========================================
-   RESPONSIVIDADE
-========================================= */
-
-@media (min-width: 720px) {
-  .note-card {
-    padding: 16px 18px 18px;
-  }
-
-  .notes-page {
-    padding-top: 36px;
-  }
-
-  .notes-header h1 {
-    font-size: 1.8rem;
-  }
-}
-
-@media (max-width: 500px) {
-  .note-card-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .note-actions {
-    margin-top: 4px;
-  }
-}
-
-/* =========================================
-   SWEETALERT 2 (opcional, mas deixa bonito)
-========================================= */
-
-.swal2-popup {
-  background: #151515 !important;
-  color: #f5f5f5 !important;
-  border-radius: 18px !important;
+/* --- ESTILOS DO SWEETALERT 2 PERSONALIZADO --- */
+.glass-popup {
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.8) !important;
-  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif !important;
+  border-radius: 24px !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6) !important;
+  padding: 24px !important;
+}
+
+.popup-title {
+  color: #fff !important;
+  font-size: 1.4rem !important;
+  font-weight: 700 !important;
+}
+
+/* Botões do Alert */
+.btn-confirm-delete {
+  background: #ff453a !important; /* Vermelho iOS */
+  color: white !important;
+  border: none !important;
+  padding: 12px 24px !important;
+  border-radius: 12px !important;
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  margin: 0 8px !important;
+  box-shadow: 0 4px 15px rgba(255, 69, 58, 0.4) !important;
+  transition: transform 0.2s !important;
+}
+
+.btn-confirm-delete:active { transform: scale(0.95) !important; }
+
+.btn-cancel-delete {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: #ddd !important;
+  border: none !important;
+  padding: 12px 24px !important;
+  border-radius: 12px !important;
+  font-size: 1rem !important;
+  font-weight: 500 !important;
+  margin: 0 8px !important;
+  transition: background 0.2s !important;
+}
+
+.btn-cancel-delete:hover { background: rgba(255, 255, 255, 0.15) !important; }
+
+/* RESPONSIVIDADE MOBILE */
+@media (max-width: 600px) {
+  .notes-page {
+    padding: 20px 16px 90px;
+  }
+
+  .notes-header h1 { font-size: 1.5rem; }
+  
+  .notes-grid {
+    grid-template-columns: 1fr; /* Um card por linha */
+  }
+
+  .glass-card {
+    padding: 16px;
+  }
+  
+  .action-btn {
+    width: 40px; /* Botão maior p/ toque */
+    height: 40px;
+  }
 }
