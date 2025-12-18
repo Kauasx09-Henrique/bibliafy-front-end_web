@@ -22,6 +22,7 @@ import Anotacoes from "./pages/Anotacoes";
 import Perfil from "./pages/Perfil";
 import FavoritesPage from "./pages/Favoritos";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Statistics from "./pages/Statistics";
 
 import "./App.css";
 
@@ -91,6 +92,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           <Route path="/registro" element={<Registro />} />
           <Route path="/esqueci-senha" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/estatisticas" element={<Statistics />} />
 
           <Route path="*" element={<Navigate to="/home" replace />} />
         </Routes>

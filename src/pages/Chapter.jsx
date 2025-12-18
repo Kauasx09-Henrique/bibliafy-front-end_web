@@ -59,7 +59,12 @@ export default function Chapter() {
     localStorage.setItem("reader-font", fontFamily);
     localStorage.setItem("reader-compact", compactMode);
   }, [theme, fontSize, fontFamily, compactMode]);
-
+  if (token) {
+    api.post('/api/stats/mark-read', {
+      bookId: bookId,
+      chapter: chapterId
+    }, { headers: { Authorization: `Bearer ${token}` } });
+  }
   useEffect(() => {
     if (!bookId || !chapterId || chapterId === "undefined" || chapterId === "null") return;
 

@@ -1,11 +1,11 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Home, Star, BookMarked, User } from "lucide-react";
+import { Home, BarChart2, BookMarked, User } from "lucide-react";
 import "./BottomNav.css";
 
 const tabs = [
   { path: "/home", label: "Início", icon: Home },
-  { path: "/favoritos", label: "Favoritos", icon: Star },
+  { path: "/estatisticas", label: "Estatísticas", icon: BarChart2 },
   { path: "/anotacoes", label: "Anotações", icon: BookMarked },
   { path: "/perfil", label: "Perfil", icon: User },
 ];
