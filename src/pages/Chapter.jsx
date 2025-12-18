@@ -2,11 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import {
   ChevronLeft, Settings, Heart, Share2,
-  Copy, Type, Moon, Sun,
-  ArrowLeft, ArrowRight, X, BookOpen, Layers,
+  Copy, Layers, Moon, Sun,
+  ArrowLeft, ArrowRight, X, BookOpen,
   NotebookPen
 } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
+import Confetti from "react-confetti";
+import Swal from "sweetalert2";
 
 import api from "../services/api";
 import { useAuth } from "../contexts/AuthContext";
@@ -41,6 +43,15 @@ export default function Chapter() {
   const [comparingVersion, setComparingVersion] = useState(null);
   const [loadingComparison, setLoadingComparison] = useState(false);
 
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [windowSize, setWindowSize] = useState({ width: window.innerWidth, height: window.innerHeight });
+
+  useEffect(() => {
+    const handleResize = () => setWindowSize({ width: window.innerWidth, height: window.innerHeight });
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   useEffect(() => {
     const bgColors = {
       light: "#f4f4f5",
@@ -59,12 +70,40 @@ export default function Chapter() {
     localStorage.setItem("reader-font", fontFamily);
     localStorage.setItem("reader-compact", compactMode);
   }, [theme, fontSize, fontFamily, compactMode]);
-  if (token) {
-    api.post('/api/stats/mark-read', {
-      bookId: bookId,
-      chapter: chapterId
-    }, { headers: { Authorization: `Bearer ${token}` } });
-  }
+
+  const markAsRead = async () => {
+    if (!token) return;
+    try {
+      const response = await api.post('/api/stats/mark-read', {
+        bookId,
+        chapter: chapterId
+      }, { headers: { Authorization: `Bearer ${token}` } });
+
+      if (response.data.newBadge) {
+        setShowConfetti(true);
+        Swal.fire({
+          title: '🎉 Conquista Desbloqueada!',
+          text: response.data.newBadge.message,
+          icon: 'success',
+          background: '#151515',
+          color: '#fff',
+          confirmButtonColor: '#ffd700',
+          confirmButtonText: 'Incrível!'
+        }).then(() => {
+          setShowConfetti(false);
+        });
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    if (!loading && verses.length > 0) {
+      setTimeout(() => markAsRead(), 2000);
+    }
+  }, [chapterId, loading]);
+
   useEffect(() => {
     if (!bookId || !chapterId || chapterId === "undefined" || chapterId === "null") return;
 
@@ -91,7 +130,7 @@ export default function Chapter() {
             if (Array.isArray(resFavs.data)) {
               setFavorites(resFavs.data.map(f => f.verse_id));
             }
-          } catch (e) { console.log("Erro favoritos", e); }
+          } catch (e) { console.log(e); }
         }
 
         const resVersions = await api.get("/api/bible/versions");
@@ -109,7 +148,7 @@ export default function Chapter() {
         if (token) {
           api.put('/api/users/progress', currentReadData, {
             headers: { Authorization: `Bearer ${token}` }
-          }).catch(err => console.error("Sync error", err));
+          }).catch(err => console.error(err));
         }
 
       } catch (err) {
@@ -186,6 +225,8 @@ export default function Chapter() {
   return (
     <div className={`chapter-wrapper theme-${theme} font-${fontFamily} ${compactMode ? 'compact' : ''}`}>
       <Toaster position="top-center" toastOptions={{ style: { background: '#333', color: '#fff' } }} />
+
+      {showConfetti && <Confetti width={windowSize.width} height={windowSize.height} recycle={false} numberOfPieces={500} />}
 
       <header className="toolbar-glass">
         <Link to="/home" className="back-btn-glass">
