@@ -371,9 +371,6 @@
   transform: scale(0.9);
 }
 
-/* -----------------------------------------
-   RESPONSIVO
------------------------------------------ */
 @media (max-width: 480px) {
   .bibliafy-theme .settings-modal-content {
     padding: 1.25rem;
@@ -384,8 +381,6 @@
     padding: 0.6rem;
   }
 }
-
-/* animação de fade + slide */
 @keyframes toastSlideUp {
   from {
     opacity: 0;
@@ -396,4 +391,55 @@
     opacity: 1;
     transform: translateY(0) scale(1);
   }
+}
+
+.glass-swal-popup {
+  background: rgba(30, 30, 30, 0.75) !important;
+  backdrop-filter: blur(16px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 24px !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5) !important;
+  padding-top: 2em !important;
+}
+
+.animate-pop-in-bounce {
+  animation: popInBounce 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes popInBounce {
+  0% {
+    opacity: 0;
+    transform: scale(0.3) translateY(50px);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+
+  70% {
+    transform: scale(0.95);
+  }
+
+  100% {
+    transform: scale(1);
+    translateY: (0);
+  }
+}
+
+.glass-swal-btn {
+  border: none !important;
+  font-weight: 700 !important;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 12px 30px !important;
+  border-radius: 12px !important;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3) !important;
+  transition: all 0.3s ease !important;
+}
+
+.glass-swal-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4) !important;
 }

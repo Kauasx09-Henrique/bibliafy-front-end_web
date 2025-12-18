@@ -21,8 +21,8 @@ import Chapter from "./pages/Chapter";
 import Anotacoes from "./pages/Anotacoes";
 import Perfil from "./pages/Perfil";
 import FavoritesPage from "./pages/Favoritos";
-import ProtectedRoute from "./components/ProtectedRoute";
 import Statistics from "./pages/Statistics";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 import "./App.css";
 
@@ -60,6 +60,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
             <Route path="/home" element={<Home />} />
             <Route path="/livro/:bookId" element={<Book />} />
             <Route path="/livro/:bookId/capitulo/:chapterId" element={<Chapter />} />
+            
             <Route
               path="/anotacoes"
               element={
@@ -86,13 +87,21 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                 </ProtectedRoute>
               }
             />
+
+            <Route
+              path="/estatisticas"
+              element={
+                <ProtectedRoute>
+                  <Statistics />
+                </ProtectedRoute>
+              }
+            />
           </Route>
 
           <Route path="/login" element={<Login />} />
           <Route path="/registro" element={<Registro />} />
           <Route path="/esqueci-senha" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/estatisticas" element={<Statistics />} />
 
           <Route path="*" element={<Navigate to="/home" replace />} />
         </Routes>

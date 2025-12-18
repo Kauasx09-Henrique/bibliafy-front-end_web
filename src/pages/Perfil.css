@@ -1,8 +1,7 @@
-/* Layout da Página */
 .perfil-page {
   min-height: 100vh;
-  padding: 80px 16px 40px; /* Padding top para não colar no header */
-  background: transparent; /* Assume o fundo do body */
+  padding: 80px 16px 40px;
+  background: transparent;
   display: flex;
   justify-content: center;
 }
@@ -15,7 +14,6 @@
   gap: 30px;
 }
 
-/* Efeito de Vidro Genérico */
 .glass-effect {
   background: rgba(20, 20, 20, 0.6);
   backdrop-filter: blur(16px);
@@ -25,7 +23,6 @@
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
-/* Cartão de Perfil */
 .perfil-card {
   overflow: hidden;
   position: relative;
@@ -54,10 +51,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 40px; /* Empurra o conteúdo pra baixo do header bg */
+  margin-top: 40px;
 }
 
-/* Avatar */
 .avatar-wrapper {
   margin-bottom: 16px;
 }
@@ -66,10 +62,10 @@
   width: 110px;
   height: 110px;
   border-radius: 50%;
-  border: 4px solid #1a1a1a; /* Cor do fundo para "recortar" */
+  border: 4px solid #1a1a1a;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
 .avatar-img {
@@ -99,7 +95,7 @@
   opacity: 1;
 }
 
-/* Info Estática */
+
 .perfil-static-info {
   text-align: center;
   width: 100%;
@@ -124,7 +120,7 @@
   justify-content: center;
 }
 
-/* Botões */
+
 button {
   cursor: pointer;
   border: none;
@@ -164,7 +160,6 @@ button:active {
   border-color: #ef4444;
 }
 
-/* Formulário de Edição */
 .perfil-edit-form {
   width: 100%;
   display: flex;
@@ -186,7 +181,8 @@ button:active {
   border-color: #fff;
 }
 
-.input-icon, .input-at {
+.input-icon,
+.input-at {
   color: #666;
   margin-right: 8px;
 }
@@ -238,7 +234,7 @@ button:active {
   gap: 8px;
 }
 
-/* Favoritos */
+
 .section-title {
   color: #888;
   font-size: 0.85rem;

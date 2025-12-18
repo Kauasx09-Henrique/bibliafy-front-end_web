@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
+import { renderToString } from "react-dom/server";
 import {
   ChevronLeft, Settings, Heart, Share2,
   Copy, Layers, Moon, Sun,
@@ -13,6 +14,7 @@ import Swal from "sweetalert2";
 import api from "../services/api";
 import { useAuth } from "../contexts/AuthContext";
 import NoteModal from "../components/NoteModal";
+import { getBadgeConfig } from "../utils/badges";
 import "./Chapter.css";
 
 export default function Chapter() {
@@ -71,6 +73,7 @@ export default function Chapter() {
     localStorage.setItem("reader-compact", compactMode);
   }, [theme, fontSize, fontFamily, compactMode]);
 
+  // Função Atualizada no Chapter.jsx
   const markAsRead = async () => {
     if (!token) return;
     try {
@@ -80,15 +83,86 @@ export default function Chapter() {
       }, { headers: { Authorization: `Bearer ${token}` } });
 
       if (response.data.newBadge) {
+        // Solta o confete
         setShowConfetti(true);
+
+        const badgeConfig = getBadgeConfig(bookId);
+        const BadgeIcon = badgeConfig.icon;
+
+        // Renderiza o ícone para string, aumentando um pouco o tamanho
+        const iconHtml = renderToString(
+          <BadgeIcon size={90} color={badgeConfig.color} strokeWidth={1.5} />
+        );
+
         Swal.fire({
-          title: '🎉 Conquista Desbloqueada!',
-          text: response.data.newBadge.message,
-          icon: 'success',
-          background: '#151515',
+          // HTML PERSONALIZADO COM EFEITOS DE LUZ E ANIMAÇÃO
+          html: `
+            <div style="display: flex; flex-direction: column; align-items: center;">
+              
+              <div style="font-size: 1.2rem; font-weight: 600; color: #fff; margin-bottom: 20px; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">
+                Conquista Desbloqueada!
+              </div>
+              
+              <div style="
+                position: relative;
+                width: 120px; height: 120px;
+                display: flex; align-items: center; justify-content: center;
+                margin-bottom: 20px;
+              ">
+                  <div style="
+                    position: absolute;
+                    top: 50%; left: 50%;
+                    transform: translate(-50%, -50%);
+                    width: 100%; height: 100%;
+                    background: radial-gradient(circle, ${badgeConfig.color}55 0%, transparent 70%);
+                    filter: blur(10px);
+                  "></div>
+
+                  <div class="animate-pop-in-bounce" style="position: relative; z-index: 2; filter: drop-shadow(0 0 8px ${badgeConfig.color}aa);">
+                    ${iconHtml}
+                  </div>
+              </div>
+
+              <h2 style="
+                color: ${badgeConfig.color};
+                margin: 0;
+                font-family: 'Playfair Display', serif;
+                font-size: 2.5rem;
+                text-shadow: 0 2px 10px ${badgeConfig.color}44;
+              ">
+                ${response.data.newBadge.bookName}
+              </h2>
+              
+              <p style="
+                color: #aaa;
+                margin: 5px 0 0 0;
+                font-size: 0.85rem;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+                font-weight: 600;
+              ">
+                ${badgeConfig.label}
+              </p>
+              
+              <p style="color: #eee; margin-top: 15px; font-size: 1rem;">
+                Você completou todo o livro!
+              </p>
+            </div>
+          `,
+          // Configurações do SweetAlert
           color: '#fff',
-          confirmButtonColor: '#ffd700',
-          confirmButtonText: 'Incrível!'
+          showConfirmButton: true,
+          confirmButtonText: 'Resgatar Selo',
+          confirmButtonColor: badgeConfig.color,
+          // Backdrop desfocado
+          backdrop: `rgba(0,0,0,0.6) backdrop-filter: blur(4px)`,
+          // Classes CSS personalizadas (definidas no Passo 1)
+          customClass: {
+            popup: 'glass-swal-popup',
+            confirmButton: 'glass-swal-btn'
+          },
+          // Remove o padding padrão para nosso design se ajustar melhor
+          padding: 0
         }).then(() => {
           setShowConfetti(false);
         });
@@ -97,10 +171,10 @@ export default function Chapter() {
       console.error(err);
     }
   };
-
   useEffect(() => {
     if (!loading && verses.length > 0) {
-      setTimeout(() => markAsRead(), 2000);
+      const timer = setTimeout(() => markAsRead(), 2000);
+      return () => clearTimeout(timer);
     }
   }, [chapterId, loading]);
 

@@ -1,127 +1,176 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { ChevronLeft, BookOpen, Trophy, Award } from "lucide-react";
+import { BookOpen, Trophy } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import api from "../services/api";
+import { getBadgeConfig } from "../utils/badges"; // Importando a configuração dos selos
 import "./Statistics.css";
 
 export default function Statistics() {
-  const { token } = useAuth();
-  const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState(null);
+    const { token } = useAuth();
+    const [loading, setLoading] = useState(true);
+    const [stats, setStats] = useState(null);
 
-  useEffect(() => {
-    async function loadStats() {
-      try {
-        const response = await api.get("/api/stats", {
-            headers: { Authorization: `Bearer ${token}` }
-        });
-        setStats(response.data);
-      } catch (error) {
-        console.error("Erro ao carregar estatísticas", error);
-      } finally {
-        setLoading(false);
-      }
+    useEffect(() => {
+        async function loadStats() {
+            const start = Date.now();
+            try {
+                const response = await api.get("/api/stats", {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+
+                const duration = Date.now() - start;
+                if (duration < 600) await new Promise(r => setTimeout(r, 600 - duration));
+
+                setStats(response.data);
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setLoading(false);
+            }
+        }
+        if (token) loadStats();
+    }, [token]);
+
+    if (loading) {
+        return (
+            <div className="stats-page">
+                <header className="stats-header"><h1 className="stats-title">Meu Progresso</h1></header>
+                <div className="stats-hero skeleton-pulse" style={{ height: '220px' }}></div>
+                <div className="stats-content">
+                    <div className="section-title skeleton-text" style={{ width: '150px', marginBottom: '15px' }}></div>
+                    <div className="stats-grid">
+                        {[1, 2, 3, 4, 5, 6].map(i => (
+                            <div key={i} className="stat-book-card skeleton-pulse" style={{ height: '100px' }}></div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        );
     }
-    if (token) loadStats();
-  }, [token]);
 
-  if (loading) {
-    return <div className="stats-loading">Calculando seu progresso...</div>;
-  }
+    if (!stats) return null;
 
-  if (!stats) return null;
+    const oldTestament = stats.books.filter(b => b.testament_id === 1);
+    const newTestament = stats.books.filter(b => b.testament_id === 2);
 
-  // Separa os testamentos para organizar a tela
-  const oldTestament = stats.books.filter(b => b.testament_id === 1);
-  const newTestament = stats.books.filter(b => b.testament_id === 2);
+    const renderBookCard = (book) => {
+        const isCompleted = book.progress === 100;
 
-  // Função para renderizar um card de livro
-  const renderBookCard = (book) => (
-    <div key={book.id} className={`stat-book-card ${book.progress === 100 ? 'completed' : ''}`}>
-      <div className="stat-book-header">
-        <span className="stat-book-name">{book.name}</span>
-        <span className="stat-book-percent">{book.progress}%</span>
-      </div>
-      
-      <div className="stat-progress-bg">
-        <div 
-          className="stat-progress-fill" 
-          style={{ width: `${book.progress}%` }}
-        />
-      </div>
-      
-      <div className="stat-book-details">
-        {book.chapters_read} de {book.total_chapters} caps
-      </div>
-    </div>
-  );
+        const badgeConfig = getBadgeConfig(book.id);
+        const BadgeIcon = badgeConfig.icon;
 
-  return (
-    <div className="stats-page">
-      <header className="stats-header">
-        <h1 className="stats-title">Meu Progresso</h1>
-      </header>
+        const cardStyle = isCompleted ? {
+            borderColor: badgeConfig.color,
+            boxShadow: `0 4px 20px ${badgeConfig.color}20`, // 20 é transparência hex
+            background: `linear-gradient(145deg, rgba(255,255,255,0.03) 0%, ${badgeConfig.color}08 100%)`
+        } : {};
 
-      {/* PAINEL PRINCIPAL (HERO) */}
-      <div className="stats-hero glass-effect">
-        <div className="circular-progress-container">
-            <svg viewBox="0 0 36 36" className="circular-chart">
-              <path className="circle-bg"
-                d="M18 2.0845
-                  a 15.9155 15.9155 0 0 1 0 31.831
-                  a 15.9155 15.9155 0 0 1 0 -31.831"
-              />
-              <path className="circle"
-                strokeDasharray={`${stats.general.totalPercentage}, 100`}
-                d="M18 2.0845
-                  a 15.9155 15.9155 0 0 1 0 31.831
-                  a 15.9155 15.9155 0 0 1 0 -31.831"
-              />
-            </svg>
-            <div className="percentage-text">
-                <span className="number">{stats.general.totalPercentage}%</span>
-                <span className="label">da Bíblia</span>
-            </div>
-        </div>
+        return (
+            <div key={book.id} className={`stat-book-card ${isCompleted ? 'completed' : ''}`} style={cardStyle}>
+                <div className="stat-book-header">
+                    <span className="stat-book-name" style={isCompleted ? { color: '#fff', fontWeight: '700' } : {}}>
+                        {book.name}
+                    </span>
 
-        <div className="hero-details">
-            <div className="hero-item">
-                <BookOpen size={20} className="hero-icon" />
-                <div>
-                    <strong>{stats.general.totalRead}</strong>
-                    <span>Capítulos Lidos</span>
+                    {isCompleted ? (
+                        <div className="mini-badge-icon" style={{ color: badgeConfig.color }}>
+                            <BadgeIcon size={20} />
+                        </div>
+                    ) : (
+                        <span className="stat-book-percent">{book.progress}%</span>
+                    )}
+                </div>
+
+                <div className="stat-progress-bg">
+                    <div
+                        className="stat-progress-fill"
+                        style={{
+                            width: `${book.progress}%`,
+                            background: isCompleted ? badgeConfig.color : 'linear-gradient(90deg, #4facfe, #00f2fe)',
+                            boxShadow: isCompleted ? `0 0 10px ${badgeConfig.color}` : 'none'
+                        }}
+                    />
+                </div>
+
+                <div className="stat-book-details">
+                    <span>{book.chapters_read} / {book.total_chapters}</span>
+                    <span className="detail-label">
+                        {isCompleted ? badgeConfig.label : 'capítulos'}
+                    </span>
                 </div>
             </div>
-            <div className="hero-item">
-                <Trophy size={20} className="hero-icon" />
-                <div>
-                    <strong>{stats.general.totalChapters - stats.general.totalRead}</strong>
-                    <span>Restantes</span>
+        );
+    };
+
+    return (
+        <div className="stats-page">
+            <header className="stats-header">
+                <h1 className="stats-title">Meu Progresso</h1>
+            </header>
+
+            <div className="stats-hero fade-in-up">
+                <div className="circular-wrapper">
+                    <svg viewBox="0 0 36 36" className="circular-chart">
+                        <defs>
+                            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stopColor="#4facfe" />
+                                <stop offset="100%" stopColor="#00f2fe" />
+                            </linearGradient>
+                        </defs>
+                        <path className="circle-bg"
+                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                        />
+                        <path className="circle"
+                            strokeDasharray={`${stats.general.totalPercentage}, 100`}
+                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                        />
+                    </svg>
+                    <div className="percentage-display">
+                        <span className="number">{stats.general.totalPercentage}%</span>
+                        <span className="label">Concluído</span>
+                    </div>
+                </div>
+
+                <div className="hero-stats-row">
+                    <div className="hero-stat-item">
+                        <div className="icon-box blue">
+                            <BookOpen size={18} />
+                        </div>
+                        <div className="stat-info">
+                            <strong>{stats.general.totalRead}</strong>
+                            <span>Lidos</span>
+                        </div>
+                    </div>
+                    <div className="divider-vertical"></div>
+                    <div className="hero-stat-item">
+                        <div className="icon-box purple">
+                            <Trophy size={18} />
+                        </div>
+                        <div className="stat-info">
+                            <strong>{stats.general.totalChapters - stats.general.totalRead}</strong>
+                            <span>Restantes</span>
+                        </div>
+                    </div>
                 </div>
             </div>
+
+            <main className="stats-content fade-in-up delay-100">
+                <section className="stats-section">
+                    <h2 className="section-title">Novo Testamento</h2>
+                    <div className="stats-grid">
+                        {newTestament.map(renderBookCard)}
+                    </div>
+                </section>
+
+                <section className="stats-section">
+                    <h2 className="section-title">Velho Testamento</h2>
+                    <div className="stats-grid">
+                        {oldTestament.map(renderBookCard)}
+                    </div>
+                </section>
+            </main>
+
+            <div style={{ height: '100px' }}></div>
         </div>
-      </div>
-
-      {/* LISTAS DE LIVROS */}
-      <main className="stats-content">
-        <section className="stats-section">
-            <h2 className="section-title">Novo Testamento</h2>
-            <div className="stats-grid">
-                {newTestament.map(renderBookCard)}
-            </div>
-        </section>
-
-        <section className="stats-section">
-            <h2 className="section-title">Velho Testamento</h2>
-            <div className="stats-grid">
-                {oldTestament.map(renderBookCard)}
-            </div>
-        </section>
-      </main>
-      
-      {/* Espaço para o menu inferior não cobrir o conteúdo */}
-      <div style={{ height: '80px' }}></div>
-    </div>
-  );
+    );
 }
