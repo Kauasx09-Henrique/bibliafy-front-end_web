@@ -87,6 +87,7 @@ export default function Home() {
     return () => clearInterval(interval);
   }, [user]);
 
+  // Carrega do LocalStorage ou do User Context inicialmente
   useEffect(() => {
     if (user && user.last_read) {
       setLastRead(user.last_read);
@@ -96,6 +97,7 @@ export default function Home() {
     }
   }, [user]);
 
+  // Verifica dados no servidor (CORREÇÃO APLICADA AQUI)
   useEffect(() => {
     if (!token) return;
     const checkUserData = async () => {
@@ -112,12 +114,18 @@ export default function Home() {
           setDisplayName(data.nickname);
         }
 
+        // --- AQUI ESTA A CORREÇÃO: Atualiza o lastRead vindo do banco ---
+        if (data.last_read) {
+          setLastRead(data.last_read);
+        }
+        // ---------------------------------------------------------------
+
         if (!data.hasNickname) {
           setNeedsNickname(true);
           setNicknameInput(data.suggestedNickname || "");
         }
       } catch (err) {
-        console.error(err);
+        console.error("Erro ao verificar dados do usuário:", err);
       }
     };
     checkUserData();
