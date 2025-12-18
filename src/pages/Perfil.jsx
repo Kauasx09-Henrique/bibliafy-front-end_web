@@ -14,22 +14,19 @@ function Perfil() {
   const [isEditing, setIsEditing] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
 
-  // Estados do formulário
   const [editName, setEditName] = useState(user?.name || "");
   const [editNickname, setEditNickname] = useState(user?.nickname || "");
   const [editPassword, setEditPassword] = useState("");
 
-  // Lógica da Foto: Prioriza banco > localStorage > Gerador automático
   const getInitialAvatar = () => {
     if (user?.logo_url) return user.logo_url;
-    const stored = localStorage.getItem("avatar"); // Fallback legado
+    const stored = localStorage.getItem("avatar");
     if (stored) return stored;
     return `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || "User")}&background=random&color=fff&size=256`;
   };
 
   const [avatar, setAvatar] = useState(getInitialAvatar());
 
-  // Atualiza estados quando o user carregar
   useEffect(() => {
     if (user) {
       setEditName(user.name || "");
@@ -56,13 +53,11 @@ function Perfil() {
     fetchFavorites();
   }, [fetchFavorites]);
 
-  // Converter imagem para Base64
   const handleAvatarChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Limite de tamanho (ex: 2MB)
-    if (file.size > 2 * 1024 * 1024) {
+    if (file.size > 500 * 1024 * 1024) {
       Swal.fire("Erro", "A imagem deve ter no máximo 2MB", "error");
       return;
     }
@@ -74,27 +69,25 @@ function Perfil() {
     reader.readAsDataURL(file);
   };
 
-  // SALVAR NO BANCO DE DADOS
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
     setIsUpdating(true);
 
     try {
-      // Aqui enviamos a 'logo_url' (que é o avatar em base64) para o banco
       await api.put(
         "/api/users/profile",
         {
           name: editName,
           nickname: editNickname,
-          password: editPassword || undefined, // Só envia se tiver digitado algo
-          logo_url: avatar // <--- O PULO DO GATO: Salvando a imagem no banco!
+          password: editPassword || undefined,
+          logo_url: avatar
         },
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
 
-      // Atualiza o localStorage se necessário para fallback imediato
+
       localStorage.setItem("avatar", avatar);
 
       await Swal.fire({
@@ -106,9 +99,8 @@ function Perfil() {
         confirmButtonColor: '#fff'
       });
 
-      // Opcional: Recarregar a página para atualizar o contexto global
-      window.location.reload(); 
-      
+      window.location.reload();
+
     } catch (err) {
       const msg = err.response?.data?.message || "Não foi possível atualizar o perfil.";
       Swal.fire({
@@ -161,17 +153,15 @@ function Perfil() {
   return (
     <div className="perfil-page">
       <div className="perfil-container">
-        
-        {/* CARTÃO DE PERFIL */}
+
         <div className="perfil-card glass-effect">
           <div className="perfil-header-bg"></div>
-          
+
           <div className="perfil-content">
-            {/* Avatar Section */}
             <div className="avatar-wrapper">
               <div className="avatar-circle">
                 <img src={avatar} alt="Avatar" className="avatar-img" />
-                
+
                 {isEditing && (
                   <label htmlFor="avatar-upload" className="avatar-edit-overlay">
                     <Camera size={24} color="#fff" />
@@ -179,7 +169,7 @@ function Perfil() {
                   </label>
                 )}
               </div>
-              
+
               <input
                 id="avatar-upload"
                 type="file"
@@ -190,12 +180,11 @@ function Perfil() {
               />
             </div>
 
-            {/* Info or Edit Form */}
             {!isEditing ? (
               <div className="perfil-static-info">
                 <h2>{user?.nickname || user?.name}</h2>
                 <p className="email-text">{user?.email}</p>
-                
+
                 <div className="perfil-actions">
                   <button onClick={() => setIsEditing(true)} className="btn-primary">
                     <Edit2 size={16} /> Editar Perfil
@@ -250,10 +239,9 @@ function Perfil() {
           </div>
         </div>
 
-        {/* FAVORITOS SECTION */}
         <div className="favorites-section">
           <h3 className="section-title">Meus Favoritos</h3>
-          
+
           {loadingFavorites ? (
             <div className="loading-state">Carregando versículos...</div>
           ) : favorites.length > 0 ? (

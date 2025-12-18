@@ -22,7 +22,6 @@ export default function Favoritos() {
   }
 
   const handleRemoveFavorite = async (id, ref) => {
-    // Alerta Personalizado (Dark Glass)
     const result = await Swal.fire({
       title: "Remover favorito?",
       html: `
@@ -48,9 +47,8 @@ export default function Favoritos() {
     });
 
     if (result.isConfirmed) {
-      // Otimistic Update (Remove da tela na hora)
       setFavorites((prev) => prev.filter((f) => f.verse_id !== id));
-      
+
       try {
         await api.delete(`/api/favorites/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
@@ -64,14 +62,13 @@ export default function Favoritos() {
           background: '#151515',
           color: '#fff'
         });
-        
+
         Toast.fire({
           icon: 'success',
           title: 'Favorito removido'
         });
 
       } catch (error) {
-        // Se der erro, recarrega a lista original
         loadFavorites();
       }
     }

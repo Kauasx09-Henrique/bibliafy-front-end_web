@@ -6,7 +6,7 @@ import '../pages/Auth.css'; // Usando o mesmo CSS do Login
 export default function ResetPassword() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  
+
   const token = searchParams.get('token');
 
   const [password, setPassword] = useState('');
@@ -30,14 +30,14 @@ export default function ResetPassword() {
 
     try {
       setLoading(true);
-      
+
       await api.post('/api/users/reset-password', {
         token,
         password
       });
 
       setStatus({ type: 'success', message: 'Senha alterada com sucesso! Redirecionando...' });
-      
+
       setTimeout(() => {
         navigate('/login');
       }, 3000);

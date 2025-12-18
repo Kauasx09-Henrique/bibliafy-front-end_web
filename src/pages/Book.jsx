@@ -45,7 +45,7 @@ export default function Book() {
         ]);
 
         const bk = bRes.data.find((b) => String(b.id) === String(bookId) || b.abbrev === bookId);
-        
+
         if (!bk) throw new Error("Livro não encontrado.");
 
         setBookName(bk.name);

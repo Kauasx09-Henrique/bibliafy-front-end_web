@@ -51,7 +51,6 @@ function Anotacoes() {
         )
       );
     } catch {
-      // Erro silencioso ou toast
     } finally {
       setLoading(false);
     }
@@ -138,7 +137,6 @@ function Anotacoes() {
         customClass: { popup: "glass-popup" }
       });
     } catch {
-      // erro
     }
   };
 
@@ -193,7 +191,7 @@ function Anotacoes() {
                       {new Date(n.updated_at || n.created_at).toLocaleDateString('pt-BR')}
                     </span>
                   </div>
-                  
+
                   <div className="note-actions">
                     <button
                       className="action-btn edit"

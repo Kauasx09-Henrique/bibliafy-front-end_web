@@ -35,7 +35,7 @@ export default function ForgotPassword() {
     try {
       setLoading(true);
       await api.post('/api/users/forgot-password', { email });
-      
+
       toast.success('Link de recuperação enviado! Verifique seu e-mail.', {
         duration: 5000,
         style: {
@@ -44,9 +44,9 @@ export default function ForgotPassword() {
           color: '#fff',
         }
       });
-      
+
       setEmail('');
-      
+
     } catch (err) {
       const msg = err.response?.data?.message || 'Erro ao enviar. Tente novamente.';
       setError(msg);
@@ -69,11 +69,11 @@ export default function ForgotPassword() {
           </p>
         </div>
 
-        <div style={{ 
-          background: 'rgba(251, 191, 36, 0.1)', 
-          border: '1px solid rgba(251, 191, 36, 0.2)', 
-          borderRadius: '8px', 
-          padding: '12px', 
+        <div style={{
+          background: 'rgba(251, 191, 36, 0.1)',
+          border: '1px solid rgba(251, 191, 36, 0.2)',
+          borderRadius: '8px',
+          padding: '12px',
           marginBottom: '20px',
           display: 'flex',
           gap: '10px',
@@ -93,7 +93,7 @@ export default function ForgotPassword() {
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value);
-                if(error) setError('');
+                if (error) setError('');
               }}
               disabled={loading}
               required

@@ -53,20 +53,14 @@ export default function Home() {
   const [savingNickname, setSavingNickname] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
 
-  // --- ESTADOS PARA DADOS ATUALIZADOS (Foto e Nome) ---
   const [avatarUrl, setAvatarUrl] = useState(user?.logo_url || null);
-  // Começa com o que tem no login, mas atualiza depois
   const [displayName, setDisplayName] = useState(user?.nickname || user?.name || "Visitante");
 
-  // Função para garantir URL válida do avatar
   const getSafeAvatar = () => {
     if (avatarUrl) return avatarUrl;
-
-    // Fallback usando o nome atualizado
     return `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=random&color=fff&size=128`;
   };
 
-  // --- ALERTA DE BEM-VINDO ---
   useEffect(() => {
     if (!user) return;
     const timerShow = setTimeout(() => setShowWelcome(true), 500);
@@ -74,7 +68,6 @@ export default function Home() {
     return () => { clearTimeout(timerShow); clearTimeout(timerHide); };
   }, [user]);
 
-  // --- NOTIFICAÇÃO DIÁRIA ---
   useEffect(() => {
     if (!user) return;
     const checkAndNotify = () => {
@@ -94,33 +87,37 @@ export default function Home() {
     return () => clearInterval(interval);
   }, [user]);
 
-  // --- CHECAR DADOS REAIS DO BANCO (Foto e Nickname) ---
+  useEffect(() => {
+    if (user && user.last_read) {
+      setLastRead(user.last_read);
+    } else {
+      const saved = localStorage.getItem("bibliafyLastRead");
+      if (saved) setLastRead(JSON.parse(saved));
+    }
+  }, [user]);
+
   useEffect(() => {
     if (!token) return;
     const checkUserData = async () => {
       try {
-        // Pega os dados frescos do banco
         const { data } = await api.get("/api/users/check-nickname", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        // 1. Atualiza FOTO
         if (data.logo_url) {
           setAvatarUrl(data.logo_url);
         }
 
-        // 2. Atualiza NICKNAME (Correção do problema)
         if (data.nickname) {
           setDisplayName(data.nickname);
         }
 
-        // 3. Se não tiver nickname, pede para criar
         if (!data.hasNickname) {
           setNeedsNickname(true);
           setNicknameInput(data.suggestedNickname || "");
         }
       } catch (err) {
-        console.error("Erro ao atualizar dados do usuário:", err);
+        console.error(err);
       }
     };
     checkUserData();
@@ -138,7 +135,6 @@ export default function Home() {
       );
       toast.success("Apelido salvo!");
 
-      // Atualiza na hora na tela
       setDisplayName(nicknameInput.trim());
       setNeedsNickname(false);
 
@@ -173,11 +169,6 @@ export default function Home() {
     })();
   }, [fetchVersions, fetchBooks]);
 
-  useEffect(() => {
-    const saved = localStorage.getItem("bibliafyLastRead");
-    if (saved) setLastRead(JSON.parse(saved));
-  }, []);
-
   const filteredBooks = useMemo(() => {
     return books.filter((b) => b.name.toLowerCase().includes(searchTerm.toLowerCase()));
   }, [books, searchTerm]);
@@ -203,7 +194,6 @@ export default function Home() {
     <div className="home-page">
       <Toaster position="top-center" toastOptions={{ style: { background: '#151515', color: '#fff', border: '1px solid #333' } }} />
 
-      {/* --- ALERTA PERSONALIZADO --- */}
       {showWelcome && user && (
         <div style={{
           position: 'fixed',
@@ -227,7 +217,6 @@ export default function Home() {
           animation: 'fadeInSlide 0.5s ease-out forwards'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            {/* FOTO */}
             <img
               src={getSafeAvatar()}
               alt="Avatar"
@@ -236,7 +225,6 @@ export default function Home() {
                 border: '2px solid rgba(255,255,255,0.9)', display: 'block', background: '#333'
               }}
             />
-            {/* NOME/APELIDO ATUALIZADO */}
             <span style={{ fontSize: '0.9rem', color: '#e5e5e5', fontFamily: 'sans-serif', whiteSpace: 'nowrap' }}>
               Olá, <strong style={{ color: '#ffffff' }}>{displayName}</strong>
             </span>

@@ -51,7 +51,6 @@ function Login() {
       login(data.token);
       sessionStorage.setItem("noSplash", "true");
 
-      // --- IMPORTANTE: REMOVI O TOAST.SUCCESS DAQUI PARA NÃO DAR O ALERTA BRANCO ---
 
       setTimeout(() => {
         navigate("/home", { replace: true });
@@ -59,7 +58,6 @@ function Login() {
 
     } catch (err) {
       const errorMessage = err.response?.data?.message || "Erro ao fazer login. Verifique suas credenciais.";
-      // Mantive o erro, mas estilizado escuro
       toast.error(errorMessage, {
         duration: 3000,
         style: { background: "#151515", border: "1px solid #333", color: "#fff", borderRadius: "10px" },

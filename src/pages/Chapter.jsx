@@ -1,23 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { 
-  ChevronLeft, Settings, Heart, Share2, 
-  Copy, Type, Moon, Sun, 
+import {
+  ChevronLeft, Settings, Heart, Share2,
+  Copy, Type, Moon, Sun,
   ArrowLeft, ArrowRight, X, BookOpen, Layers,
-  NotebookPen 
+  NotebookPen
 } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
 
 import api from "../services/api";
 import { useAuth } from "../contexts/AuthContext";
 import NoteModal from "../components/NoteModal";
-import "./Chapter.css"; 
+import "./chapter.css";
 
 export default function Chapter() {
   const { bookId, chapterId } = useParams();
   const navigate = useNavigate();
   const { token } = useAuth();
-  
+
   const [verses, setVerses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [bookName, setBookName] = useState("");
@@ -26,7 +26,7 @@ export default function Chapter() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [compareOpen, setCompareOpen] = useState(false);
   const [selectedVerseForCompare, setSelectedVerseForCompare] = useState(null);
-  
+
   const [noteModalOpen, setNoteModalOpen] = useState(false);
   const [selectedVerseForNote, setSelectedVerseForNote] = useState(null);
 
@@ -41,24 +41,17 @@ export default function Chapter() {
   const [comparingVersion, setComparingVersion] = useState(null);
   const [loadingComparison, setLoadingComparison] = useState(false);
 
-  // --- NOVO: Força a cor do BODY para não ter conflito com a Home ---
   useEffect(() => {
-    // Define as cores de fundo baseadas no tema
     const bgColors = {
-      light: "#f4f4f5", // Cinza claro
-      sepia: "#f3e9d2", // Bege
-      dark: "#050505",  // Preto
+      light: "#f4f4f5",
+      sepia: "#f3e9d2",
+      dark: "#050505",
     };
-
-    // Aplica no body do navegador
     document.body.style.backgroundColor = bgColors[theme] || "#050505";
-
-    // Limpeza: quando sair da página, volta pro preto padrão (da Home)
     return () => {
       document.body.style.backgroundColor = "#000000";
     };
   }, [theme]);
-  // ----------------------------------------------------------------
 
   useEffect(() => {
     localStorage.setItem("reader-theme", theme);
@@ -87,8 +80,8 @@ export default function Chapter() {
 
         if (token) {
           try {
-            const resFavs = await api.get("/api/favorites", { 
-              headers: { Authorization: `Bearer ${token}` } 
+            const resFavs = await api.get("/api/favorites", {
+              headers: { Authorization: `Bearer ${token}` }
             });
             if (Array.isArray(resFavs.data)) {
               setFavorites(resFavs.data.map(f => f.verse_id));
@@ -99,14 +92,25 @@ export default function Chapter() {
         const resVersions = await api.get("/api/bible/versions");
         setVersions(resVersions.data);
 
-        localStorage.setItem("bibliafyLastRead", JSON.stringify({
-          bookId, bookName: resBook.data.name, chapter: chapterId, version
-        }));
+        const currentReadData = {
+          bookId,
+          bookName: resBook.data.name,
+          chapter: chapterId,
+          version
+        };
+
+        localStorage.setItem("bibliafyLastRead", JSON.stringify(currentReadData));
+
+        if (token) {
+          api.put('/api/users/progress', currentReadData, {
+            headers: { Authorization: `Bearer ${token}` }
+          }).catch(err => console.error("Sync error", err));
+        }
 
       } catch (err) {
         console.error(err);
         if (err.response && err.response.status === 404) {
-           toast.error("Capítulo não encontrado");
+          toast.error("Capítulo não encontrado");
         }
       } finally {
         setLoading(false);
@@ -176,7 +180,7 @@ export default function Chapter() {
 
   return (
     <div className={`chapter-wrapper theme-${theme} font-${fontFamily} ${compactMode ? 'compact' : ''}`}>
-      <Toaster position="top-center" toastOptions={{ style: { background: '#333', color: '#fff' } }}/>
+      <Toaster position="top-center" toastOptions={{ style: { background: '#333', color: '#fff' } }} />
 
       <header className="toolbar-glass">
         <Link to="/home" className="back-btn-glass">
@@ -195,7 +199,7 @@ export default function Chapter() {
             <div className="verse-header">
               <span className="verse-index">{verse.verse}</span>
               <div className="verse-actions-top">
-                <button 
+                <button
                   className={`va-icon ${favorites.includes(verse.id) ? 'active-fav' : ''}`}
                   onClick={() => toggleFavorite(verse)}
                 >
@@ -212,7 +216,7 @@ export default function Chapter() {
               <button className="action-chip" onClick={() => copyVerse(verse.text, `${bookName} ${chapterId}:${verse.verse}`)}>
                 <Copy size={14} /> <span>Copiar</span>
               </button>
-              
+
               <button className="action-chip" onClick={() => {
                 setSelectedVerseForCompare(verse);
                 setCompareOpen(true);
@@ -228,10 +232,10 @@ export default function Chapter() {
               }}>
                 <NotebookPen size={14} /> <span>Anotar</span>
               </button>
-              
+
               <button className="action-chip" onClick={() => {
-                 if (navigator.share) navigator.share({ title: 'Bibliafy', text: `"${verse.text}" - ${bookName} ${chapterId}:${verse.verse}` });
-                 else toast.error("Compartilhar não suportado");
+                if (navigator.share) navigator.share({ title: 'Bibliafy', text: `"${verse.text}" - ${bookName} ${chapterId}:${verse.verse}` });
+                else toast.error("Compartilhar não suportado");
               }}>
                 <Share2 size={14} /> <span>Enviar</span>
               </button>
@@ -241,16 +245,16 @@ export default function Chapter() {
       </main>
 
       <footer className="footer-glass">
-        <button 
-          className="f-btn" 
+        <button
+          className="f-btn"
           disabled={Number(chapterId) <= 1}
           onClick={() => navigate(`/livro/${bookId}/capitulo/${Number(chapterId) - 1}${window.location.search}`)}
         >
           <ArrowLeft size={18} /> Anterior
         </button>
         <span className="center-btn">{chapterId} / {totalChapters}</span>
-        <button 
-          className="f-btn" 
+        <button
+          className="f-btn"
           disabled={Number(chapterId) >= totalChapters}
           onClick={() => navigate(`/livro/${bookId}/capitulo/${Number(chapterId) + 1}${window.location.search}`)}
         >
@@ -269,20 +273,19 @@ export default function Chapter() {
         />
       )}
 
-      {/* ... MODAIS DE CONFIG E COMPARAR (IGUAIS AO ANTERIOR) ... */}
       {settingsOpen && (
-        <div className="modal-overlay" onClick={(e) => { if(e.target === e.currentTarget) setSettingsOpen(false) }}>
+        <div className="modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) setSettingsOpen(false) }}>
           <div className="modal-content">
             <div className="modal-header">
               <h2>Aparência</h2>
-              <button className="close-button" onClick={() => setSettingsOpen(false)}><X size={24}/></button>
+              <button className="close-button" onClick={() => setSettingsOpen(false)}><X size={24} /></button>
             </div>
             <div className="modal-section">
               <h3>Tema</h3>
               <div className="theme-options">
-                <button className={`theme-btn ${theme === 'light' ? 'active' : ''}`} onClick={() => setTheme('light')}><Sun size={20}/> Claro</button>
-                <button className={`theme-btn ${theme === 'sepia' ? 'active' : ''}`} onClick={() => setTheme('sepia')}><BookOpen size={20}/> Sépia</button>
-                <button className={`theme-btn ${theme === 'dark' ? 'active' : ''}`} onClick={() => setTheme('dark')}><Moon size={20}/> Escuro</button>
+                <button className={`theme-btn ${theme === 'light' ? 'active' : ''}`} onClick={() => setTheme('light')}><Sun size={20} /> Claro</button>
+                <button className={`theme-btn ${theme === 'sepia' ? 'active' : ''}`} onClick={() => setTheme('sepia')}><BookOpen size={20} /> Sépia</button>
+                <button className={`theme-btn ${theme === 'dark' ? 'active' : ''}`} onClick={() => setTheme('dark')}><Moon size={20} /> Escuro</button>
               </div>
             </div>
             <div className="modal-section">
@@ -312,14 +315,14 @@ export default function Chapter() {
       )}
 
       {compareOpen && selectedVerseForCompare && (
-        <div className="modal-overlay" onClick={(e) => { if(e.target === e.currentTarget) setCompareOpen(false) }}>
+        <div className="modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) setCompareOpen(false) }}>
           <div className="modal-content">
             <div className="modal-header">
               <div>
                 <h2>Comparar</h2>
                 <p className="subtitle">{bookName} {chapterId}:{selectedVerseForCompare.verse}</p>
               </div>
-              <button className="close-button" onClick={() => setCompareOpen(false)}><X size={24}/></button>
+              <button className="close-button" onClick={() => setCompareOpen(false)}><X size={24} /></button>
             </div>
             <div className="compare-body">
               <div className="current-verse-text font-lora">{selectedVerseForCompare.text}</div>
@@ -335,8 +338,8 @@ export default function Chapter() {
                 {loadingComparison && <div className="comparison-result loading">Carregando...</div>}
                 {comparisonResult && !loadingComparison && (
                   <div className="comparison-result">
-                     <strong>{comparisonResult.version.toUpperCase()}:</strong>
-                     <p style={{marginTop: 8}}>{comparisonResult.text}</p>
+                    <strong>{comparisonResult.version.toUpperCase()}:</strong>
+                    <p style={{ marginTop: 8 }}>{comparisonResult.text}</p>
                   </div>
                 )}
               </div>
