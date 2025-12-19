@@ -1,13 +1,6 @@
-/* =======================================
-   AUTH - BIBLIAFY "PRETO E BRANCO"
-   Minimalista, Alto Contraste
-========================================= */
-
-/* --- 1. Fontes --- */
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
 
-/* --- 2. Variáveis Preto & Branco --- */
 :root {
   --bg-page: #000000;
   --bg-surface: #1B1B1B;
@@ -27,12 +20,11 @@
   --error-bg: rgba(255, 107, 107, 0.1);
   --font-title: 'Cinzel', serif;
   --font-ui: 'Inter', sans-serif;
+  --logo-background-url: url('/public/Logo_Nova.jpg');
 
-  /* Se quiser usar logo de fundo:
-     --logo-background-url: url('/minha-logo.svg'); */
+
 }
 
-/* --- 3. Reset básico --- */
 *,
 *::before,
 *::after {
@@ -48,12 +40,12 @@ body {
   transition: background-color 0.3s ease;
 }
 
-/* --- 4. Keyframes --- */
 @keyframes elementFadeIn {
   from {
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -61,17 +53,27 @@ body {
 }
 
 @keyframes gentleShake {
+
   0%,
-  100% { transform: translateX(0); }
-  25% { transform: translateX(-4px); }
-  75% { transform: translateX(4px); }
+  100% {
+    transform: translateX(0);
+  }
+
+  25% {
+    transform: translateX(-4px);
+  }
+
+  75% {
+    transform: translateX(4px);
+  }
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
-/* --- 5. Container Principal --- */
 .auth-container {
   display: flex;
   align-items: center;
@@ -84,7 +86,6 @@ body {
   z-index: 1;
 }
 
-/* Logo/fundo opcional (usa --logo-background-url se tiver) */
 .auth-container::before {
   content: "";
   position: absolute;
@@ -99,7 +100,6 @@ body {
   pointer-events: none;
 }
 
-/* --- 6. Card do formulário --- */
 .auth-form {
   background-color: var(--bg-surface);
   padding: 2.5rem;
@@ -115,7 +115,6 @@ body {
   z-index: 2;
 }
 
-/* --- 7. Cabeçalho --- */
 .auth-header {
   text-align: center;
   margin-bottom: 2rem;
@@ -155,7 +154,6 @@ body {
   margin: 0;
 }
 
-/* --- 8. Grupo de Inputs --- */
 .input-group {
   display: flex;
   flex-direction: column;
@@ -166,9 +164,11 @@ body {
 .input-group:nth-of-type(1) {
   animation: elementFadeIn 0.5s ease 0.3s both;
 }
+
 .input-group:nth-of-type(2) {
   animation: elementFadeIn 0.5s ease 0.4s both;
 }
+
 .input-group:nth-of-type(3) {
   animation: elementFadeIn 0.5s ease 0.5s both;
 }
@@ -201,7 +201,6 @@ body {
   transform: scale(1.02);
 }
 
-/* erro via wrapper */
 .input-wrapper.error input {
   border-color: var(--error-text);
   background-color: var(--error-bg);
@@ -214,7 +213,6 @@ body {
   animation: gentleShake 0.4s ease-in-out;
 }
 
-/* Toggle de senha (emoji ou ícone) */
 .password-toggle {
   position: absolute;
   top: 50%;
@@ -237,7 +235,6 @@ body {
   opacity: 1;
 }
 
-/* --- 9. Esqueci minha senha --- */
 .forgot-password-wrapper {
   width: 100%;
   text-align: right;
@@ -256,7 +253,6 @@ body {
   opacity: 0.9;
 }
 
-/* --- 10. Botão principal --- */
 .auth-form button.login-btn {
   padding: 0.9rem;
   border-radius: 8px;
@@ -309,7 +305,6 @@ body {
   animation: spin 1s linear infinite;
 }
 
-/* --- 11. Rodapé --- */
 .auth-footer,
 .redirect-link {
   text-align: center;
@@ -329,7 +324,6 @@ body {
   text-decoration: underline;
 }
 
-/* --- 12. SweetAlert theme (caso ainda use) --- */
 .swal2-popup {
   background-color: var(--bg-surface) !important;
   border-radius: 12px !important;

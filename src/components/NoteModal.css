@@ -1,4 +1,3 @@
-/* Fundo escuro transparente */
 .note-modal-overlay {
   position: fixed;
   inset: 0;
@@ -13,15 +12,19 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
-/* Conteúdo do Modal */
 .note-modal-content {
   width: 100%;
   max-width: 500px;
-  background: #18181b; /* Cinza bem escuro, quase preto */
+  background: #18181b;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 20px;
   padding: 24px;
@@ -33,8 +36,15 @@
 }
 
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px) scale(0.95); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 /* Cabeçalho */
@@ -58,7 +68,7 @@
 }
 
 .header-icon {
-  color: #fbbf24; /* Amarelo ouro */
+  color: #fbbf24;
 }
 
 .note-close-btn {
@@ -79,9 +89,8 @@
   color: #fff;
 }
 
-/* Preview do Versículo */
 .verse-preview-card {
-  background: rgba(251, 191, 36, 0.05); /* Fundo amarelo muito sutil */
+  background: rgba(251, 191, 36, 0.05);
   border-left: 3px solid #fbbf24;
   padding: 16px;
   border-radius: 8px;
@@ -176,7 +185,7 @@
 
 .save-btn {
   background: #fbbf24;
-  color: #18181b; /* Texto escuro no botão amarelo */
+  color: #18181b;
   border: none;
   padding: 10px 24px;
   border-radius: 10px;

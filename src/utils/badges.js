@@ -78,10 +78,10 @@ export const getBadgeConfig = (bookId) => {
     66: { icon: Zap, color: "#8b5cf6", label: "O Alfa e Ômega" }
   };
 
-  const defaultBadge = { 
-    icon: Star, 
-    color: "#ffd700", 
-    label: "Livro Completado" 
+  const defaultBadge = {
+    icon: Star,
+    color: "#ffd700",
+    label: "Livro Completado"
   };
 
   return badges[id] || defaultBadge;

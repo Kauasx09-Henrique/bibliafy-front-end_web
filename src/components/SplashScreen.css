@@ -12,22 +12,18 @@
   z-index: 9999;
 }
 
-/* Pulso atrás do logo */
 .pulse-light {
   position: absolute;
   width: 360px;
   height: 360px;
   border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    rgba(0, 0, 0, 0.08) 0%,
-    rgba(255, 255, 255, 0) 70%
-  );
+  background: radial-gradient(circle,
+      rgba(0, 0, 0, 0.08) 0%,
+      rgba(255, 255, 255, 0) 70%);
   filter: blur(40px);
   z-index: 1;
 }
 
-/* Logo */
 .logo-wrapper {
   z-index: 5;
 }

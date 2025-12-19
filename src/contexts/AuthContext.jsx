@@ -8,7 +8,6 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // 🔥 Função que transforma o token decodificado em um "user" limpo e padronizado
   const formatUser = (decoded) => {
     return {
       id: decoded.id || decoded.sub || null,
@@ -16,7 +15,6 @@ export function AuthProvider({ children }) {
       apelido: decoded.apelido || decoded.nickname || null,
       nome: decoded.name || decoded.fullName || null,
 
-      // 🔥 Mostra sempre o nome final que vamos usar no app
       displayName:
         decoded.apelido ||
         decoded.nickname ||
@@ -31,7 +29,6 @@ export function AuthProvider({ children }) {
       try {
         const decoded = jwtDecode(token);
 
-        // 🔥 Verifica expiração
         if (decoded.exp && decoded.exp * 1000 < Date.now()) {
           throw new Error("Token expirado");
         }
@@ -51,13 +48,11 @@ export function AuthProvider({ children }) {
     setLoading(false);
   }, [token]);
 
-  // 🔥 Login salva token e dispara o useEffect
   const login = (newToken) => {
     localStorage.setItem("token", newToken);
     setToken(newToken);
   };
 
-  // 🔥 Logout completo
   const logout = () => {
     setUser(null);
     setToken(null);

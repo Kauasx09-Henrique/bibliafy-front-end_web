@@ -10,6 +10,7 @@ import { Toaster } from "react-hot-toast";
 
 import { AuthProvider } from "./contexts/AuthContext";
 import App from "./App";
+import HealthCheck from "./components/HealthCheck"; // <--- IMPORTANTE: Importe aqui
 
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -30,7 +31,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <BrowserRouter>
       <AuthProvider>
-
         <Toaster
           position="top-center"
           toastOptions={{
@@ -41,70 +41,67 @@ ReactDOM.createRoot(document.getElementById("root")).render(
               borderRadius: '10px',
             },
             success: {
-              iconTheme: {
-                primary: '#4ade80',
-                secondary: '#151515',
-              },
+              iconTheme: { primary: '#4ade80', secondary: '#151515' },
             },
             error: {
-              iconTheme: {
-                primary: '#ef4444',
-                secondary: '#151515',
-              },
+              iconTheme: { primary: '#ef4444', secondary: '#151515' },
             },
           }}
         />
 
-        <Routes>
-          <Route element={<App />}>
-            <Route path="/home" element={<Home />} />
-            <Route path="/livro/:bookId" element={<Book />} />
-            <Route path="/livro/:bookId/capitulo/:chapterId" element={<Chapter />} />
-            
-            <Route
-              path="/anotacoes"
-              element={
-                <ProtectedRoute>
-                  <Anotacoes />
-                </ProtectedRoute>
-              }
-            />
+        <HealthCheck>
+          <Routes>
+            <Route element={<App />}>
+              <Route path="/home" element={<Home />} />
+              <Route path="/livro/:bookId" element={<Book />} />
+              <Route path="/livro/:bookId/capitulo/:chapterId" element={<Chapter />} />
 
-            <Route
-              path="/perfil"
-              element={
-                <ProtectedRoute>
-                  <Perfil />
-                </ProtectedRoute>
-              }
-            />
+              <Route
+                path="/anotacoes"
+                element={
+                  <ProtectedRoute>
+                    <Anotacoes />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route
-              path="/favoritos"
-              element={
-                <ProtectedRoute>
-                  <FavoritesPage />
-                </ProtectedRoute>
-              }
-            />
+              <Route
+                path="/perfil"
+                element={
+                  <ProtectedRoute>
+                    <Perfil />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route
-              path="/estatisticas"
-              element={
-                <ProtectedRoute>
-                  <Statistics />
-                </ProtectedRoute>
-              }
-            />
-          </Route>
+              <Route
+                path="/favoritos"
+                element={
+                  <ProtectedRoute>
+                    <FavoritesPage />
+                  </ProtectedRoute>
+                }
+              />
 
-          <Route path="/login" element={<Login />} />
-          <Route path="/registro" element={<Registro />} />
-          <Route path="/esqueci-senha" element={<ForgotPassword />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
+              <Route
+                path="/estatisticas"
+                element={
+                  <ProtectedRoute>
+                    <Statistics />
+                  </ProtectedRoute>
+                }
+              />
+            </Route>
 
-          <Route path="*" element={<Navigate to="/home" replace />} />
-        </Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/registro" element={<Registro />} />
+            <Route path="/esqueci-senha" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+
+            <Route path="*" element={<Navigate to="/home" replace />} />
+          </Routes>
+        </HealthCheck>
+
       </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import { LogOut, User } from "lucide-react"; // Importei o User para caso de fallback
+import { LogOut, User } from "lucide-react";
 import toast from "react-hot-toast";
 
 import "./Header.css";
@@ -34,7 +34,6 @@ function Header() {
         borderRadius: '10px'
       }
     });
-    // Pequeno delay para o usuário ver o toast antes de mudar de rota
     setTimeout(() => navigate("/login", { replace: true }), 100);
   };
 
@@ -50,7 +49,7 @@ function Header() {
         </Link>
 
         <div className="bib-header-actions">
-          
+
 
           <button
             className="header-logout-btn"
@@ -58,7 +57,7 @@ function Header() {
             aria-label="Sair"
             title="Sair"
           >
-            <LogOut size={20} /> 
+            <LogOut size={20} />
           </button>
         </div>
       </div>

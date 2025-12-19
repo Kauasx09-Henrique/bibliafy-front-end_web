@@ -1,0 +1,65 @@
+/* Animação de Flutuar (Respiração) */
+@keyframes float {
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+/* Animação de Radar/Ondas */
+@keyframes ping {
+
+    75%,
+    100% {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+/* Animação de Rotação (Loading) */
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.animate-float {
+    animation: float 6s ease-in-out infinite;
+}
+
+.radar-circle {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    /* Vermelho suave */
+    opacity: 0.5;
+    animation: ping 3s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.radar-delay-1 {
+    animation-delay: 0s;
+}
+
+.radar-delay-2 {
+    animation-delay: 1s;
+}
+
+.spin-icon {
+    animation: spin 1s linear infinite;
+}
+
+/* Fundo com gradiente sutil */
+.maintenance-bg {
+    background: radial-gradient(circle at center, #1a1a1a 0%, #050505 100%);
+}

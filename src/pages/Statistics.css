@@ -1,46 +1,39 @@
 .stats-page {
-    padding: 90px 20px 20px;
-    min-height: 100vh;
-    color: #fff;
-    max-width: 600px;
+    padding: 20px;
+    max-width: 1200px;
     margin: 0 auto;
-    background: radial-gradient(circle at top left, #1a1a1a 0%, #050505 100%);
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    padding-bottom: 120px;
 }
 
 .stats-header {
-    margin-bottom: 24px;
     text-align: center;
+    margin-bottom: 30px;
 }
 
 .stats-title {
     font-family: 'Playfair Display', serif;
     font-size: 2rem;
     font-weight: 700;
-    background: linear-gradient(to right, #fff, #a5a5a5);
+    margin: 0;
+    background: linear-gradient(to right, #fff, #aaa);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
-/* --- HERO SECTION --- */
 .stats-hero {
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 24px;
-    padding: 30px 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-bottom: 40px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
 .circular-wrapper {
     position: relative;
-    width: 140px;
-    height: 140px;
-    margin-bottom: 24px;
+    width: 180px;
+    height: 180px;
+    margin-bottom: 25px;
 }
 
 .circular-chart {
@@ -48,7 +41,7 @@
     margin: 0 auto;
     max-width: 100%;
     max-height: 100%;
-    filter: drop-shadow(0 0 8px rgba(79, 172, 254, 0.4));
+    transform: rotate(-90deg);
 }
 
 .circle-bg {
@@ -62,13 +55,7 @@
     stroke-width: 2.5;
     stroke-linecap: round;
     stroke: url(#gradient);
-    animation: progress 1.5s ease-out forwards;
-}
-
-@keyframes progress {
-    0% {
-        stroke-dasharray: 0 100;
-    }
+    transition: stroke-dasharray 1s ease-out;
 }
 
 .percentage-display {
@@ -82,31 +69,27 @@
 }
 
 .percentage-display .number {
-    font-size: 2rem;
+    font-size: 2.2rem;
     font-weight: 700;
-    line-height: 1;
+    color: #fff;
 }
 
 .percentage-display .label {
-    font-size: 0.7rem;
+    font-size: 0.8rem;
     color: #888;
     text-transform: uppercase;
-    margin-top: 4px;
     letter-spacing: 1px;
 }
 
 .hero-stats-row {
     display: flex;
-    justify-content: space-evenly;
     align-items: center;
-    width: 100%;
-    margin-top: 10px;
-}
-
-.divider-vertical {
-    width: 1px;
-    height: 30px;
-    background: rgba(255, 255, 255, 0.1);
+    gap: 30px;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 15px 30px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
 }
 
 .hero-stat-item {
@@ -116,9 +99,9 @@
 }
 
 .icon-box {
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -130,8 +113,18 @@
 }
 
 .icon-box.purple {
-    background: rgba(142, 68, 173, 0.15);
-    color: #9b59b6;
+    background: rgba(168, 85, 247, 0.15);
+    color: #a855f7;
+}
+
+.icon-box.green {
+    background: rgba(74, 222, 128, 0.15);
+    color: #4ade80;
+}
+
+.icon-box.orange {
+    background: rgba(251, 146, 60, 0.15);
+    color: #fb923c;
 }
 
 .stat-info {
@@ -141,59 +134,260 @@
 
 .stat-info strong {
     font-size: 1.1rem;
-    line-height: 1.1;
+    color: #fff;
 }
 
 .stat-info span {
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     color: #888;
+    text-transform: uppercase;
 }
 
-/* --- GRID DE LIVROS --- */
-.stats-section {
-    margin-bottom: 32px;
+.divider-vertical {
+    width: 1px;
+    height: 30px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.tools-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+@media (min-width: 900px) {
+    .tools-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.tool-card {
+    background: rgba(20, 20, 20, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    padding: 24px;
+    backdrop-filter: blur(12px);
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.goal-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.goal-header h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+    color: #eee;
+}
+
+/* Calculadora Styles */
+.goal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    flex: 1;
+    justify-content: center;
+}
+
+.input-group label {
+    display: block;
+    color: #aaa;
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+}
+
+.input-row {
+    display: flex;
+    gap: 10px;
+}
+
+.goal-number-input,
+.goal-select-input {
+    background: #0a0a0a;
+    border: 1px solid #333;
+    color: #fff;
+    padding: 12px;
+    border-radius: 12px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.goal-number-input:focus,
+.goal-select-input:focus {
+    border-color: #4ade80;
+}
+
+.goal-number-input {
+    width: 70px;
+    text-align: center;
+}
+
+.goal-select-input {
+    flex: 1;
+    cursor: pointer;
+}
+
+.goal-result {
+    background: rgba(74, 222, 128, 0.05);
+    border: 1px solid rgba(74, 222, 128, 0.1);
+    padding: 15px;
+    border-radius: 16px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.highlight-number {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #4ade80;
+    line-height: 1;
+    text-shadow: 0 0 20px rgba(74, 222, 128, 0.2);
+}
+
+.result-text {
+    font-size: 0.9rem;
+    color: #fff;
+    margin-top: 5px;
+}
+
+.calendar-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.react-calendar {
+    width: 100%;
+    max-width: 380px;
+    background: transparent !important;
+    border: none !important;
+    font-family: 'Inter', sans-serif !important;
+    line-height: 1.125em;
+}
+
+.react-calendar__navigation {
+    display: flex;
+    height: 40px;
+    margin-bottom: 10px;
+}
+
+.react-calendar__navigation button {
+    min-width: 40px;
+    background: none;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.react-calendar__navigation button:enabled:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.react-calendar__month-view__weekdays {
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 0.7rem;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.react-calendar__month-view__weekdays__weekday abbr {
+    text-decoration: none;
+    cursor: default;
+}
+
+.react-calendar__tile {
+    max-width: 100%;
+    padding: 10px 6px;
+    background: none;
+    text-align: center;
+    line-height: 16px;
+    font-size: 0.85rem;
+    color: #ccc;
+    border: none;
+    border-radius: 8px;
+    margin-bottom: 2px;
+    transition: all 0.2s;
+    cursor: default;
+}
+
+.react-calendar__tile--now {
+    background: transparent !important;
+    color: #4ade80 !important;
+    border: 1px solid #4ade80 !important;
+    font-weight: bold;
+}
+
+.highlight-read {
+    background-color: #4ade80 !important;
+    color: #000 !important;
+    font-weight: 700;
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(74, 222, 128, 0.4);
+}
+
+.react-calendar__tile:enabled:hover,
+.react-calendar__tile:enabled:focus {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #fff;
+}
+
+.react-calendar__month-view__days__day--neighboringMonth {
+    color: #333 !important;
 }
 
 .section-title {
-    font-size: 1.1rem;
+    font-size: 1.3rem;
     font-weight: 600;
-    margin-bottom: 16px;
-    color: #e5e5e5;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.section-title::before {
-    content: '';
-    display: block;
-    width: 4px;
-    height: 18px;
-    background: #4facfe;
-    border-radius: 2px;
+    margin-bottom: 20px;
+    color: #fff;
+    border-left: 4px solid #4facfe;
+    padding-left: 15px;
 }
 
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 12px;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 15px;
+    margin-bottom: 40px;
 }
 
 .stat-book-card {
     background: rgba(255, 255, 255, 0.03);
-    padding: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
     border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    padding: 16px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    transition: transform 0.2s, background 0.3s;
     position: relative;
     overflow: hidden;
 }
 
-.stat-book-card:active {
-    transform: scale(0.98);
+.stat-book-card:hover {
+    transform: translateY(-3px);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.stat-book-card.completed {
+    border-color: rgba(255, 255, 255, 0.1);
 }
 
 .stat-book-header {
@@ -201,34 +395,27 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 12px;
-    height: 24px;
 }
 
 .stat-book-name {
+    font-size: 0.95rem;
+    color: #ccc;
     font-weight: 500;
-    font-size: 0.9rem;
-    color: #d4d4d4;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    max-width: 75%;
 }
 
 .stat-book-percent {
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     color: #888;
     font-family: monospace;
 }
 
-/* Ícone do selo no card */
-.mini-badge-icon {
-    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    filter: drop-shadow(0 0 5px currentColor);
-}
-
 .stat-progress-bg {
-    width: 100%;
     height: 6px;
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(0, 0, 0, 0.3);
     border-radius: 3px;
     margin-bottom: 10px;
     overflow: hidden;
@@ -237,25 +424,23 @@
 .stat-progress-fill {
     height: 100%;
     border-radius: 3px;
-    transition: width 1s ease-out;
+    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .stat-book-details {
-    font-size: 0.7rem;
-    color: #666;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    font-size: 0.75rem;
+    color: #666;
 }
 
 .detail-label {
-    font-size: 0.6rem;
     text-transform: uppercase;
+    font-weight: 600;
     letter-spacing: 0.5px;
-    opacity: 0.8;
 }
 
-/* --- ANIMAÇÕES --- */
+/* --- ANIMAÇÕES E SKELETON --- */
 .fade-in-up {
     animation: fadeInUp 0.6s ease-out forwards;
     opacity: 0;
@@ -273,42 +458,46 @@
     }
 }
 
-@keyframes popIn {
-    from {
-        transform: scale(0);
-        opacity: 0;
-    }
-
-    to {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
-
-/* --- SKELETON --- */
 .skeleton-pulse {
     background: rgba(255, 255, 255, 0.05);
-    border-radius: 16px;
-    animation: skeleton 1.5s infinite ease-in-out;
+    border-radius: 12px;
+    animation: pulse 1.5s infinite;
 }
 
 .skeleton-text {
+    height: 20px;
     background: rgba(255, 255, 255, 0.05);
     border-radius: 4px;
-    height: 20px;
-    animation: skeleton 1.5s infinite ease-in-out;
+    animation: pulse 1.5s infinite;
 }
 
-@keyframes skeleton {
+@keyframes pulse {
     0% {
-        background-color: rgba(255, 255, 255, 0.03);
+        opacity: 0.6;
     }
 
     50% {
-        background-color: rgba(255, 255, 255, 0.08);
+        opacity: 1;
     }
 
     100% {
-        background-color: rgba(255, 255, 255, 0.03);
+        opacity: 0.6;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-stats-row {
+        flex-direction: column;
+        gap: 15px;
+        align-items: stretch;
+    }
+
+    .divider-vertical {
+        width: 100%;
+        height: 1px;
+    }
+
+    .tools-grid {
+        grid-template-columns: 1fr;
     }
 }

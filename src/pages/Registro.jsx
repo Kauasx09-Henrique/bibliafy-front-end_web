@@ -76,9 +76,8 @@ export default function Registro() {
 
         <div className="input-group">
           <div
-            className={`input-wrapper ${
-              isFocused.name ? "focused" : ""
-            } ${errors.name ? "error" : ""}`}
+            className={`input-wrapper ${isFocused.name ? "focused" : ""
+              } ${errors.name ? "error" : ""}`}
           >
             <input
               id="name"
@@ -96,9 +95,8 @@ export default function Registro() {
 
         <div className="input-group">
           <div
-            className={`input-wrapper ${
-              isFocused.nickname ? "focused" : ""
-            } ${errors.nickname ? "error" : ""}`}
+            className={`input-wrapper ${isFocused.nickname ? "focused" : ""
+              } ${errors.nickname ? "error" : ""}`}
           >
             <input
               id="nickname"
@@ -118,9 +116,8 @@ export default function Registro() {
 
         <div className="input-group">
           <div
-            className={`input-wrapper ${
-              isFocused.email ? "focused" : ""
-            } ${errors.email ? "error" : ""}`}
+            className={`input-wrapper ${isFocused.email ? "focused" : ""
+              } ${errors.email ? "error" : ""}`}
           >
             <input
               id="email"
@@ -140,9 +137,8 @@ export default function Registro() {
 
         <div className="input-group">
           <div
-            className={`input-wrapper ${
-              isFocused.password ? "focused" : ""
-            } ${errors.password ? "error" : ""}`}
+            className={`input-wrapper ${isFocused.password ? "focused" : ""
+              } ${errors.password ? "error" : ""}`}
           >
             <input
               id="password"
@@ -168,20 +164,20 @@ export default function Registro() {
           )}
         </div>
 
-       <button
-  type="submit"
-  disabled={isLoading}
-  className={`login-btn ${isLoading ? "loading" : ""}`}
->
-  {isLoading ? (
-    <>
-      <span className="spinner"></span>
-      <span>Cadastrando...</span>
-    </>
-  ) : (
-    <span>Cadastrar</span>
-  )}
-</button>
+        <button
+          type="submit"
+          disabled={isLoading}
+          className={`login-btn ${isLoading ? "loading" : ""}`}
+        >
+          {isLoading ? (
+            <>
+              <span className="spinner"></span>
+              <span>Cadastrando...</span>
+            </>
+          ) : (
+            <span>Cadastrar</span>
+          )}
+        </button>
 
 
         <p className="redirect-link">

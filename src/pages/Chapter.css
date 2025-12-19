@@ -17,11 +17,12 @@ body {
   --footer-bg: rgba(10, 10, 10, 0.95);
   --accent: #fbbf24;
   --highlight: rgba(255, 255, 255, 0.05);
-  --shadow-card: 0 4px 6px -1px rgba(0,0,0,0.1);
+  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 .chapter-wrapper.theme-light {
-  --reader-bg: #f4f4f5; /* Fundo cinza suave, não branco puro, pra dar contraste com card */
+  --reader-bg: #f4f4f5;
+  /* Fundo cinza suave, não branco puro, pra dar contraste com card */
   --reader-text: #18181b;
   --card-bg: #ffffff;
   --card-border: #e4e4e7;
@@ -29,7 +30,7 @@ body {
   --footer-bg: rgba(255, 255, 255, 0.95);
   --accent: #000;
   --highlight: rgba(0, 0, 0, 0.05);
-  --shadow-card: 0 2px 8px rgba(0,0,0,0.05);
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .chapter-wrapper.theme-sepia {
@@ -47,7 +48,8 @@ body {
 .chapter-wrapper.theme-dark {
   --reader-bg: #050505;
   --reader-text: #d4d4d8;
-  --card-bg: #121212; /* Levemente mais claro que o fundo */
+  --card-bg: #121212;
+  /* Levemente mais claro que o fundo */
   --card-border: #27272a;
   --toolbar-bg: rgba(0, 0, 0, 0.8);
   --footer-bg: rgba(0, 0, 0, 0.95);
@@ -61,7 +63,8 @@ body {
   min-height: 100vh;
   padding-top: 60px;
   padding-bottom: 80px;
-  background-color: var(--reader-bg); /* Garante que o fundo do wrapper seja a cor certa */
+  background-color: var(--reader-bg);
+  /* Garante que o fundo do wrapper seja a cor certa */
   color: var(--reader-text);
   transition: background-color 0.3s ease, color 0.3s ease;
 }
@@ -80,29 +83,42 @@ body {
 
 /* ... Copie o restante do CSS anterior daqui para baixo (toolbar, footer, modals) ... */
 /* Apenas certifique-se de não ter nenhum outro lugar definindo background no body */
-.font-inter { font-family: "Inter", sans-serif; }
-.font-lora { font-family: "Lora", serif; }
-.font-garamond { font-family: "Cormorant Garamond", serif; }
+.font-inter {
+  font-family: "Inter", sans-serif;
+}
 
-.toolbar-glass, .footer-glass {
+.font-lora {
+  font-family: "Lora", serif;
+}
+
+.font-garamond {
+  font-family: "Cormorant Garamond", serif;
+}
+
+.toolbar-glass,
+.footer-glass {
   background: var(--toolbar-bg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-color: var(--card-border);
 }
 
-.back-btn-glass, .settings-btn-glass, .f-btn, .action-chip, .va-icon {
+.back-btn-glass,
+.settings-btn-glass,
+.f-btn,
+.action-chip,
+.va-icon {
   color: var(--reader-text);
 }
 
 /* Ajustes finos para botões nos temas claros */
 .chapter-wrapper.theme-light .f-btn,
 .chapter-wrapper.theme-sepia .f-btn {
-  background: rgba(0,0,0,0.03);
+  background: rgba(0, 0, 0, 0.03);
 }
 
 .chapter-wrapper.theme-light .action-chip:hover {
-  background: rgba(0,0,0,0.05);
+  background: rgba(0, 0, 0, 0.05);
   border-color: #000;
 }
 
@@ -527,7 +543,7 @@ body {
   border-color: #fbbf24;
 }
 
-/* Loading */
+
 .loading-screen {
   height: 100vh;
   display: flex;
@@ -538,7 +554,7 @@ body {
   font-size: 1.1rem;
 }
 
-/* Scrollbar Custom */
+
 .modal-content::-webkit-scrollbar {
   width: 6px;
 }
@@ -556,4 +572,292 @@ body {
   border-left: 3px solid #fbbf24;
   border-radius: 8px;
   animation: modalPop 0.2s ease-out;
+}
+
+.floating-audio-player {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 380px;
+  padding: 16px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 1000;
+  border-radius: 24px;
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  animation: slideUp 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.theme-dark .floating-audio-player {
+  background: rgba(10, 10, 10, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.theme-light .floating-audio-player {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
+}
+
+.theme-sepia .floating-audio-player {
+  background: rgba(243, 233, 210, 0.9);
+  border: 1px solid rgba(92, 75, 55, 0.15);
+}
+
+@keyframes slideUp {
+  from {
+    transform: translate(-50%, 120%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
+}
+
+.player-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.player-text {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+.theme-dark .player-text {
+  color: #fff;
+}
+
+.theme-light .player-text {
+  color: #1a1a1a;
+}
+
+.theme-sepia .player-text {
+  color: #463420;
+}
+
+.player-subtext {
+  font-size: 0.7rem;
+  font-weight: 500;
+  opacity: 0.7;
+  display: block;
+}
+
+.theme-dark .player-subtext {
+  color: #aaa;
+}
+
+.theme-light .player-subtext {
+  color: #666;
+}
+
+.theme-sepia .player-subtext {
+  color: #7a654d;
+}
+
+.player-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10px;
+}
+
+.ctrl-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.theme-dark .ctrl-btn {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.theme-dark .ctrl-btn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.theme-light .ctrl-btn {
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.theme-light .ctrl-btn:hover {
+  color: #000;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.theme-sepia .ctrl-btn {
+  color: rgba(92, 75, 55, 0.6);
+}
+
+.theme-sepia .ctrl-btn:hover {
+  color: #463420;
+  background: rgba(92, 75, 55, 0.1);
+}
+
+.ctrl-btn.main-play {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.theme-dark .ctrl-btn.main-play {
+  background: #fff;
+  color: #000;
+}
+
+.theme-dark .ctrl-btn.main-play:hover {
+  transform: scale(1.05);
+  background: #f0f0f0;
+}
+
+.theme-light .ctrl-btn.main-play {
+  background: #1a1a1a;
+  color: #fff;
+}
+
+.theme-light .ctrl-btn.main-play:hover {
+  transform: scale(1.05);
+  background: #000;
+}
+
+.theme-sepia .ctrl-btn.main-play {
+  background: #5c4b37;
+  color: #f3e9d2;
+}
+
+.theme-sepia .ctrl-btn.main-play:hover {
+  transform: scale(1.05);
+  background: #463420;
+}
+
+.close-player {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  opacity: 0.6;
+}
+
+.close-player:hover {
+  opacity: 1;
+}
+
+.theme-dark .close-player {
+  color: #fff;
+}
+
+.theme-light .close-player {
+  color: #000;
+}
+
+.theme-sepia .close-player {
+  color: #463420;
+}
+
+.audio-visualizer {
+  display: flex;
+  gap: 3px;
+  align-items: flex-end;
+  height: 16px;
+  margin-right: 12px;
+}
+
+.bar {
+  width: 3px;
+  border-radius: 2px;
+  animation: sound 0.5s infinite ease-in-out alternate;
+}
+
+.theme-dark .bar {
+  background: #fff;
+}
+
+.theme-light .bar {
+  background: #1a1a1a;
+}
+
+.theme-sepia .bar {
+  background: #5c4b37;
+}
+
+.bar:nth-child(1) {
+  height: 60%;
+  animation-delay: 0.1s;
+}
+
+.bar:nth-child(2) {
+  height: 30%;
+  animation-delay: 0.3s;
+}
+
+.bar:nth-child(3) {
+  height: 70%;
+  animation-delay: 0.2s;
+}
+
+@keyframes sound {
+  0% {
+    height: 20%;
+    opacity: 0.6;
+  }
+
+  100% {
+    height: 100%;
+    opacity: 1;
+  }
+}
+
+.verse-card.reading-active {
+  transition: all 0.5s ease;
+}
+
+.theme-dark .verse-card.reading-active {
+  border-left: 4px solid #fff !important;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.08) 0%, transparent 100%) !important;
+}
+
+.theme-dark .verse-card.reading-active .verse-index,
+.theme-dark .verse-card.reading-active .verse-text {
+  color: #fff !important;
+}
+
+.theme-light .verse-card.reading-active {
+  border-left: 4px solid #1a1a1a !important;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.04) 0%, transparent 100%) !important;
+}
+
+.theme-light .verse-card.reading-active .verse-index,
+.theme-light .verse-card.reading-active .verse-text {
+  color: #000 !important;
+}
+
+.theme-sepia .verse-card.reading-active {
+  border-left: 4px solid #5c4b37 !important;
+  background: linear-gradient(90deg, rgba(92, 75, 55, 0.08) 0%, transparent 100%) !important;
+}
+
+.theme-sepia .verse-card.reading-active .verse-index,
+.theme-sepia .verse-card.reading-active .verse-text {
+  color: #463420 !important;
 }
