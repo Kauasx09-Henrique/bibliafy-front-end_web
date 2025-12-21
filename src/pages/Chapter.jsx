@@ -7,7 +7,7 @@ import {
   ArrowLeft, ArrowRight, X, BookOpen,
   NotebookPen, Headphones,
   Play, Pause, SkipBack, SkipForward,
-  Mic, User
+  User
 } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
 import Confetti from "react-confetti";
@@ -33,6 +33,7 @@ export default function Chapter() {
   const [showPlayer, setShowPlayer] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentVerseIndex, setCurrentVerseIndex] = useState(-1);
+  const synth = useRef(window.speechSynthesis);
 
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [compareOpen, setCompareOpen] = useState(false);
@@ -44,17 +45,14 @@ export default function Chapter() {
   const [fontSize, setFontSize] = useState(Number(localStorage.getItem("reader-fontsize")) || 18);
   const [fontFamily, setFontFamily] = useState(localStorage.getItem("reader-font") || "inter");
   const [compactMode, setCompactMode] = useState(localStorage.getItem("reader-compact") === "true");
-
   const [voiceGender, setVoiceGender] = useState(localStorage.getItem("reader-voice") || "female");
 
   const [favorites, setFavorites] = useState([]);
-
   const [versions, setVersions] = useState([
     { id: 'nvi', abbreviation: 'nvi', name: 'Nova Versão Internacional' },
     { id: 'acf', abbreviation: 'acf', name: 'Almeida Corrigida Fiel' },
     { id: 'aa', abbreviation: 'aa', name: 'Almeida Atualizada' }
   ]);
-
   const [currentVersion, setCurrentVersion] = useState("nvi");
   const [comparisonResult, setComparisonResult] = useState(null);
   const [comparingVersion, setComparingVersion] = useState(null);
@@ -66,50 +64,63 @@ export default function Chapter() {
   useEffect(() => {
     const handleResize = () => setWindowSize({ width: window.innerWidth, height: window.innerHeight });
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  useEffect(() => {
     return () => {
-      if (window.responsiveVoice) window.responsiveVoice.cancel();
+      window.removeEventListener('resize', handleResize);
+      if (synth.current) synth.current.cancel();
     };
   }, []);
 
   useEffect(() => {
-    if (window.responsiveVoice) window.responsiveVoice.cancel();
+    if (synth.current) synth.current.cancel();
     setIsPlaying(false);
     setShowPlayer(false);
     setCurrentVerseIndex(-1);
   }, [chapterId, bookId]);
 
-  const speakVerse = (index) => {
-    if (!verses[index] || !window.responsiveVoice) return;
+  useEffect(() => {
+    localStorage.setItem("reader-theme", theme);
+    localStorage.setItem("reader-fontsize", fontSize);
+    localStorage.setItem("reader-font", fontFamily);
+    localStorage.setItem("reader-compact", compactMode);
+    localStorage.setItem("reader-voice", voiceGender);
 
-    window.responsiveVoice.cancel();
+    const bgColors = { light: "#f4f4f5", sepia: "#f3e9d2", dark: "#050505" };
+    document.body.style.backgroundColor = bgColors[theme] || "#050505";
+  }, [theme, fontSize, fontFamily, compactMode, voiceGender]);
+
+  const speakVerse = (index) => {
+    if (!verses[index]) return;
+
+    synth.current.cancel();
+
     setCurrentVerseIndex(index);
     setIsPlaying(true);
 
     const textToRead = index === 0
-      ? `${bookName} capítulo ${chapterId}. ${verses[index].text}`
+      ? `${bookName}, capítulo ${chapterId}. ${verses[index].text}`
       : verses[index].text;
 
-    const voiceName = voiceGender === "male" ? "Brazilian Portuguese Male" : "Brazilian Portuguese Female";
+    const utterance = new SpeechSynthesisUtterance(textToRead);
+    utterance.lang = 'pt-BR';
 
-    window.responsiveVoice.speak(textToRead, voiceName, {
-      pitch: voiceGender === "male" ? 1 : 1.05,
-      rate: 0.9,
-      volume: 1,
-      onstart: () => setIsPlaying(true),
-      onend: () => {
-        if (index + 1 < verses.length) {
-          speakVerse(index + 1);
-        } else {
-          setIsPlaying(false);
-          setCurrentVerseIndex(-1);
-        }
-      },
-      onerror: () => setIsPlaying(false)
-    });
+    utterance.pitch = voiceGender === 'male' ? 0.9 : 1.1;
+    utterance.rate = 1.0;
+
+    utterance.onend = () => {
+      if (index + 1 < verses.length) {
+        speakVerse(index + 1);
+      } else {
+        setIsPlaying(false);
+        setCurrentVerseIndex(-1);
+      }
+    };
+
+    utterance.onerror = () => {
+      setIsPlaying(false);
+      console.error("Erro na reprodução de áudio");
+    };
+
+    synth.current.speak(utterance);
   };
 
   const handleStartAudio = () => {
@@ -121,7 +132,7 @@ export default function Chapter() {
 
   const togglePlayPause = () => {
     if (isPlaying) {
-      window.responsiveVoice.cancel();
+      synth.current.cancel();
       setIsPlaying(false);
     } else {
       const index = currentVerseIndex >= 0 ? currentVerseIndex : 0;
@@ -140,25 +151,11 @@ export default function Chapter() {
   };
 
   const closePlayer = () => {
-    window.responsiveVoice.cancel();
+    synth.current.cancel();
     setIsPlaying(false);
     setShowPlayer(false);
     setCurrentVerseIndex(-1);
   };
-
-  useEffect(() => {
-    const bgColors = { light: "#f4f4f5", sepia: "#f3e9d2", dark: "#050505" };
-    document.body.style.backgroundColor = bgColors[theme] || "#050505";
-    return () => { document.body.style.backgroundColor = "#000000"; };
-  }, [theme]);
-
-  useEffect(() => {
-    localStorage.setItem("reader-theme", theme);
-    localStorage.setItem("reader-fontsize", fontSize);
-    localStorage.setItem("reader-font", fontFamily);
-    localStorage.setItem("reader-compact", compactMode);
-    localStorage.setItem("reader-voice", voiceGender);
-  }, [theme, fontSize, fontFamily, compactMode, voiceGender]);
 
   const markAsRead = async () => {
     if (!token) return;
@@ -179,7 +176,7 @@ export default function Chapter() {
             <div style="display: flex; flex-direction: column; align-items: center;">
               <div style="font-size: 1.2rem; font-weight: 600; color: #fff; margin-bottom: 20px; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">Conquista Desbloqueada!</div>
               <div style="position: relative; width: 120px; height: 120px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
-                  <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%; -50%); width: 100%; height: 100%; background: radial-gradient(circle, ${badgeConfig.color}55 0%, transparent 70%); filter: blur(10px);"></div>
+                  <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; height: 100%; background: radial-gradient(circle, ${badgeConfig.color}55 0%, transparent 70%); filter: blur(10px);"></div>
                   <div class="animate-pop-in-bounce" style="position: relative; z-index: 2; filter: drop-shadow(0 0 8px ${badgeConfig.color}aa);">${iconHtml}</div>
               </div>
               <h2 style="color: ${badgeConfig.color}; margin: 0; font-family: 'Playfair Display', serif; font-size: 2.5rem; text-shadow: 0 2px 10px ${badgeConfig.color}44;">${response.data.newBadge.bookName}</h2>
@@ -187,13 +184,13 @@ export default function Chapter() {
               <p style="color: #eee; margin-top: 15px; font-size: 1rem;">Você completou todo o livro!</p>
             </div>
           `,
-          color: '#fff',
+          background: 'rgba(20, 20, 20, 0.95)',
           showConfirmButton: true,
           confirmButtonText: 'Resgatar Selo',
           confirmButtonColor: badgeConfig.color,
-          backdrop: `rgba(0,0,0,0.6) backdrop-filter: blur(4px)`,
+          backdrop: `rgba(0,0,0,0.8)`,
           customClass: { popup: 'glass-swal-popup', confirmButton: 'glass-swal-btn' },
-          padding: 0
+          padding: '2em'
         }).then(() => setShowConfetti(false));
       }
     } catch (err) { console.error(err); }
@@ -237,9 +234,7 @@ export default function Chapter() {
           if (resVersions.data && Array.isArray(resVersions.data) && resVersions.data.length > 0) {
             setVersions(resVersions.data);
           }
-        } catch (e) {
-          console.log("Usando versões padrão devido a erro na API");
-        }
+        } catch (e) { console.log("Usando versões padrão"); }
 
         const currentReadData = { bookId, bookName: resBook.data.name, chapter: chapterId, version: versionParam };
         localStorage.setItem("bibliafyLastRead", JSON.stringify(currentReadData));
@@ -254,9 +249,7 @@ export default function Chapter() {
     loadChapter();
   }, [bookId, chapterId, token, location.search]);
 
-  const changeVersion = (newVersion) => {
-    navigate(`?version=${newVersion}`);
-  };
+  const changeVersion = (newVersion) => navigate(`?version=${newVersion}`);
 
   const toggleFavorite = async (verse) => {
     if (!token) return toast("Faça login para favoritar", { icon: "🔒" });
@@ -320,7 +313,6 @@ export default function Chapter() {
             className={`settings-btn-glass ${showPlayer ? 'active-audio' : ''}`}
             onClick={handleStartAudio}
             title="Ouvir capítulo"
-            style={{ color: showPlayer ? (theme === 'light' ? '#000' : '#fff') : 'inherit' }}
           >
             <Headphones size={22} />
           </button>
@@ -335,6 +327,7 @@ export default function Chapter() {
         {verses.map((verse, index) => (
           <div
             key={verse.id}
+            id={`verse-${index}`}
             className={`verse-card ${index === currentVerseIndex ? 'reading-active' : ''}`}
           >
             <div className="verse-header">
@@ -395,7 +388,7 @@ export default function Chapter() {
                 <span className="player-text">
                   {currentVerseIndex >= 0 ? `${bookName} ${chapterId}:${verses[currentVerseIndex].verse}` : "Preparando..."}
                 </span>
-                <span className="player-subtext">Voz Neural • Leitura {voiceGender === 'male' ? '(M)' : '(F)'}</span>
+                <span className="player-subtext">Leitura {voiceGender === 'male' ? '(M)' : '(F)'}</span>
               </div>
             </div>
             <button className="close-player" onClick={closePlayer}><X size={20} /></button>
@@ -403,7 +396,7 @@ export default function Chapter() {
           <div className="player-controls">
             <button className="ctrl-btn" onClick={skipBack} title="Versículo Anterior"><SkipBack size={20} /></button>
             <button className="ctrl-btn main-play" onClick={togglePlayPause}>
-              {isPlaying ? <Pause size={20} fill={theme === 'dark' ? 'black' : (theme === 'light' ? 'white' : '#f3e9d2')} /> : <Play size={20} fill={theme === 'dark' ? 'black' : (theme === 'light' ? 'white' : '#f3e9d2')} style={{ marginLeft: '2px' }} />}
+              {isPlaying ? <Pause size={20} fill={theme === 'dark' ? 'black' : (theme === 'light' ? 'white' : '#463420')} /> : <Play size={20} fill={theme === 'dark' ? 'black' : (theme === 'light' ? 'white' : '#463420')} style={{ marginLeft: '2px' }} />}
             </button>
             <button className="ctrl-btn" onClick={skipForward} title="Próximo Versículo"><SkipForward size={20} /></button>
           </div>
@@ -423,7 +416,7 @@ export default function Chapter() {
             </div>
 
             <div className="modal-section">
-              <h3>Voz</h3>
+              <h3>Voz (Tom)</h3>
               <div className="theme-options">
                 <button className={`theme-btn ${voiceGender === 'female' ? 'active' : ''}`} onClick={() => setVoiceGender('female')}>
                   <User size={18} style={{ marginRight: 6 }} /> Feminina
@@ -438,12 +431,7 @@ export default function Chapter() {
               <h3>Versão</h3>
               <div className="theme-options">
                 {versions.map(v => (
-                  <button
-                    key={v.id}
-                    className={`theme-btn ${currentVersion === v.abbreviation ? 'active' : ''}`}
-                    onClick={() => changeVersion(v.abbreviation)}
-                    style={{ textTransform: 'uppercase' }}
-                  >
+                  <button key={v.id} className={`theme-btn ${currentVersion === v.abbreviation ? 'active' : ''}`} onClick={() => changeVersion(v.abbreviation)} style={{ textTransform: 'uppercase' }}>
                     {v.abbreviation}
                   </button>
                 ))}
